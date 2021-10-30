@@ -1,3 +1,4 @@
+package ru.barinov.notes.ui;
 import android.app.Application
 import ru.barinov.notes.domain.NotesRepository
 

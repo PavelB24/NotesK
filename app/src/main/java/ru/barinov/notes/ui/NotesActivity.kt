@@ -1,6 +1,5 @@
 package ru.barinov.notes.ui
 
-import Application
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -15,7 +14,7 @@ import ru.barinov.notes.domain.NotesRepository
 
 class NotesActivity : AppCompatActivity() {
     private lateinit var binding: MainLayoutBinding
-    private val fragmentManager: FragmentManager = supportFragmentManager
+    private var fragmentManager: FragmentManager = supportFragmentManager
     private lateinit var bottomNavigationItemView: BottomNavigationView
     private val repository: NotesRepository
         get() = (application as Application).repository
@@ -41,12 +40,14 @@ class NotesActivity : AppCompatActivity() {
                         fragmentManager.beginTransaction()
                             .replace(
                                 R.id.container_for_fragment_land_1,
-                                NoteListFragment.getInstance(savedData))
+                                NoteListFragment.getInstance(savedData)
+                            )
                             .commit()
                     } else {
                         fragmentManager.beginTransaction().replace(
                             R.id.container_for_fragment,
-                            NoteListFragment.getInstance(savedData))
+                            NoteListFragment.getInstance(savedData)
+                        )
                             .commit()
                     }
                     fragmentManager.popBackStack()
@@ -56,9 +57,13 @@ class NotesActivity : AppCompatActivity() {
                         fragmentManager.beginTransaction()
                             .replace(R.id.container_for_fragment_land_1, DataManagerFragment())
                             .commit()
-                    } else { fragmentManager.beginTransaction()
-                        .replace(R.id.container_for_fragment, DataManagerFragment.getInstance(savedData))
-                        .commit()
+                    } else {
+                        fragmentManager.beginTransaction()
+                            .replace(
+                                R.id.container_for_fragment,
+                                DataManagerFragment.getInstance(savedData)
+                            )
+                            .commit()
                     }
                 }
             }; true
