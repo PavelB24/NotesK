@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="toolbar_grey">#78909c</color>
+    <color name="card_view_grey">#A8546E7A</color>
+    <color name="apply_button_color">#659C27B0</color>
+    <color name="back_button_color">#9C000000</color>
+    <color name="dark_grey">#252525</color>
+    <color name="data_manager_light_grey">#26B0BEC5</color>
+    <color name="data_manager_toggle_button_light_grey">#CCB0BEC5</color>
+</resources>

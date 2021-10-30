@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:background="@drawable/grey_wall"
+    android:layout_height="match_parent">
+
+
+        <TextView
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/data_manager_title_text_view"
+            android:padding="@dimen/standart_padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/data_manager_title"
+            android:textSize="@dimen/data_manager_title"
+            android:textColor="@color/dark_grey"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:background="@color/data_manager_light_grey"/>
+
+        <LinearLayout
+            app:layout_constraintTop_toBottomOf="@+id/data_manager_title_text_view"
+            android:padding="@dimen/standart_padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="242dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/black"
+                android:text="@string/delete_all_notes_text"
+                android:textColor="@color/dark_grey"
+                android:textSize="32sp"
+                android:textStyle="bold"/>
+
+            <ImageButton
+
+                android:id="@+id/delete_storage_button"
+                android:src="@drawable/ic_baseline_delete_forever_24"
+                app:tint="@color/dark_grey"
+                style="@style/delete_all_notes_img_button_style"
+                android:focusable="true"
+                android:clickable="true"/>
+
+
+        </LinearLayout>
+        <ToggleButton
+            android:background="@color/data_manager_toggle_button_light_grey"
+            android:id="@+id/data_manager_data_transmitter_toggle_button"
+            android:textOff="@string/data_manager_data_transmitter_toggle_button_textOff"
+            android:textOn="@string/data_manager_data_transmitter_toggle_button_textOn"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:focusable="true"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
