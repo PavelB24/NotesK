@@ -5,7 +5,7 @@
         android:id="@+id/refresh_item_menu"
         android:icon="@drawable/ic_baseline_refresh_24"
         android:title="@string/settings_button_text"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
     <item
         android:id="@+id/add_note_item_menu"
         android:icon="@drawable/ic_baseline_playlist_add_check_24"
@@ -16,9 +16,7 @@
         android:id="@+id/search_item_menu"
         android:title="Search"
         app:actionViewClass="android.widget.SearchView"
-        app:showAsAction="always"/>
-
-
+        app:showAsAction="always" />
 
 
 </menu>
