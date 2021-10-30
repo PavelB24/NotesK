@@ -34,16 +34,12 @@ class NoteEditFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
-        applyButton= binding.applyButton
-        titleEditText= binding.titleEdittext
-        descriptionEditText= binding.descriptionEdittext
-        datePicker= binding.datePickerActions
 
 
     }
 
     private fun initViews() {
-        applyButton= binding.applyButton
+        applyButton= binding.applyButton as Button
         titleEditText= binding.titleEdittext
         descriptionEditText= binding.descriptionEdittext
         datePicker= binding.datePickerActions

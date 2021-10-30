@@ -3,14 +3,10 @@ package ru.barinov.notes.domain
 import android.os.Parcel
 import android.os.Parcelable
 
-class NotesRepository() : RepositoryInterface, Parcelable {
-    override val allNotes= ArrayList<NoteEntity>()
+class NotesRepository : RepositoryInterface, Parcelable {
+    override val allNotes = ArrayList<NoteEntity>()
         get() = ArrayList(field)
     override val searchCache = ArrayList<NoteEntity>()
-
-    constructor(parcel: Parcel) : this() {
-        parcel.writeList(allNotes)
-    }
 
 
     override fun addNote(note: NoteEntity) {
@@ -22,42 +18,41 @@ class NotesRepository() : RepositoryInterface, Parcelable {
     }
 
     override fun removeNote(id: String): Boolean {
-        val range= 0..allNotes.size
-        for(i in range){
-            if(allNotes[i].id.equals(id)){
+        val range = 0..allNotes.size
+        for (i in range) {
+            if (allNotes[i].id.equals(id)) {
                 allNotes.removeAt(i)
                 return true
             }
         }
-       return  false
+        return false
     }
 
     override fun updateNote(id: String, note: NoteEntity): Boolean {
         removeNote(id)
-        note.id=id
+        note.id = id
         allNotes.add(note)
         return true
     }
 
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeList(allNotes)
+
+    }
+
     override fun describeContents(): Int {
-        TODO("Not yet implemented")
+        return 0
     }
-
-    override fun writeToParcel(dest: Parcel?, flags: Int) {
-        TODO("Not yet implemented")
-    }
-
-
 
     companion object CREATOR : Parcelable.Creator<NotesRepository> {
         override fun createFromParcel(parcel: Parcel): NotesRepository {
-            return NotesRepository(parcel)
+            return NotesRepository()
         }
 
         override fun newArray(size: Int): Array<NotesRepository?> {
             return arrayOfNulls(size)
         }
-
-
     }
+
+
 }

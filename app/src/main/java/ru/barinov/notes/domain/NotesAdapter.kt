@@ -45,7 +45,7 @@ class NotesAdapter: RecyclerView.Adapter<NoteViewHolder>() {
     private fun getNote(position: Int): NoteEntity {
         return data[position]
     }
-    fun setList(listener: OnNoteClickListener){
+    fun setListener(listener: OnNoteClickListener){
         this.listener= listener
 
 

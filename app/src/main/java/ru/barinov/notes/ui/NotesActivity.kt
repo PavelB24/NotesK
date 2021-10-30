@@ -26,6 +26,7 @@ class NotesActivity : AppCompatActivity() {
         binding = MainLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setNavigation()
+        bottomNavigationItemView.selectedItemId= R.id.notes_item_menu
     }
 
     private fun setNavigation() {

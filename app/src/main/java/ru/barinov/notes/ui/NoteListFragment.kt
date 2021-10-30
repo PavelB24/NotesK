@@ -8,8 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import ru.barinov.R
 import ru.barinov.databinding.NoteListLayoutBinding
-import ru.barinov.notes.domain.NotesAdapter
-import ru.barinov.notes.domain.NotesRepository
+import ru.barinov.notes.domain.*
 
 class NoteListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
@@ -26,7 +25,7 @@ class NoteListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         setHasOptionsMenu(true)
-        binding = NoteListLayoutBinding.inflate(inflater)
+        binding = NoteListLayoutBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -48,6 +47,8 @@ class NoteListFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.add_note_item_menu -> {
+                savedData= null
+                (requireActivity() as Callable).callEditionFragment(savedData)
                 //TODO
                 return true
             }
@@ -68,12 +69,29 @@ class NoteListFragment : Fragment() {
 
     private fun setToolbar() {
         toolbar = binding.toolbar
-        (activity as AppCompatActivity?)!!.setSupportActionBar(toolbar)
+        (activity as AppCompatActivity).setSupportActionBar(toolbar)
     }
 
     private fun setAdapter() {
         adapter = NotesAdapter()
         adapter.data = repository.allNotes
+        adapter.setListener(object: OnNoteClickListener{
+            override fun onClickEdit(note: NoteEntity?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onClickDelete(note: NoteEntity) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onNoteClick(note: NoteEntity) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onNoteLongClick(note: NoteEntity, view: View) {
+                TODO("Not yet implemented")
+            }
+        })
     }
 
     private fun setRecyclerView() {
