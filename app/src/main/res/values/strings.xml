@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Notes</string>
+    <string name="app_name">NoteBook</string>
     <string name="warning_toast">Please, write down title and main text</string>
     <string name="add_title_hint">Title…</string>
     <string name="select_the_date_of_event">Select the date of event</string>

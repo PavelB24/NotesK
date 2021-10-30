@@ -14,8 +14,8 @@ class DataManagerFragment: Fragment() {
 
 
     companion object {
-        fun getInstance(data: Bundle?): NoteEditFragment {
-            val dataManagerInstance = NoteEditFragment()
+        fun getInstance(data: Bundle?): DataManagerFragment {
+            val dataManagerInstance = DataManagerFragment()
             dataManagerInstance.arguments = data
             return dataManagerInstance
         }

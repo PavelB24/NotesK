@@ -101,12 +101,13 @@ class NoteListFragment : Fragment() {
     }
 
     private fun initRepository() {
-        repository = savedData?.getParcelable<NotesRepository>(NotesRepository::class.simpleName)!!
+        if(savedData?.isEmpty==false){
+        repository = savedData!!.getParcelable<NotesRepository>(NotesRepository::class.simpleName)!!}
     }
 
     companion object {
-        fun getInstance(data: Bundle?): NoteEditFragment {
-            val noteListInstance = NoteEditFragment()
+        fun getInstance(data: Bundle?): NoteListFragment {
+            val noteListInstance = NoteListFragment()
             noteListInstance.arguments = data
             return noteListInstance
         }
