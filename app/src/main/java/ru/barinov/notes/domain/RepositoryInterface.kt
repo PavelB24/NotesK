@@ -1,7 +1,7 @@
 package ru.barinov.notes.domain
 
 interface RepositoryInterface {
-    val allNotes: ArrayList<NoteEntity>
+    val allNotes: MutableList<NoteEntity>
     val searchCache: ArrayList<NoteEntity>
     fun addNote(note: NoteEntity)
     fun addAll(arrayList: List<NoteEntity>)

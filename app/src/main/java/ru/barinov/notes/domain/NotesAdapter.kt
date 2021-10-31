@@ -1,5 +1,6 @@
 package ru.barinov.notes.domain
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +10,8 @@ import ru.barinov.R
 import java.util.ArrayList
 
 class NotesAdapter: RecyclerView.Adapter<NoteViewHolder>() {
-    var data: List<NoteEntity> = ArrayList()
-        set(newData:List<NoteEntity>){
+    var data: MutableList<NoteEntity> = ArrayList()
+        set(newData){
             val result = DiffUtil.calculateDiff(DiffCallback(data, newData), true)
             field = newData
             result.dispatchUpdatesTo(this)

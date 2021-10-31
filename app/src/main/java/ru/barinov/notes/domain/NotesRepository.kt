@@ -2,15 +2,18 @@ package ru.barinov.notes.domain
 
 import android.os.Parcel
 import android.os.Parcelable
+import android.util.Log
 
 class NotesRepository : RepositoryInterface, Parcelable {
-    override val allNotes = ArrayList<NoteEntity>()
-        get() = ArrayList(field)
+    override val allNotes: MutableList<NoteEntity> = ArrayList()
+
     override val searchCache = ArrayList<NoteEntity>()
 
 
     override fun addNote(note: NoteEntity) {
+        Log.d("@@@", note.toString() +1)
         allNotes.add(note)
+        Log.d("@@@", allNotes.toString() + 2)
     }
 
     override fun addAll(arrayList: List<NoteEntity>) {
@@ -42,6 +45,20 @@ class NotesRepository : RepositoryInterface, Parcelable {
 
     override fun describeContents(): Int {
         return 0
+    }
+
+    fun findById(id: String): Boolean {
+        for(note in allNotes){
+            if(note.id.equals(id)){
+                return true
+            }
+        }
+        return false
+    }
+
+    fun getNotes(): MutableList<NoteEntity> {
+        return ArrayList<NoteEntity>(allNotes)
+
     }
 
     companion object CREATOR : Parcelable.Creator<NotesRepository> {

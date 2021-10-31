@@ -1,10 +1,13 @@
 package ru.barinov.notes.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentResultListener
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.barinov.R
 import ru.barinov.databinding.NoteListLayoutBinding
@@ -33,8 +36,26 @@ class NoteListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         savedData = arguments
         initFragmentsContent()
+        getResults()
 
     }
+
+    private fun getResults() {
+        parentFragmentManager.setFragmentResultListener(NoteEditFragment::class.simpleName!!,requireActivity(), FragmentResultListener { requestKey, result ->
+            if(!(result.isEmpty)){
+                var tempNote: NoteEntity = result.getParcelable(NoteEntity::class.simpleName)!!
+                if (!repository.findById(tempNote.id)) {
+                    repository.addNote(tempNote)
+                } else {
+                    repository.updateNote(tempNote.id, tempNote)
+                }
+                adapter.data= repository.getNotes()
+            }
+
+            })
+        }
+
+
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -49,7 +70,6 @@ class NoteListFragment : Fragment() {
             R.id.add_note_item_menu -> {
                 savedData= null
                 (requireActivity() as Callable).callEditionFragment(savedData)
-                //TODO
                 return true
             }
             R.id.refresh_item_menu -> {
@@ -74,7 +94,7 @@ class NoteListFragment : Fragment() {
 
     private fun setAdapter() {
         adapter = NotesAdapter()
-        adapter.data = repository.allNotes
+        adapter.data = repository.getNotes()
         adapter.setListener(object: OnNoteClickListener{
             override fun onClickEdit(note: NoteEntity?) {
                 TODO("Not yet implemented")
@@ -96,14 +116,19 @@ class NoteListFragment : Fragment() {
 
     private fun setRecyclerView() {
         recyclerView = binding.recyclerview
-        recyclerView.layoutManager
+        recyclerView.layoutManager= LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
     }
 
     private fun initRepository() {
-        if(savedData?.isEmpty==false){
-        repository = savedData!!.getParcelable<NotesRepository>(NotesRepository::class.simpleName)!!}
+        Log.d("@@@", "инициирую")
+            Log.d("@@@", "Дата есть")
+        repository = savedData!!.getParcelable<NotesRepository>(NotesRepository::class.simpleName)!!
+            Log.d("@@@", repository.toString())
+
     }
+
+
 
     companion object {
         fun getInstance(data: Bundle?): NoteListFragment {

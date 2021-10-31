@@ -74,7 +74,16 @@ class NotesActivity : AppCompatActivity(), Callable {
     }
 
     override fun callEditionFragment(data: Bundle?) {
-        TODO("Not yet implemented")
+        fragmentManager.popBackStack()
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            fragmentManager.beginTransaction()
+                .add(R.id.container_for_fragment_land_2, NoteEditFragment.getInstance(data))
+                .addToBackStack(null).commit()
+        } else {
+            fragmentManager.beginTransaction()
+                .add(R.id.container_for_fragment, NoteEditFragment.getInstance(data))
+                .addToBackStack(null).commit()
+        }
     }
 
     override fun callSettingsFragment() {
@@ -82,7 +91,15 @@ class NotesActivity : AppCompatActivity(), Callable {
     }
 
     override fun callNoteViewFragment(data: Bundle?) {
-        TODO("Not yet implemented")
+//        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            fragmentManager.beginTransaction()
+//                .add(R.id.container_for_fragment_land_2, NoteViewFragment.getInstance(data))
+//                .addToBackStack(null).commit()
+//        } else {
+//            fragmentManager.beginTransaction()
+//                .add(R.id.container_for_fragment, NoteViewFragment.getInstance(data))
+//                .addToBackStack(null).commit()
+//        }
     }
 
 
