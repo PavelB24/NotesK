@@ -3,6 +3,7 @@ package ru.barinov.notes.ui
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -13,13 +14,14 @@ import ru.barinov.R
 import ru.barinov.databinding.NoteListLayoutBinding
 import ru.barinov.notes.domain.*
 
-class NoteListFragment : Fragment() {
+class NoteListFragment : Fragment(), OnNoteClickListener {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: NotesAdapter
     private lateinit var binding: NoteListLayoutBinding
     private lateinit var repository: NotesRepository
     private lateinit var toolbar: Toolbar
     private var savedData: Bundle? = null
+    private lateinit var data: Bundle
 
 
     override fun onCreateView(
@@ -136,6 +138,26 @@ class NoteListFragment : Fragment() {
             noteListInstance.arguments = data
             return noteListInstance
         }
+    }
+
+    override fun onClickEdit(note: NoteEntity?) {
+        Toast.makeText(activity, R.string.edition_mode_toast_text, Toast.LENGTH_SHORT).show()
+        data = Bundle()
+        data.putParcelable(NoteEntity::class.simpleName, note)
+    }
+
+    override fun onClickDelete(note: NoteEntity) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onNoteClick(note: NoteEntity) {
+        data = Bundle()
+        data.putParcelable(NoteEntity::class.java.canonicalName, note)
+        (requireActivity() as Callable).callNoteViewFragment(data)
+    }
+
+    override fun onNoteLongClick(note: NoteEntity, view: View) {
+        TODO("Not yet implemented")
     }
 }
 

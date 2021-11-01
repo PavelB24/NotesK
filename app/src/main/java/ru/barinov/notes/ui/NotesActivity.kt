@@ -91,15 +91,15 @@ class NotesActivity : AppCompatActivity(), Callable {
     }
 
     override fun callNoteViewFragment(data: Bundle?) {
-//        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            fragmentManager.beginTransaction()
-//                .add(R.id.container_for_fragment_land_2, NoteViewFragment.getInstance(data))
-//                .addToBackStack(null).commit()
-//        } else {
-//            fragmentManager.beginTransaction()
-//                .add(R.id.container_for_fragment, NoteViewFragment.getInstance(data))
-//                .addToBackStack(null).commit()
-//        }
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            fragmentManager.beginTransaction()
+                .add(R.id.container_for_fragment_land_2, NoteViewFragment.getInstance(data))
+                .addToBackStack(null).commit()
+        } else {
+            fragmentManager.beginTransaction()
+                .add(R.id.container_for_fragment, NoteViewFragment.getInstance(data))
+                .addToBackStack(null).commit()
+        }
     }
 
 

@@ -16,6 +16,14 @@
             android:orientation="horizontal"
             android:padding="@dimen/standart_padding">
 
+            <CheckBox
+                android:id="@+id/notes_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="120dp"
+                android:ellipsize="middle"
+                android:gravity="center"
+                android:theme="@style/MyCheckBox"
+                />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -27,11 +35,13 @@
 
                 <TextView
                     android:id="@+id/note_title_textview"
-                    style="@style/item_notes_title_textview" />
+                    style="@style/item_notes_title_textview"
+                    android:textAlignment="center"/>
 
                 <TextView
                     android:id="@+id/note_description_textview"
-                    style="@style/item_notes_description_textview" />
+                    style="@style/item_notes_description_textview"
+                    android:textSize="@dimen/item_note_description"/>
             </LinearLayout>
 
 

@@ -14,4 +14,6 @@
     <color name="dark_grey">#252525</color>
     <color name="data_manager_light_grey">#26B0BEC5</color>
     <color name="data_manager_toggle_button_light_grey">#CCB0BEC5</color>
+    <color name="checkbox_normal_color">#263238</color>
+    <color name="checkbox_activated_color">#bf360c</color>
 </resources>
