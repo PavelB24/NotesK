@@ -16,9 +16,9 @@ class AgreementDialogFragment: DialogFragment() {
             .setIcon(android.R.drawable.ic_dialog_alert)
             .setMessage(R.string.clear_data_base_dialog_message_text)
             .setPositiveButton(R.string.clear_data_base_dialog_positive_text, DialogInterface.OnClickListener { dialog, which ->
-               val result: Bundle? = null
-               result!!.putBoolean(AGREEMENT_KEY, true)
-                parentFragmentManager.setFragmentResult(this.javaClass.canonicalName, result)
+               val result= Bundle()
+               result.putBoolean(AGREEMENT_KEY, true)
+                parentFragmentManager.setFragmentResult(AgreementDialogFragment::class.simpleName!!, result)
             }).setNegativeButton(R.string.clear_data_base_dialog_negative_text, null).create()
     }
 }

@@ -3,6 +3,7 @@ package ru.barinov.notes.ui
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -22,6 +23,7 @@ class NoteListFragment : Fragment(), OnNoteClickListener {
     private lateinit var toolbar: Toolbar
     private var savedData: Bundle? = null
     private lateinit var data: Bundle
+    private val DELETE = "OK"
 
 
     override fun onCreateView(
@@ -99,19 +101,20 @@ class NoteListFragment : Fragment(), OnNoteClickListener {
         adapter.data = repository.getNotes()
         adapter.setListener(object: OnNoteClickListener{
             override fun onClickEdit(note: NoteEntity?) {
-                TODO("Not yet implemented")
+                this@NoteListFragment.onClickEdit(note)
             }
 
             override fun onClickDelete(note: NoteEntity) {
-                TODO("Not yet implemented")
+                this@NoteListFragment.onClickDelete(note)
             }
 
             override fun onNoteClick(note: NoteEntity) {
-                TODO("Not yet implemented")
+                this@NoteListFragment.onNoteClick(note)
             }
 
             override fun onNoteLongClick(note: NoteEntity, view: View) {
-                TODO("Not yet implemented")
+                this@NoteListFragment.onNoteLongClick( note, view)
+
             }
         })
     }
@@ -144,20 +147,43 @@ class NoteListFragment : Fragment(), OnNoteClickListener {
         Toast.makeText(activity, R.string.edition_mode_toast_text, Toast.LENGTH_SHORT).show()
         data = Bundle()
         data.putParcelable(NoteEntity::class.simpleName, note)
+        (requireActivity() as Callable).callEditionFragment(data)
     }
 
     override fun onClickDelete(note: NoteEntity) {
-        TODO("Not yet implemented")
+        val confirmation = AgreementDialogFragment()
+        confirmation.show(parentFragmentManager, DELETE)
+        parentFragmentManager.setFragmentResultListener(AgreementDialogFragment::class.simpleName!!,
+            requireActivity(), { requestKey, result ->
+                val isConfirmed = result.getBoolean(confirmation.AGREEMENT_KEY)
+                if (isConfirmed) {
+                    Toast.makeText(activity, R.string.deleted_note_toast_text, Toast.LENGTH_SHORT)
+                        .show()
+                    repository.removeNote(note.id)
+                    adapter.data= repository.getNotes()
+                }
+            })
     }
 
     override fun onNoteClick(note: NoteEntity) {
         data = Bundle()
-        data.putParcelable(NoteEntity::class.java.canonicalName, note)
+        data.putParcelable(NoteEntity::class.simpleName, note)
         (requireActivity() as Callable).callNoteViewFragment(data)
     }
 
-    override fun onNoteLongClick(note: NoteEntity, view: View) {
-        TODO("Not yet implemented")
+    override fun onNoteLongClick(note: NoteEntity, view: View)  {
+        val popupMenu = PopupMenu(context, view)
+        popupMenu.inflate(R.menu.note_menu)
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            if (menuItem.itemId == R.id.delete_note_item) {
+                onClickDelete(note)
+            } else if (menuItem.itemId == R.id.edit_note_item) {
+                onClickEdit(note)
+            }
+            false
+        }
+        popupMenu.show()
+
     }
 }
 

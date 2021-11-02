@@ -90,7 +90,7 @@ class NotesActivity : AppCompatActivity(), Callable {
         TODO("Not yet implemented")
     }
 
-    override fun callNoteViewFragment(data: Bundle?) {
+    override fun callNoteViewFragment(data: Bundle) {
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             fragmentManager.beginTransaction()
                 .add(R.id.container_for_fragment_land_2, NoteViewFragment.getInstance(data))

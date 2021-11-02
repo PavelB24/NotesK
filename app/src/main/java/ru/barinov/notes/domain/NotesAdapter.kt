@@ -34,7 +34,7 @@ class NotesAdapter: RecyclerView.Adapter<NoteViewHolder>() {
 
     private fun setHolderItemsListeners(holder: NoteViewHolder, note: NoteEntity) {
         holder.itemView.setOnClickListener { listener.onNoteClick(note) }
-        holder.itemView.setOnClickListener { listener.onNoteLongClick(note, it) }
+        holder.itemView.setOnLongClickListener { listener.onNoteLongClick(note, it); true }
     }
 
     private fun setTextInHolderItems(holder: NoteViewHolder, note: NoteEntity) {
