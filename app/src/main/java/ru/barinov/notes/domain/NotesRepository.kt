@@ -7,17 +7,42 @@ import android.util.Log
 class NotesRepository : RepositoryInterface, Parcelable {
     override val allNotes: MutableList<NoteEntity> = ArrayList()
 
-    override val searchCache = ArrayList<NoteEntity>()
+    override val cache = ArrayList<NoteEntity>()
+
+
+    fun deleteAll() {
+        allNotes.clear()
+    }
+
+    fun searchNotes(query: String) {
+        cache.clear()
+        query.toLowerCase()
+        val size = query.length
+        for (note in allNotes) {
+            val title = note.title.toLowerCase()
+            if (size > title.length) {
+                return
+            }
+            for (i in 0 until size) {
+                if (query[i] != title[i]) {
+                    break
+                } else
+                    if (i == size - 1) {
+                        cache.add(note)
+                    }
+            }
+        }
+    }
 
 
     override fun addNote(note: NoteEntity) {
-        Log.d("@@@", note.toString() +1)
+        Log.d("@@@", note.toString() + 1)
         allNotes.add(note)
         Log.d("@@@", allNotes.toString() + 2)
     }
 
-    override fun addAll(arrayList: List<NoteEntity>) {
-        allNotes.addAll(arrayList)
+    override fun addAll(list: MutableList<NoteEntity>) {
+        allNotes.addAll(list)
     }
 
     override fun removeNote(id: String): Boolean {
@@ -48,8 +73,8 @@ class NotesRepository : RepositoryInterface, Parcelable {
     }
 
     fun findById(id: String): Boolean {
-        for(note in allNotes){
-            if(note.id.equals(id)){
+        for (note in allNotes) {
+            if (note.id.equals(id)) {
                 return true
             }
         }

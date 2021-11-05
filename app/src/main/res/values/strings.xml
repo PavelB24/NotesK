@@ -27,7 +27,8 @@
     <string name="clear_data_base_dialog_positive_text">OK</string>
     <string name="clear_data_base_dialog_message_text">Confirm deletion</string>
     <string name="clear_data_base_dialog_title_text">Are you sure?</string>
-    <string name="delete_all_notes_text">Delete all notes</string>
+    <string name="way_of_storage_local">Repository: local</string>
+    <string name="way_of_storage_cloud">Repository: cloud</string>
     <string name="application_settings_text">Application Settings</string>
     <string name="sort_by_date_text">Sort by date</string>
     <string name="notes_description_hint_text">Text…</string>
@@ -37,4 +38,5 @@
     <string name="data_manager_title">Data Manager</string>
     <string name="data_manager_data_transmitter_toggle_button_textOn">Transmission is stopped</string>
     <string name="data_manager_data_transmitter_toggle_button_textOff">Extra Actions</string>
+    <string name="delete_all_notes_text">Delete all notes</string>
 </resources>

@@ -7,10 +7,15 @@ import androidx.appcompat.app.AppCompatActivity
 
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import ru.barinov.R
 import ru.barinov.databinding.MainLayoutBinding
 import ru.barinov.notes.domain.Callable
+import ru.barinov.notes.domain.NoteEntity
 import ru.barinov.notes.domain.NotesRepository
+import java.io.*
+import java.util.ArrayList
 
 
 class NotesActivity : AppCompatActivity(), Callable {
@@ -23,10 +28,12 @@ class NotesActivity : AppCompatActivity(), Callable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("@@@","ёба")
         binding = MainLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setNavigation()
+        //todo переписать под 2 варианта хранения
+        if(repository.allNotes.isEmpty()&&File(filesDir, LOCAL_REPOSITORY_NAME).exists()){
+        toInitNotesInRepository()}
         bottomNavigationItemView.selectedItemId= R.id.notes_item_menu
     }
 
@@ -73,6 +80,11 @@ class NotesActivity : AppCompatActivity(), Callable {
         }
     }
 
+    override fun onPause() {
+        serializeNotes()
+        super.onPause()
+    }
+
     override fun callEditionFragment(data: Bundle?) {
         fragmentManager.popBackStack()
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -101,6 +113,37 @@ class NotesActivity : AppCompatActivity(), Callable {
                 .addToBackStack(null).commit()
         }
     }
-
-
+    @Throws(IOException::class)
+    private fun serializeNotes() {
+        val fos = openFileOutput(LOCAL_REPOSITORY_NAME, MODE_PRIVATE)
+        val objectOutputStream = ObjectOutputStream(fos)
+        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+        val jsonAdapter = moshi.adapter(NoteEntity::class.java)
+        objectOutputStream.writeInt(repository.allNotes.size)
+        for (note in repository.allNotes) {
+            var json = jsonAdapter.toJson(note)
+            objectOutputStream.writeObject(json)
+        }
+        objectOutputStream.close()
+        fos.close()
+    }
+    @Throws(IOException::class, ClassNotFoundException::class)
+    private fun toInitNotesInRepository() {
+        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+        val jsonAdapter = moshi.adapter(NoteEntity::class.java)
+        val fileInputStream = openFileInput(LOCAL_REPOSITORY_NAME)
+        val objectInputStream = ObjectInputStream(fileInputStream)
+        val size = objectInputStream.readInt()
+        val list: MutableList<NoteEntity> = ArrayList()
+        for (i in 0 until size) {
+            val json: String = objectInputStream.readObject() as String
+            list.add(jsonAdapter.fromJson(json) as NoteEntity)
+            Log.d("@@@", list.toString())
+        }
+        repository.addAll(list)
+        Log.d("@@@", "size " + repository.allNotes.size)
+        objectInputStream.close()
+        fileInputStream.close()
+        Log.d("@@@", "Восстановлен")
+    }
 }

@@ -6,6 +6,7 @@ import android.view.*
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
@@ -23,6 +24,7 @@ class NoteListFragment : Fragment(), OnNoteClickListener {
     private lateinit var toolbar: Toolbar
     private var savedData: Bundle? = null
     private lateinit var data: Bundle
+    private lateinit var searchItem: MenuItem
     private val DELETE = "OK"
 
 
@@ -39,7 +41,7 @@ class NoteListFragment : Fragment(), OnNoteClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         savedData = arguments
-        initFragmentsContent()
+        initViews()
         getResults()
 
     }
@@ -65,6 +67,28 @@ class NoteListFragment : Fragment(), OnNoteClickListener {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (!menu.hasVisibleItems()) {
             inflater.inflate(R.menu.notes_list_menu, menu)
+            searchItem= menu.findItem(R.id.search_item_menu)
+            val searchView = searchItem.actionView as android.widget.SearchView
+            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+                android.widget.SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(s: String): Boolean {
+                    repository.searchNotes(searchView.query.toString())
+                    if (repository.cache.isNotEmpty()) {
+                        adapter.data=repository.cache
+                    } else {
+                        Toast.makeText(context, R.string.unsuccessful_search_toast_text, Toast.LENGTH_SHORT).show()
+                    }
+                    return false
+                }
+
+                override fun onQueryTextChange(s: String): Boolean {
+                    return false
+                }
+            })
+            searchView.setOnCloseListener {
+                adapter.data=repository.allNotes
+                false
+            }
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -76,15 +100,12 @@ class NoteListFragment : Fragment(), OnNoteClickListener {
                 (requireActivity() as Callable).callEditionFragment(savedData)
                 return true
             }
-            R.id.refresh_item_menu -> {
-                adapter.data = repository.allNotes
-            }
         }
         return super.onOptionsItemSelected(item)
     }
 
 
-    private fun initFragmentsContent() {
+    private fun initViews() {
         initRepository()
         setAdapter()
         setRecyclerView()
