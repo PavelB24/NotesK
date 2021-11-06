@@ -1,4 +1,4 @@
-package ru.barinov.notes.ui
+package ru.barinov.notes.ui.noteViewFragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -9,6 +9,8 @@ class NotesRepository : RepositoryInterface, Parcelable {
 
     override val cache = ArrayList<NoteEntity>()
 
+    var noteCache: NoteEntity? = null
+
 
     fun deleteAll() {
         allNotes.clear()

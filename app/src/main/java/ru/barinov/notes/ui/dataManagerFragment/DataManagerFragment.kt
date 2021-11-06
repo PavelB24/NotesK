@@ -1,4 +1,4 @@
-package ru.barinov.notes.ui
+package ru.barinov.notes.ui.dataManagerFragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,13 +10,12 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.switchmaterial.SwitchMaterial
 import ru.barinov.R
 import ru.barinov.databinding.DataManagerLayoutBinding
-import ru.barinov.notes.domain.NotesRepository
 
-class DataManagerFragment: Fragment() {
+class DataManagerFragment: Fragment(), DataManagerFragmentContract.ViewInterface {
     private lateinit var binding: DataManagerLayoutBinding
     private lateinit var deleteImageButton: ImageButton
     private lateinit var switchMaterial: SwitchMaterial
-    private lateinit var repository: NotesRepository
+    private lateinit var presenter: DataManagerFragmentPresenter
 
 
     override fun onCreateView(
@@ -25,32 +24,24 @@ class DataManagerFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding= DataManagerLayoutBinding.inflate(inflater)
+        presenter= DataManagerFragmentPresenter()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews()
+        presenter.onAttach(this)
         deleteImageButton= binding.deleteStorageButton
-        switchMaterial= binding.dataManagerSwitch
-    }
-
-    private fun initViews() {
-        val data: Bundle? = arguments
-        repository = data?.getParcelable<NotesRepository>(NotesRepository::class.simpleName)!!
         initDeleteButton()
-        initDataSwitch()
-
-
+        switchMaterial= binding.dataManagerSwitch
+        presenter.onSwitchListener(switchMaterial)
     }
+
 
     private fun initDeleteButton() {
         //Todo переписаьть под диалог с выбором где удалить заметки
-        deleteImageButton= binding.deleteStorageButton
         deleteImageButton.setOnClickListener {
-            repository.deleteAll()
-            Toast.makeText(activity, "Notes Deleted", Toast.LENGTH_SHORT).show()
-
+           presenter.deleteAllNotes()
         }
     }
 
@@ -65,12 +56,20 @@ class DataManagerFragment: Fragment() {
     }
 
 
-    companion object {
-        fun getInstance(data: Bundle?): DataManagerFragment {
-            val dataManagerInstance = DataManagerFragment()
-            dataManagerInstance.arguments = data
-            return dataManagerInstance
-        }
+    override fun onDeletedMessage() {
+        Toast.makeText(activity, "Notes Deleted", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun cloudStorageToast() {
+        binding.dataManagerSwitchTextView.setText(R.string.way_of_storage_cloud)
+    }
+
+    override fun localStorageToast() {
+        binding.dataManagerSwitchTextView.setText(R.string.way_of_storage_local)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 }
 

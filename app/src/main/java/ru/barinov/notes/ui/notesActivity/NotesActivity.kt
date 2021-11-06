@@ -1,4 +1,4 @@
-package ru.barinov.notes.ui
+package ru.barinov.notes.ui.notesActivity
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -14,49 +14,46 @@ import ru.barinov.databinding.MainLayoutBinding
 import ru.barinov.notes.domain.Callable
 import ru.barinov.notes.domain.NoteEntity
 import ru.barinov.notes.domain.NotesRepository
+import ru.barinov.notes.ui.*
+import ru.barinov.notes.ui.dataManagerFragment.DataManagerFragment
+import ru.barinov.notes.ui.noteEditFragment.NoteEditFragment
+import ru.barinov.notes.ui.noteListFragment.NoteListFragment
+import ru.barinov.notes.ui.noteViewFragment.NoteViewFragment
 import java.io.*
 import java.util.ArrayList
 
 
 class NotesActivity : AppCompatActivity(), Callable {
+    private var noteActivityPresenter = NoteActivityPresenter()
     private lateinit var binding: MainLayoutBinding
     private var fragmentManager: FragmentManager = supportFragmentManager
     private lateinit var bottomNavigationItemView: BottomNavigationView
-    private val repository: NotesRepository
-        get() = (application as Application).repository
-    private val LOCAL_REPOSITORY_NAME = "local_repository.bin"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = MainLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        noteActivityPresenter.onAttach(this)
         setNavigation()
         //todo переписать под 2 варианта хранения
-        if(repository.allNotes.isEmpty()&&File(filesDir, LOCAL_REPOSITORY_NAME).exists()){
-        toInitNotesInRepository()}
+        noteActivityPresenter.onReadNotes()
         bottomNavigationItemView.selectedItemId= R.id.notes_item_menu
     }
 
     private fun setNavigation() {
         //TODO
         bottomNavigationItemView = binding.navigationBar
-        val savedData = Bundle()
-        savedData.putParcelable(NotesRepository::class.simpleName, repository)
-        if (!savedData.isEmpty){ Log.d("@@@","не пусто")}
         bottomNavigationItemView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.notes_item_menu -> {
                     if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                         fragmentManager.beginTransaction()
-                            .replace(
-                                R.id.container_for_fragment_land_1,
-                                NoteListFragment.getInstance(savedData)
-                            )
+                            .replace(R.id.container_for_fragment_land_1, NoteListFragment())
                             .commit()
                     } else {
                         fragmentManager.beginTransaction().replace(
                             R.id.container_for_fragment,
-                            NoteListFragment.getInstance(savedData)
+                            NoteListFragment()
                         )
                             .commit()
                     }
@@ -65,13 +62,15 @@ class NotesActivity : AppCompatActivity(), Callable {
                 R.id.data_manager_item_menu -> {
                     if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                         fragmentManager.beginTransaction()
-                            .replace(R.id.container_for_fragment_land_1, DataManagerFragment.getInstance(savedData))
+                            .replace(R.id.container_for_fragment_land_1,
+                                DataManagerFragment()
+                            )
                             .commit()
                     } else {
                         fragmentManager.beginTransaction()
                             .replace(
                                 R.id.container_for_fragment,
-                                DataManagerFragment.getInstance(savedData)
+                                DataManagerFragment()
                             )
                             .commit()
                     }
@@ -81,19 +80,19 @@ class NotesActivity : AppCompatActivity(), Callable {
     }
 
     override fun onPause() {
-        serializeNotes()
+        noteActivityPresenter.onSafeNotes()
         super.onPause()
     }
 
-    override fun callEditionFragment(data: Bundle?) {
+    override fun callEditionFragment() {
         fragmentManager.popBackStack()
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             fragmentManager.beginTransaction()
-                .add(R.id.container_for_fragment_land_2, NoteEditFragment.getInstance(data))
+                .add(R.id.container_for_fragment_land_2, NoteEditFragment())
                 .addToBackStack(null).commit()
         } else {
             fragmentManager.beginTransaction()
-                .add(R.id.container_for_fragment, NoteEditFragment.getInstance(data))
+                .add(R.id.container_for_fragment, NoteEditFragment())
                 .addToBackStack(null).commit()
         }
     }
@@ -102,48 +101,17 @@ class NotesActivity : AppCompatActivity(), Callable {
         TODO("Not yet implemented")
     }
 
-    override fun callNoteViewFragment(data: Bundle) {
+    override fun callNoteViewFragment() {
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             fragmentManager.beginTransaction()
-                .add(R.id.container_for_fragment_land_2, NoteViewFragment.getInstance(data))
+                .add(R.id.container_for_fragment_land_2, NoteViewFragment())
                 .addToBackStack(null).commit()
         } else {
             fragmentManager.beginTransaction()
-                .add(R.id.container_for_fragment, NoteViewFragment.getInstance(data))
+                .add(R.id.container_for_fragment, NoteViewFragment())
                 .addToBackStack(null).commit()
         }
     }
-    @Throws(IOException::class)
-    private fun serializeNotes() {
-        val fos = openFileOutput(LOCAL_REPOSITORY_NAME, MODE_PRIVATE)
-        val objectOutputStream = ObjectOutputStream(fos)
-        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-        val jsonAdapter = moshi.adapter(NoteEntity::class.java)
-        objectOutputStream.writeInt(repository.allNotes.size)
-        for (note in repository.allNotes) {
-            var json = jsonAdapter.toJson(note)
-            objectOutputStream.writeObject(json)
-        }
-        objectOutputStream.close()
-        fos.close()
-    }
-    @Throws(IOException::class, ClassNotFoundException::class)
-    private fun toInitNotesInRepository() {
-        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-        val jsonAdapter = moshi.adapter(NoteEntity::class.java)
-        val fileInputStream = openFileInput(LOCAL_REPOSITORY_NAME)
-        val objectInputStream = ObjectInputStream(fileInputStream)
-        val size = objectInputStream.readInt()
-        val list: MutableList<NoteEntity> = ArrayList()
-        for (i in 0 until size) {
-            val json: String = objectInputStream.readObject() as String
-            list.add(jsonAdapter.fromJson(json) as NoteEntity)
-            Log.d("@@@", list.toString())
-        }
-        repository.addAll(list)
-        Log.d("@@@", "size " + repository.allNotes.size)
-        objectInputStream.close()
-        fileInputStream.close()
-        Log.d("@@@", "Восстановлен")
-    }
+
+
 }
