@@ -9,13 +9,14 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import ru.barinov.databinding.NoteViewFramentLayoutBinding
 import ru.barinov.notes.domain.NoteEntity
+import ru.barinov.notes.ui.notesActivity.NoteActivityPresenter
 
-class NoteViewFragment: Fragment() {
+class NoteViewFragment: Fragment(), NoteViewFragmentContract.ViewInterface {
     private lateinit var binding: NoteViewFramentLayoutBinding
-    private lateinit var note: NoteEntity
     private lateinit var title: TextView
     private lateinit var description: TextView
     private lateinit var date: TextView
+    private var presenter = NoteViewFragmentPresenter()
     private lateinit var backButton: Button
 
     override fun onCreateView(
@@ -28,22 +29,14 @@ class NoteViewFragment: Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        presenter.onAttach(this)
         initViews()
-        toFillViews()
+        presenter.getNote()
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun toFillViews() {
-        getNoteFromArg()
-        title.text = note.title
-        description.text = note.detail
-        date.text = note.dateAsString
-    }
 
-    private fun getNoteFromArg() {
-        val data = arguments
-        note= data?.getParcelable<NoteEntity>(NoteEntity::class.simpleName)!!
-    }
+
 
     private fun initViews() {
         title= binding.noteTitleTextView
@@ -55,17 +48,27 @@ class NoteViewFragment: Fragment() {
     private fun initBackButton() {
         backButton= binding.noteViewFragmentBackButton
         backButton.setOnClickListener {
-            parentFragmentManager.popBackStack()
+            presenter.onBackPressed()
         }
 
     }
 
-
-    companion object {
-        fun getInstance(data: Bundle): NoteViewFragment {
-            val noteViewInstance = NoteViewFragment()
-            noteViewInstance.arguments = data
-            return noteViewInstance
-        }
+    override fun fillTheFields(noteTitle: String, detail: String, dateAsString: String) {
+        title.text = noteTitle
+        description.text = detail
+        date.text = dateAsString
     }
-}
+
+    override fun onDestroy() {
+        presenter.onDetach()
+        super.onDestroy()
+    }
+
+
+//    companion object {
+//        fun getInstance(data: Bundle): NoteViewFragment {
+//            val noteViewInstance = NoteViewFragment()
+//            noteViewInstance.arguments = data
+//            return noteViewInstance
+//        }
+    }

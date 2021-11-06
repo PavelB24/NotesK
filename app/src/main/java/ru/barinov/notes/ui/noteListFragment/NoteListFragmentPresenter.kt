@@ -1,6 +1,7 @@
 package ru.barinov.notes.ui.noteListFragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
@@ -45,7 +46,7 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
             }
         })
         search.setOnCloseListener {
-            adapter.data=repository.allNotes
+            adapter.data=repository.getNotes()
             false
         }
     }
@@ -79,9 +80,12 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
             if(!(result.isEmpty)){
                 val tempNote: NoteEntity = result.getParcelable(NoteEntity::class.simpleName)!!
                 if (!repository.findById(tempNote.id)) {
+                    Log.d("@@@", "1")
                     repository.addNote(tempNote)
                 } else {
+                    Log.d("@@@", "2")
                     repository.updateNote(tempNote.id, tempNote)
+
                 }
                 adapter.data= repository.getNotes()
             }
@@ -91,8 +95,8 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
 
     override fun onClickEdit(note: NoteEntity?) {
         view?.onEditionModeToastMessage()
+        (view?.requireActivity()?.application as Application).router.setId(note!!.id)
         (view?.requireActivity() as Callable).callEditionFragment()
-        repository.noteCache = note
     }
 
     override fun onClickDelete(note: NoteEntity) {
@@ -110,8 +114,9 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
     }
 
     override fun onNoteClick(note: NoteEntity) {
+        (view?.requireActivity()?.application as Application).router.setId(note.id)
         (view?.requireActivity() as Callable).callNoteViewFragment()
-        repository.noteCache = note
+
 
     }
 

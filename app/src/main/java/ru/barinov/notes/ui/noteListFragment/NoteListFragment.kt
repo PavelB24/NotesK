@@ -36,10 +36,10 @@ class NoteListFragment : Fragment(), NoteListFragmentContract.View{
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         presenter.onAttach(this)
         initViews()
         presenter.getResultsFromNoteEditFragment(adapter)
+        super.onViewCreated(view, savedInstanceState)
 
     }
 

@@ -34,10 +34,11 @@ class NoteEditFragment() : Fragment(), NoteEditFragmentContract.ViewInterface {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         presenter.onAttach(this)
         initViews()
-        presenter.checkOnEditionMode()
+        initButton()
+        presenter.fillTheViews()
+        super.onViewCreated(view, savedInstanceState)
     }
 
 
@@ -46,7 +47,6 @@ class NoteEditFragment() : Fragment(), NoteEditFragmentContract.ViewInterface {
         titleEditText = binding.titleEdittext
         descriptionEditText = binding.descriptionEdittext
         datePicker = binding.datePickerActions
-        initButton()
     }
 
     private fun initButton() {

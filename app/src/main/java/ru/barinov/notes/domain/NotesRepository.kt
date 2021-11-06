@@ -9,7 +9,6 @@ class NotesRepository : RepositoryInterface, Parcelable {
 
     override val cache = ArrayList<NoteEntity>()
 
-    var noteCache: NoteEntity? = null
 
 
     fun deleteAll() {
@@ -61,7 +60,7 @@ class NotesRepository : RepositoryInterface, Parcelable {
     override fun updateNote(id: String, note: NoteEntity): Boolean {
         removeNote(id)
         note.id = id
-        allNotes.add(note)
+        this.addNote(note)
         return true
     }
 
@@ -81,6 +80,15 @@ class NotesRepository : RepositoryInterface, Parcelable {
             }
         }
         return false
+    }
+
+    fun getById(id: String?): NoteEntity? {
+        for (note in allNotes) {
+            if (note.id.equals(id)) {
+                return note
+            }
+        }
+        return null
     }
 
     fun getNotes(): MutableList<NoteEntity> {
