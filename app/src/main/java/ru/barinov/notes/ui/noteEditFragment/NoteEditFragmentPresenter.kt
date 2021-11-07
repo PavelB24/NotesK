@@ -28,7 +28,7 @@ class NoteEditFragmentPresenter : NoteEditFragmentContract.NoteEditFragmentPrese
         tempNote = null
     }
 
-
+//Переписать под получение строк и интов, а не вьюшек
     override fun safeNote(
         applyButton: Button,
         titleEditText: EditText,

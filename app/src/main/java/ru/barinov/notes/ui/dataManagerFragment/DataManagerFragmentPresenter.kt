@@ -7,7 +7,7 @@ import ru.barinov.notes.ui.Application
 
 
 class DataManagerFragmentPresenter: DataManagerFragmentContract.DataManagerFragmentPresenterInterface {
-    private  var view:  DataManagerFragment? = null
+    private  var view: DataManagerFragmentContract.ViewInterface? = null
     private lateinit var  repository: NotesRepository
 
     override fun onAttach(view: DataManagerFragment) {
