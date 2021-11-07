@@ -10,11 +10,11 @@ import ru.barinov.notes.ui.Application
 import java.util.*
 
 
-class NoteEditFragmentPresenter: NoteEditFragmentContract.NoteEditFragmentPresenterInterface {
-    private var view:  NoteEditFragment? = null
-    private  var  tempNote: NoteEntity? = null
+class NoteEditFragmentPresenter : NoteEditFragmentContract.NoteEditFragmentPresenterInterface {
+    private var view: NoteEditFragment? = null
+    private var tempNote: NoteEntity? = null
     private lateinit var uuid: UUID
-    private  var data: Bundle? = null
+    private var data: Bundle? = null
 
     override fun onAttach(view: NoteEditFragment) {
         this.view = view
@@ -24,13 +24,17 @@ class NoteEditFragmentPresenter: NoteEditFragmentContract.NoteEditFragmentPresen
 
     override fun onDetach() {
         data = null
-        view= null
+        view = null
         tempNote = null
     }
 
 
-
-    override fun safeNote(applyButton: Button, titleEditText: EditText, descriptionEditText: EditText, datePicker: DatePicker) {
+    override fun safeNote(
+        applyButton: Button,
+        titleEditText: EditText,
+        descriptionEditText: EditText,
+        datePicker: DatePicker
+    ) {
         applyButton.setOnClickListener {
             uuid = UUID.randomUUID()
             //Редактирование
@@ -58,28 +62,36 @@ class NoteEditFragmentPresenter: NoteEditFragmentContract.NoteEditFragmentPresen
                 data?.putParcelable(NoteEntity::class.simpleName, note)
                 view?.parentFragmentManager?.setFragmentResult(
                     NoteEditFragment::class.simpleName!!,
-                    data!!)
+                    data!!
+                )
                 view?.parentFragmentManager?.popBackStackImmediate()
             } else {
-               view?.fieldsIsNotFilledMassageToast()
+                view?.fieldsIsNotFilledMassageToast()
             }
         }
     }
 
-   override fun checkOnEditionMode(): Boolean {
+    override fun checkOnEditionMode(): Boolean {
         if (!(tempNote == null)) {
             return true
         }
         return false
     }
 
-    private fun getIdFromRouter(): String?{
+    private fun getIdFromRouter(): String? {
         return (view?.requireActivity()?.application as Application).router.getId()
     }
 
-    fun fillTheViews(){
+    fun fillTheViews() {
         if (checkOnEditionMode()) {
-        view?.fillTheFields(tempNote?.title, tempNote?.detail, tempNote?.originYear, tempNote?.originMonth, tempNote?.originDay)}
+            view?.fillTheFields(
+                tempNote?.title,
+                tempNote?.detail,
+                tempNote?.originYear,
+                tempNote?.originMonth,
+                tempNote?.originDay
+            )
+        }
     }
 
 

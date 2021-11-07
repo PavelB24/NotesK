@@ -93,6 +93,11 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
         })
     }
 
+    override fun createNewNote(): Boolean {
+        (view?.requireActivity() as Callable).callEditionFragment()
+        return true
+    }
+
     override fun onClickEdit(note: NoteEntity?) {
         view?.onEditionModeToastMessage()
         (view?.requireActivity()?.application as Application).router.setId(note!!.id)

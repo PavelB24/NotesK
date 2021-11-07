@@ -7,9 +7,12 @@ class NoteListFragmentContract {
     interface NoteListFragmentPresenterInterface{
         fun onAttach(view: NoteListFragment)
         fun onDetach()
+
         fun onSearchStarted(search: android.widget.SearchView)
         fun setAdapter(adapter: NotesAdapter)
         fun getResultsFromNoteEditFragment(adapter: NotesAdapter)
+        fun createNewNote() : Boolean
+
     }
     interface View{
         fun searchWasUnsuccessfulMessage()

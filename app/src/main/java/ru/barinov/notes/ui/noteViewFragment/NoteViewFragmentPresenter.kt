@@ -26,7 +26,8 @@ class NoteViewFragmentPresenter: NoteViewFragmentContract.NoteViewFragmentPresen
     override fun onBackPressed() {
         view?.parentFragmentManager?.popBackStack()
     }
-    fun getIdFromRouter(): String?{
+
+    override fun getIdFromRouter(): String?{
         return (view?.requireActivity()?.application as Application).router.getId()
     }
 }

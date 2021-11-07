@@ -22,7 +22,7 @@ class DataManagerFragment: Fragment(), DataManagerFragmentContract.ViewInterface
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding= DataManagerLayoutBinding.inflate(inflater)
         presenter= DataManagerFragmentPresenter()
         return binding.root

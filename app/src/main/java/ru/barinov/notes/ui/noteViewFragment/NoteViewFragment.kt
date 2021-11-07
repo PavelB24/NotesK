@@ -11,7 +11,7 @@ import ru.barinov.databinding.NoteViewFramentLayoutBinding
 import ru.barinov.notes.domain.NoteEntity
 import ru.barinov.notes.ui.notesActivity.NoteActivityPresenter
 
-class NoteViewFragment: Fragment(), NoteViewFragmentContract.ViewInterface {
+class NoteViewFragment : Fragment(), NoteViewFragmentContract.ViewInterface {
     private lateinit var binding: NoteViewFramentLayoutBinding
     private lateinit var title: TextView
     private lateinit var description: TextView
@@ -24,7 +24,7 @@ class NoteViewFragment: Fragment(), NoteViewFragmentContract.ViewInterface {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding=NoteViewFramentLayoutBinding.inflate(inflater, container, false)
+        binding = NoteViewFramentLayoutBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -36,17 +36,15 @@ class NoteViewFragment: Fragment(), NoteViewFragmentContract.ViewInterface {
     }
 
 
-
-
     private fun initViews() {
-        title= binding.noteTitleTextView
-        description= binding.noteDescriptionTextview
+        title = binding.noteTitleTextView
+        description = binding.noteDescriptionTextview
         date = binding.dateOfEventTextview
         initBackButton()
     }
 
     private fun initBackButton() {
-        backButton= binding.noteViewFragmentBackButton
+        backButton = binding.noteViewFragmentBackButton
         backButton.setOnClickListener {
             presenter.onBackPressed()
         }
@@ -71,4 +69,4 @@ class NoteViewFragment: Fragment(), NoteViewFragmentContract.ViewInterface {
 //            noteViewInstance.arguments = data
 //            return noteViewInstance
 //        }
-    }
+}

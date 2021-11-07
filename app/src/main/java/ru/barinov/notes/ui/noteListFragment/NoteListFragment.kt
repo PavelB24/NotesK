@@ -14,12 +14,11 @@ import ru.barinov.databinding.NoteListLayoutBinding
 import ru.barinov.notes.domain.*
 import ru.barinov.notes.ui.AgreementDialogFragment
 
-class NoteListFragment : Fragment(), NoteListFragmentContract.View{
+class NoteListFragment : Fragment(), NoteListFragmentContract.View {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: NotesAdapter
     private lateinit var binding: NoteListLayoutBinding
     private lateinit var toolbar: Toolbar
-    private var savedData: Bundle? = null
     private lateinit var searchItem: MenuItem
     private lateinit var presenter: NoteListFragmentPresenter
 
@@ -47,19 +46,17 @@ class NoteListFragment : Fragment(), NoteListFragmentContract.View{
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (!menu.hasVisibleItems()) {
             inflater.inflate(R.menu.notes_list_menu, menu)
-            searchItem= menu.findItem(R.id.search_item_menu)
+            searchItem = menu.findItem(R.id.search_item_menu)
             val searchView = searchItem.actionView as android.widget.SearchView
-           presenter.onSearchStarted(searchView)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
+            presenter.onSearchStarted(searchView)
+            super.onCreateOptionsMenu(menu, inflater)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.add_note_item_menu -> {
-                savedData= null
-                (requireActivity() as Callable).callEditionFragment()
-                return true
+                presenter.createNewNote()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -79,11 +76,12 @@ class NoteListFragment : Fragment(), NoteListFragmentContract.View{
 
     private fun initAdapter() {
         adapter = NotesAdapter()
-        presenter.setAdapter(adapter)}
+        presenter.setAdapter(adapter)
+    }
 
     private fun setRecyclerView() {
         recyclerView = binding.recyclerview
-        recyclerView.layoutManager= LinearLayoutManager(requireContext())
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
     }
 
@@ -93,7 +91,8 @@ class NoteListFragment : Fragment(), NoteListFragmentContract.View{
     }
 
     override fun searchWasUnsuccessfulMessage() {
-        Toast.makeText(view?.context, R.string.unsuccessful_search_toast_text, Toast.LENGTH_SHORT).show()
+        Toast.makeText(view?.context, R.string.unsuccessful_search_toast_text, Toast.LENGTH_SHORT)
+            .show()
     }
 
     override fun onEditionModeToastMessage() {

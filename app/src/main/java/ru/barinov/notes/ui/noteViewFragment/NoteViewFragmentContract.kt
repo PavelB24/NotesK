@@ -9,6 +9,7 @@ class NoteViewFragmentContract {
 
         fun getNote()
         fun onBackPressed()
+        fun getIdFromRouter(): String?
     }
     interface ViewInterface{
         fun fillTheFields(noteTitle: String, detail: String, dateAsString: String)
