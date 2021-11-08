@@ -26,15 +26,23 @@ class NotesAdapter: RecyclerView.Adapter<NoteViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
-        var note = getNote(position)
+        val note = getNote(position)
         setTextInHolderItems(holder, note)
         setHolderItemsListeners(holder, note)
+        holder.checkBox.isChecked = false
     }
 
 
     private fun setHolderItemsListeners(holder: NoteViewHolder, note: NoteEntity) {
         holder.itemView.setOnClickListener { listener.onNoteClick(note) }
-        holder.itemView.setOnLongClickListener { listener.onNoteLongClick(note, it); true }
+        holder.itemView.setOnLongClickListener { listener.onNoteLongClick(note, it);true }
+        holder.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked){
+            listener.onNoteChecked(note)}
+            else {
+                listener.onNoteUnChecked(note)
+            }
+        }
     }
 
     private fun setTextInHolderItems(holder: NoteViewHolder, note: NoteEntity) {

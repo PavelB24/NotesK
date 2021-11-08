@@ -1,7 +1,6 @@
 package ru.barinov.notes.ui.dataManagerFragment
 
 import com.google.android.material.switchmaterial.SwitchMaterial
-import ru.barinov.R
 import ru.barinov.notes.domain.NotesRepository
 import ru.barinov.notes.ui.Application
 

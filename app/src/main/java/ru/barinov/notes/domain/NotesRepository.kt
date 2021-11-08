@@ -5,35 +5,14 @@ import android.os.Parcelable
 import android.util.Log
 
 class NotesRepository : RepositoryInterface, Parcelable {
-    override val allNotes: MutableList<NoteEntity> = ArrayList()
-
-    override val cache = ArrayList<NoteEntity>()
-
+    override val allNotes: MutableList<NoteEntity> = mutableListOf()
 
 
     fun deleteAll() {
         allNotes.clear()
     }
 
-    fun searchNotes(query: String) {
-        cache.clear()
-        query.toLowerCase()
-        val size = query.length
-        for (note in allNotes) {
-            val title = note.title.toLowerCase()
-            if (size > title.length) {
-                return
-            }
-            for (i in 0 until size) {
-                if (query[i] != title[i]) {
-                    break
-                } else
-                    if (i == size - 1) {
-                        cache.add(note)
-                    }
-            }
-        }
-    }
+
 
 
     override fun addNote(note: NoteEntity) {
@@ -47,7 +26,7 @@ class NotesRepository : RepositoryInterface, Parcelable {
     }
 
     override fun removeNote(id: String): Boolean {
-        val range = 0..allNotes.size
+        val range = 0 until allNotes.size
         for (i in range) {
             if (allNotes[i].id.equals(id)) {
                 allNotes.removeAt(i)

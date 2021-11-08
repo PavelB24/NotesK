@@ -7,4 +7,6 @@ interface OnNoteClickListener {
     fun onClickDelete(note: NoteEntity)
     fun onNoteClick(note: NoteEntity)
     fun onNoteLongClick(note: NoteEntity, view: View)
+    fun onNoteChecked(note: NoteEntity)
+    fun onNoteUnChecked(note: NoteEntity)
 }

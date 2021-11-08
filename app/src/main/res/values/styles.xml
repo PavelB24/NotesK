@@ -111,6 +111,6 @@
 
     <style name="MyCheckBox" parent="Theme.AppCompat.Light">
         <item name="colorControlNormal">@color/checkbox_normal_color</item>
-        <item name="colorControlActivated">@color/checkbox_activated_color</item>
+        <item name="colorControlActivated">@color/black</item>
     </style>
 </resources>

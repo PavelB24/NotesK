@@ -36,7 +36,7 @@
                 <TextView
                     android:id="@+id/note_title_textview"
                     style="@style/item_notes_title_textview"
-                    android:textAlignment="center"/>
+                    android:textAlignment="viewStart"/>
 
                 <TextView
                     android:id="@+id/note_description_textview"

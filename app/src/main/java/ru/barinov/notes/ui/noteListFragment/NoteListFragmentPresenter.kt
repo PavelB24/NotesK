@@ -1,6 +1,5 @@
 package ru.barinov.notes.ui.noteListFragment
 
-import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.PopupMenu
@@ -8,6 +7,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.FragmentResultListener
 import ru.barinov.R
 import ru.barinov.notes.domain.*
+import ru.barinov.notes.domain.Iterator
 import ru.barinov.notes.ui.AgreementDialogFragment
 import ru.barinov.notes.ui.Application
 import ru.barinov.notes.ui.noteEditFragment.NoteEditFragment
@@ -17,11 +17,13 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
     private  var view:  NoteListFragment? = null
     private lateinit var  repository: NotesRepository
     private lateinit var  adapter: NotesAdapter
+    private lateinit var cache: Iterator
     private val DELETE = "OK"
 
     override fun onAttach(view: NoteListFragment) {
         this.view= view
         repository= (view.requireActivity().application as Application).repository
+        cache = (view.requireActivity().application as Application).cache
     }
 
     override fun onDetach() {
@@ -32,9 +34,9 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
         search.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             android.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(s: String): Boolean {
-                repository.searchNotes(search.query.toString())
-                if (repository.cache.isNotEmpty()) {
-                    adapter.data=repository.cache
+               cache.searchNotes(search.query.toString(), repository.allNotes)
+                if (!(cache.isSearchCacheEmpty())) {
+                    adapter.data=cache.getSearchedNotes()
                 } else {
                    view?.searchWasUnsuccessfulMessage()
                 }
@@ -46,6 +48,7 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
             }
         })
         search.setOnCloseListener {
+            cache.clearSearchCache()
             adapter.data=repository.getNotes()
             false
         }
@@ -70,6 +73,14 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
             override fun onNoteLongClick(note: NoteEntity, view: View) {
                 this@NoteListFragmentPresenter.onNoteLongClick(note, view)
 
+            }
+
+            override fun onNoteChecked(note: NoteEntity) {
+                this@NoteListFragmentPresenter.onNoteChecked(note)
+            }
+
+            override fun onNoteUnChecked(note: NoteEntity) {
+                this@NoteListFragmentPresenter.onNoteUnChecked(note)
             }
         })
     }
@@ -98,6 +109,12 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
         return true
     }
 
+    override fun deleteChosenNotes() {
+        cache.getChosenNotes().forEach { repository.removeNote(it.id)
+            adapter.data = repository.getNotes()}
+        cache.clearSearchCache()
+    }
+
     override fun onClickEdit(note: NoteEntity?) {
         view?.onEditionModeToastMessage()
         (view?.requireActivity()?.application as Application).router.setId(note!!.id)
@@ -122,7 +139,6 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
         (view?.requireActivity()?.application as Application).router.setId(note.id)
         (view?.requireActivity() as Callable).callNoteViewFragment()
 
-
     }
 
     override fun onNoteLongClick(note: NoteEntity, view: View) {
@@ -139,4 +155,14 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
         popupMenu.show()
 
     }
+
+    override fun onNoteChecked(note: NoteEntity) {
+        cache.addSelectedNote(note)
     }
+
+    override fun onNoteUnChecked(note: NoteEntity) {
+        if (cache.findInSelectedCache(note.id)){
+            cache.removeNoteFromSelectedCache(note.id)
+        }
+    }
+}

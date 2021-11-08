@@ -12,6 +12,7 @@ class NoteListFragmentContract {
         fun setAdapter(adapter: NotesAdapter)
         fun getResultsFromNoteEditFragment(adapter: NotesAdapter)
         fun createNewNote() : Boolean
+        fun deleteChosenNotes()
 
     }
     interface View{

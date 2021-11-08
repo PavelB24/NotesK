@@ -58,6 +58,9 @@ class NoteListFragment : Fragment(), NoteListFragmentContract.View {
             R.id.add_note_item_menu -> {
                 presenter.createNewNote()
             }
+            R.id.delete_chosen_notes -> {
+                presenter.deleteChosenNotes()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
