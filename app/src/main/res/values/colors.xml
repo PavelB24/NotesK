@@ -8,7 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="toolbar_grey">#78909c</color>
-    <color name="card_view_grey">#A8546E7A</color>
+    <color name="card_view_grey">#B2546E7A</color>
     <color name="apply_button_color">#659C27B0</color>
     <color name="back_button_color">#9C000000</color>
     <color name="dark_grey">#252525</color>
@@ -16,4 +16,5 @@
     <color name="data_manager_toggle_button_light_grey">#CCB0BEC5</color>
     <color name="checkbox_normal_color">#263238</color>
     <color name="checkbox_activated_color">#bf360c</color>
+    <color name="alpha_zero">#00FBFBFB</color>
 </resources>

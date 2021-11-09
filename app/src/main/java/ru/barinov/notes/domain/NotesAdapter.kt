@@ -1,9 +1,13 @@
 package ru.barinov.notes.domain
 
+import android.annotation.SuppressLint
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
+import androidx.core.graphics.alpha
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.barinov.R
@@ -30,6 +34,7 @@ class NotesAdapter: RecyclerView.Adapter<NoteViewHolder>() {
         setTextInHolderItems(holder, note)
         setHolderItemsListeners(holder, note)
         holder.checkBox.isChecked = false
+
     }
 
 

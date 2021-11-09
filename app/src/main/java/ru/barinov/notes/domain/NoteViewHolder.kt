@@ -4,6 +4,7 @@ package ru.barinov.notes.domain
 import android.view.View
 import android.widget.CheckBox
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import ru.barinov.R
 
