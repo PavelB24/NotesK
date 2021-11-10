@@ -112,7 +112,7 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
     override fun deleteChosenNotes() {
         cache.getChosenNotes().forEach { repository.removeNote(it.id)
             adapter.data = repository.getNotes()}
-        cache.clearSearchCache()
+        cache.clearSelectedCache()
     }
 
     override fun onClickEdit(note: NoteEntity?) {
