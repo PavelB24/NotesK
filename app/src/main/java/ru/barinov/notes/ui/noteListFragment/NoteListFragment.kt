@@ -13,6 +13,7 @@ import ru.barinov.R
 import ru.barinov.databinding.NoteListLayoutBinding
 import ru.barinov.notes.domain.*
 import ru.barinov.notes.ui.AgreementDialogFragment
+import ru.barinov.notes.ui.notesActivity.NotesActivity
 
 class NoteListFragment : Fragment(), NoteListFragmentContract.View {
     private lateinit var recyclerView: RecyclerView
@@ -36,6 +37,7 @@ class NoteListFragment : Fragment(), NoteListFragmentContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter.onAttach(this)
+        (requireActivity() as NotesActivity).bottomNavigationItemView.setBackgroundColor(resources.getColor(R.color.toolbar_grey))
         initViews()
         presenter.getResultsFromNoteEditFragment(adapter)
         super.onViewCreated(view, savedInstanceState)

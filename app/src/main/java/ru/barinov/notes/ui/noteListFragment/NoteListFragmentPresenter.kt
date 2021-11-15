@@ -28,6 +28,8 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
 
     override fun onDetach() {
         view= null
+        cache.clearSelectedCache()
+        cache.clearSearchCache()
     }
 
     override fun onSearchStarted(search: android.widget.SearchView) {
@@ -48,8 +50,8 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
             }
         })
         search.setOnCloseListener {
-            cache.clearSearchCache()
             adapter.data=repository.getNotes()
+            cache.clearSearchCache()
             false
         }
     }

@@ -55,6 +55,11 @@ class NoteEditFragment() : Fragment(), NoteEditFragmentContract.ViewInterface {
 
     }
 
+    override fun onPause() {
+        parentFragmentManager.popBackStack()
+        super.onPause()
+    }
+
 
     override fun onDestroy() {
         presenter.onDetach()

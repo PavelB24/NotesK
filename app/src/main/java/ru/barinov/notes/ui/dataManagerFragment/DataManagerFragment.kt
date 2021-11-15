@@ -1,5 +1,6 @@
 package ru.barinov.notes.ui.dataManagerFragment
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.switchmaterial.SwitchMaterial
 import ru.barinov.R
 import ru.barinov.databinding.DataManagerLayoutBinding
+import ru.barinov.notes.ui.notesActivity.NotesActivity
 
 class DataManagerFragment: Fragment(), DataManagerFragmentContract.ViewInterface {
     private lateinit var binding: DataManagerLayoutBinding
@@ -30,6 +32,7 @@ class DataManagerFragment: Fragment(), DataManagerFragmentContract.ViewInterface
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (requireActivity() as NotesActivity).bottomNavigationItemView.setBackgroundColor(resources.getColor(R.color.toolbar_grey))
         presenter.onAttach(this)
         deleteImageButton= binding.deleteStorageButton
         initDeleteButton()

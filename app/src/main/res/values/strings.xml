@@ -16,7 +16,7 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
-    <string name="notes_item_menu_title">Your Notes</string>
+    <string name="notes_item_menu_title">Notes</string>
     <string name="manage_item_menu_title">Data Manager</string>
     <string name="profile_item_menu_title">Profile</string>
     <string name="sort_notes_item_menu_title">Sort Notes</string>
@@ -39,4 +39,7 @@
     <string name="data_manager_data_transmitter_toggle_button_textOn">Transmission is stopped</string>
     <string name="data_manager_data_transmitter_toggle_button_textOff">Extra Actions</string>
     <string name="delete_all_notes_text">Delete all notes</string>
+    <string name="profile_login_edittext_hint">Login</string>
+    <string name="profile_password_edittext_hint">Password</string>
+    <string name="profile_button_text">Enter</string>
 </resources>

@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bokeh"
-    android:orientation="vertical"
-    tools:context=".ui.NoteEditFragment">
+    android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -21,7 +20,9 @@
             android:hint="@string/add_title_hint"
             android:textColor="@color/black"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="MissingConstraints"
+            android:backgroundTint="@color/black"
+            android:textCursorDrawable="@color/black"/>
 
         <EditText
             android:id="@+id/description_edittext"
@@ -29,7 +30,9 @@
             android:hint="@string/notes_description_hint_text"
             android:textColor="@color/black"
             app:layout_constraintTop_toBottomOf="@id/title_edittext"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="MissingConstraints"
+            android:backgroundTint="@color/black"
+            android:textCursorDrawable="@color/black"/>
 
         <TextView
             android:id="@+id/date_picker_title_textview"

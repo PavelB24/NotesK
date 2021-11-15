@@ -19,13 +19,13 @@
             android:padding="@dimen/standart_padding"
             android:textColor="@color/black"
             android:textStyle="italic"
-            android:textSize="@dimen/note_title_text_size"/>
+            android:textSize="@dimen/title_text_size"/>
         <TextView
             android:id="@+id/note_description_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/note_title_text_view"
-            android:textSize="@dimen/note_title_text_size"
+            android:textSize="@dimen/title_text_size"
             android:padding="@dimen/standart_padding"
             android:textColor="@color/black" />
         <TextView
@@ -36,7 +36,11 @@
             android:gravity="end"
             android:padding="@dimen/standart_padding"
             android:textSize="@dimen/note_view_fragment_notes_description_text_size"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black"
+            android:autoLink="web"
+            android:textColorLink="@color/blue"
+            android:textIsSelectable="true"
+            android:lineSpacingMultiplier="1.5"/>
         <com.google.android.material.button.MaterialButton
             android:id="@+id/note_view_fragment_back_button"
             app:layout_constraintTop_toBottomOf="@id/date_of_event_textview"

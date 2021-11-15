@@ -17,7 +17,8 @@
         android:layout_height="wrap_content"
         android:background="@color/toolbar_grey"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_navigation_menu" />
+        app:menu="@menu/bottom_navigation_menu"
+        android:outlineAmbientShadowColor="@color/black"/>
 
 
 </LinearLayout>

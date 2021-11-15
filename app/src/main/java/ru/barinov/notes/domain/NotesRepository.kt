@@ -7,7 +7,6 @@ import android.util.Log
 class NotesRepository : RepositoryInterface, Parcelable {
     override val allNotes: MutableList<NoteEntity> = mutableListOf()
 
-
     fun deleteAll() {
         allNotes.clear()
     }

@@ -15,28 +15,28 @@ import ru.barinov.notes.ui.dataManagerFragment.DataManagerFragment
 import ru.barinov.notes.ui.noteEditFragment.NoteEditFragment
 import ru.barinov.notes.ui.noteListFragment.NoteListFragment
 import ru.barinov.notes.ui.noteViewFragment.NoteViewFragment
+import ru.barinov.notes.ui.profileFragment.ProfileFragment
 import java.io.File
 import java.io.IOException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.util.ArrayList
 
-class NoteActivityPresenter: NotesActivityContract.NoteActivityPresenterInterface {
-    private  var view:  NotesActivity? = null
-    private lateinit var  repository: NotesRepository
+class NoteActivityPresenter : NotesActivityContract.NoteActivityPresenterInterface {
+    private var view: NotesActivity? = null
+    private lateinit var repository: NotesRepository
     private val LOCAL_REPOSITORY_NAME = "repository.bin"
-    private lateinit var  fragmentManager: FragmentManager
-
+    private lateinit var fragmentManager: FragmentManager
 
 
     override fun onAttach(view: NotesActivity) {
         this.view = view
-        fragmentManager= view.supportFragmentManager
+        fragmentManager = view.supportFragmentManager
         repository = (view.application as Application).repository
     }
 
     override fun onDetach() {
-        view= null
+        view = null
     }
 
     @Throws(IOException::class)
@@ -57,7 +57,7 @@ class NoteActivityPresenter: NotesActivityContract.NoteActivityPresenterInterfac
 
 
     override fun onReadNotes() {
-        if(repository.allNotes.isEmpty()&& File(view?.filesDir, LOCAL_REPOSITORY_NAME).exists()){
+        if (repository.allNotes.isEmpty() && File(view?.filesDir, LOCAL_REPOSITORY_NAME).exists()) {
             toInitNotesInRepository()
         }
     }
@@ -86,39 +86,72 @@ class NoteActivityPresenter: NotesActivityContract.NoteActivityPresenterInterfac
         bottomNavigationItemView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.notes_item_menu -> {
-                    if (view!!.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                        fragmentManager.beginTransaction()
-                            .replace(R.id.container_for_fragment_land_1, NoteListFragment())
-                            .commit()
-                    } else {
-                        fragmentManager.beginTransaction().replace(
-                            R.id.container_for_fragment,
-                            NoteListFragment()
-                        )
-                            .commit()
-                    }
-                    fragmentManager.popBackStack()
+                    openNoteListFragment()
                 }
                 R.id.data_manager_item_menu -> {
-                    if (view!!.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                        fragmentManager.beginTransaction()
-                            .replace(
-                                R.id.container_for_fragment_land_1,
-                                DataManagerFragment()
-                            )
-                            .commit()
-                    } else {
-                        fragmentManager.beginTransaction()
-                            .replace(
-                                R.id.container_for_fragment,
-                                DataManagerFragment()
-                            )
-                            .commit()
-                    }
+                    openDataManagerFragment()
+                }
+                R.id.profile_item_menu -> {
+                    openProfileFragment()
                 }
             }; true
         }
-        bottomNavigationItemView.selectedItemId= R.id.notes_item_menu
+        setStartFragment(bottomNavigationItemView)
+    }
+
+    private fun setStartFragment(bottomNavigationItemView: BottomNavigationView) {
+        if ((view?.application as Application).internet.isLogged) {
+            bottomNavigationItemView.selectedItemId = R.id.notes_item_menu
+        } else {
+            bottomNavigationItemView.selectedItemId = R.id.profile_item_menu
+        }
+    }
+
+    private fun openProfileFragment() {
+        if (view!!.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            fragmentManager.beginTransaction()
+                .replace(
+                    R.id.container_for_fragment_land_1,
+                    ProfileFragment()
+                ).commit()
+        } else {
+            fragmentManager.beginTransaction()
+                .replace(R.id.container_for_fragment, ProfileFragment())
+                .commit()
+        }
+    }
+
+    private fun openDataManagerFragment() {
+        if (view!!.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        fragmentManager.beginTransaction()
+            .replace(
+                R.id.container_for_fragment_land_1,
+                DataManagerFragment()
+            )
+            .commit()
+    } else {
+        fragmentManager.beginTransaction()
+            .replace(
+                R.id.container_for_fragment,
+                DataManagerFragment()
+            )
+            .commit()
+    }
+    }
+
+    private fun openNoteListFragment() {
+        if (view!!.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            fragmentManager.beginTransaction()
+                .replace(R.id.container_for_fragment_land_1, NoteListFragment())
+                .commit()
+        } else {
+            fragmentManager.beginTransaction().replace(
+                R.id.container_for_fragment,
+                NoteListFragment()
+            )
+                .commit()
+        }
+        fragmentManager.popBackStack()
     }
 
     override fun editNote() {

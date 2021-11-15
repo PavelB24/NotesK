@@ -17,4 +17,8 @@
     <color name="checkbox_normal_color">#263238</color>
     <color name="checkbox_activated_color">#bf360c</color>
     <color name="alpha_zero">#00FBFBFB</color>
+    <color name="blue">#141F8C</color>
+    <color name="deep_blue">#141B68</color>
+    <color name="deep_blue_2">#0D1137</color>
+
 </resources>

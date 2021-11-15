@@ -71,21 +71,10 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textOn="Extra Storage"
-            android:textOff="Local storage"
             />
 
     </LinearLayout>
 
-    <ToggleButton
-        android:id="@+id/data_manager_data_transmitter_toggle_button"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/data_manager_toggle_button_light_grey"
-        android:focusable="true"
-        android:textOff="@string/data_manager_data_transmitter_toggle_button_textOff"
-        android:textOn="@string/data_manager_data_transmitter_toggle_button_textOn"
-        app:layout_constraintBottom_toBottomOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

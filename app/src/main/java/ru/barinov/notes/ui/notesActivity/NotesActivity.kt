@@ -11,7 +11,7 @@ import ru.barinov.notes.domain.Callable
 class NotesActivity : AppCompatActivity(), Callable {
     private var presenter = NoteActivityPresenter()
     private lateinit var binding: MainLayoutBinding
-    private lateinit var bottomNavigationItemView: BottomNavigationView
+    lateinit var bottomNavigationItemView: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

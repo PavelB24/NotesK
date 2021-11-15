@@ -3,9 +3,12 @@ package ru.barinov.notes.domain
 import android.os.Parcelable
 import android.os.Parcel
 import android.os.Parcelable.Creator
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-
+@Entity(tableName = "notes_database")
 data class NoteEntity(
+    @PrimaryKey
     var id: String,
     var title: String,
     var detail: String,
