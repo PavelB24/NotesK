@@ -1,9 +1,6 @@
 package ru.barinov.notes.domain
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 
 
 @Dao
@@ -11,6 +8,9 @@ interface NoteDao {
 
     @Insert
     fun addAll(notes: MutableList<NoteEntity>)
+
+    @Insert
+    fun addNote(note: NoteEntity)
 
     @Delete
     fun delete(note: NoteEntity)
@@ -23,4 +23,7 @@ interface NoteDao {
 
     @Query("DELETE FROM notes_database")
     fun clearDataBase()
+
+    @Update
+    fun update(note: NoteEntity)
 }

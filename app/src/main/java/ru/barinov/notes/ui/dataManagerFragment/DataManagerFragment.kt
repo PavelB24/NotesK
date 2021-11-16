@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.switchmaterial.SwitchMaterial
 import ru.barinov.R
 import ru.barinov.databinding.DataManagerLayoutBinding
+import ru.barinov.notes.ui.Application
 import ru.barinov.notes.ui.notesActivity.NotesActivity
 
 class DataManagerFragment: Fragment(), DataManagerFragmentContract.ViewInterface {
@@ -44,30 +45,21 @@ class DataManagerFragment: Fragment(), DataManagerFragmentContract.ViewInterface
     private fun initDeleteButton() {
         //Todo переписаьть под диалог с выбором где удалить заметки
         deleteImageButton.setOnClickListener {
-           presenter.deleteAllNotes()
+           presenter.deleteAllNotes((requireActivity().application as Application))
         }
     }
 
-    private fun initDataSwitch() {
-        switchMaterial= binding.dataManagerSwitch
-        switchMaterial.setOnClickListener {
-            if (switchMaterial.isChecked)
-            {binding.dataManagerSwitchTextView.setText(R.string.way_of_storage_cloud)
-            } else { binding.dataManagerSwitchTextView.setText(R.string.way_of_storage_local)
-            }
-        }
-    }
 
 
     override fun onDeletedMessage() {
         Toast.makeText(activity, "Notes Deleted", Toast.LENGTH_SHORT).show()
     }
 
-    override fun cloudStorageToast() {
+    override fun cloudStorageText() {
         binding.dataManagerSwitchTextView.setText(R.string.way_of_storage_cloud)
     }
 
-    override fun localStorageToast() {
+    override fun localStorageText() {
         binding.dataManagerSwitchTextView.setText(R.string.way_of_storage_local)
     }
 

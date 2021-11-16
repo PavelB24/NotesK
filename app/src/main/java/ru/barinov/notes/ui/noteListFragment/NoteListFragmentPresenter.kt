@@ -10,6 +10,7 @@ import ru.barinov.notes.domain.*
 import ru.barinov.notes.domain.Iterator
 import ru.barinov.notes.ui.AgreementDialogFragment
 import ru.barinov.notes.ui.Application
+import ru.barinov.notes.ui.application
 import ru.barinov.notes.ui.noteEditFragment.NoteEditFragment
 
 class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresenterInterface,  OnNoteClickListener {
@@ -91,18 +92,20 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
     override fun getResultsFromNoteEditFragment(adapter: NotesAdapter) {
         view?.parentFragmentManager?.setFragmentResultListener(NoteEditFragment::class.simpleName!!,view!!.requireActivity(), FragmentResultListener { requestKey, result ->
             if(!(result.isEmpty)){
-                val tempNote: NoteEntity = result.getParcelable(NoteEntity::class.simpleName)!!
-                if (!repository.findById(tempNote.id)) {
+                val note: NoteEntity = result.getParcelable(NoteEntity::class.simpleName)!!
+                if (!repository.findById(note.id)) {
                     Log.d("@@@", "1")
-                    repository.addNote(tempNote)
+                    Thread{
+                    (view!!.requireActivity().application()).dataBase.noteDao().addNote(note)}.start()
+                    repository.addNote(note)
                 } else {
                     Log.d("@@@", "2")
-                    repository.updateNote(tempNote.id, tempNote)
-
+                    repository.updateNote(note.id, note)
+                    Thread{
+                    (view!!.requireActivity().application()).dataBase.noteDao().update(note)}.start()
                 }
                 adapter.data= repository.getNotes()
             }
-
         })
     }
 
@@ -113,6 +116,7 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
 
     override fun deleteChosenNotes() {
         cache.getChosenNotes().forEach { repository.removeNote(it.id)
+            view!!.requireActivity().application().dataBase.noteDao().delete(it)
             adapter.data = repository.getNotes()}
         cache.clearSelectedCache()
     }
@@ -132,6 +136,8 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
                 val isConfirmed = result.getBoolean(confirmation.AGREEMENT_KEY)
                 if (isConfirmed) {
                     repository.removeNote(note.id)
+                    Thread{
+                    (view!!.requireActivity().application()).dataBase.noteDao().delete(note)}.start()
                     adapter.data= repository.getNotes()
                 }
             })

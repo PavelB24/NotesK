@@ -41,18 +41,18 @@ class NoteActivityPresenter : NotesActivityContract.NoteActivityPresenterInterfa
 
     @Throws(IOException::class)
     override fun onSafeNotes() {
-        val fos = view?.openFileOutput(LOCAL_REPOSITORY_NAME, MODE_PRIVATE)
-        val objectOutputStream = ObjectOutputStream(fos)
-        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-        val jsonAdapter = moshi.adapter(NoteEntity::class.java)
-        objectOutputStream.writeInt(repository.allNotes.size)
-        for (note in repository.allNotes) {
-            val json = jsonAdapter.toJson(note)
-            objectOutputStream.writeObject(json)
-        }
-        objectOutputStream.close()
-        fos?.close()
-        Log.d("@@@", "Записан")
+//        val fos = view?.openFileOutput(LOCAL_REPOSITORY_NAME, MODE_PRIVATE)
+//        val objectOutputStream = ObjectOutputStream(fos)
+//        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+//        val jsonAdapter = moshi.adapter(NoteEntity::class.java)
+//        objectOutputStream.writeInt(repository.allNotes.size)
+//        for (note in repository.allNotes) {
+//            val json = jsonAdapter.toJson(note)
+//            objectOutputStream.writeObject(json)
+//        }
+//        objectOutputStream.close()
+//        fos?.close()
+//        Log.d("@@@", "Записан")
     }
 
 
@@ -67,19 +67,23 @@ class NoteActivityPresenter : NotesActivityContract.NoteActivityPresenterInterfa
     }
 
     override fun toInitNotesInRepository() {
-        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-        val jsonAdapter = moshi.adapter(NoteEntity::class.java)
-        val fileInputStream = view?.openFileInput(LOCAL_REPOSITORY_NAME)
-        val objectInputStream = ObjectInputStream(fileInputStream)
-        val size = objectInputStream.readInt()
-        val list: MutableList<NoteEntity> = ArrayList()
-        for (i in 0 until size) {
-            val json: String = objectInputStream.readObject() as String
-            list.add(jsonAdapter.fromJson(json) as NoteEntity)
-        }
-        repository.addAll(list)
-        objectInputStream.close()
-        fileInputStream!!.close()
+        (view!!.application as Application).repository.addAll((view!!.application as Application).dataBase.noteDao().getAllNotes())
+
+
+        //Старый метод, шпаргалка по Moshi
+//        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+//        val jsonAdapter = moshi.adapter(NoteEntity::class.java)
+//        val fileInputStream = view?.openFileInput(LOCAL_REPOSITORY_NAME)
+//        val objectInputStream = ObjectInputStream(fileInputStream)
+//        val size = objectInputStream.readInt()
+//        val list: MutableList<NoteEntity> = ArrayList()
+//        for (i in 0 until size) {
+//            val json: String = objectInputStream.readObject() as String
+//            list.add(jsonAdapter.fromJson(json) as NoteEntity)
+//        }
+//        repository.addAll(list)
+//        objectInputStream.close()
+//        fileInputStream!!.close()
     }
 
     override fun setNavigationListeners(bottomNavigationItemView: BottomNavigationView) {
