@@ -96,13 +96,13 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
                 if (!repository.findById(note.id)) {
                     Log.d("@@@", "1")
                     Thread{
-                    (view!!.requireActivity().application()).dataBase.noteDao().addNote(note)}.start()
+                    (view!!.requireActivity().application()).localDataBase.noteDao().addNote(note)}.start()
                     repository.addNote(note)
                 } else {
                     Log.d("@@@", "2")
                     repository.updateNote(note.id, note)
                     Thread{
-                    (view!!.requireActivity().application()).dataBase.noteDao().update(note)}.start()
+                    (view!!.requireActivity().application()).localDataBase.noteDao().update(note)}.start()
                 }
                 adapter.data= repository.getNotes()
             }
@@ -116,7 +116,7 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
 
     override fun deleteChosenNotes() {
         cache.getChosenNotes().forEach { repository.removeNote(it.id)
-            view!!.requireActivity().application().dataBase.noteDao().delete(it)
+            view!!.requireActivity().application().localDataBase.noteDao().delete(it)
             adapter.data = repository.getNotes()}
         cache.clearSelectedCache()
     }
@@ -137,7 +137,7 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
                 if (isConfirmed) {
                     repository.removeNote(note.id)
                     Thread{
-                    (view!!.requireActivity().application()).dataBase.noteDao().delete(note)}.start()
+                    (view!!.requireActivity().application()).localDataBase.noteDao().delete(note)}.start()
                     adapter.data= repository.getNotes()
                 }
             })

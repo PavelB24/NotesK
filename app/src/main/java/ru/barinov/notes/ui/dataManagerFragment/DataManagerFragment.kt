@@ -1,6 +1,6 @@
 package ru.barinov.notes.ui.dataManagerFragment
 
-import android.content.pm.ActivityInfo
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +13,10 @@ import ru.barinov.R
 import ru.barinov.databinding.DataManagerLayoutBinding
 import ru.barinov.notes.ui.Application
 import ru.barinov.notes.ui.notesActivity.NotesActivity
+import android.content.SharedPreferences
+
+
+
 
 class DataManagerFragment: Fragment(), DataManagerFragmentContract.ViewInterface {
     private lateinit var binding: DataManagerLayoutBinding
@@ -33,6 +37,8 @@ class DataManagerFragment: Fragment(), DataManagerFragmentContract.ViewInterface
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val prefs = requireActivity().getSharedPreferences("safe", Context.MODE_PRIVATE)
+        val editor = prefs.edit()
         (requireActivity() as NotesActivity).bottomNavigationItemView.setBackgroundColor(resources.getColor(R.color.toolbar_grey))
         presenter.onAttach(this)
         deleteImageButton= binding.deleteStorageButton
@@ -64,6 +70,7 @@ class DataManagerFragment: Fragment(), DataManagerFragmentContract.ViewInterface
     }
 
     override fun onDestroy() {
+        presenter.savePref(switchMaterial)
         super.onDestroy()
     }
 }

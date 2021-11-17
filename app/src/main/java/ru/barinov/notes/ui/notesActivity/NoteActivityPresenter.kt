@@ -1,14 +1,9 @@
 package ru.barinov.notes.ui.notesActivity
 
-import android.content.Context.MODE_PRIVATE
 import android.content.res.Configuration
-import android.util.Log
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import ru.barinov.R
-import ru.barinov.notes.domain.NoteEntity
 import ru.barinov.notes.domain.NotesRepository
 import ru.barinov.notes.ui.Application
 import ru.barinov.notes.ui.dataManagerFragment.DataManagerFragment
@@ -18,9 +13,6 @@ import ru.barinov.notes.ui.noteViewFragment.NoteViewFragment
 import ru.barinov.notes.ui.profileFragment.ProfileFragment
 import java.io.File
 import java.io.IOException
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
-import java.util.ArrayList
 
 class NoteActivityPresenter : NotesActivityContract.NoteActivityPresenterInterface {
     private var view: NotesActivity? = null
@@ -67,7 +59,7 @@ class NoteActivityPresenter : NotesActivityContract.NoteActivityPresenterInterfa
     }
 
     override fun toInitNotesInRepository() {
-        (view!!.application as Application).repository.addAll((view!!.application as Application).dataBase.noteDao().getAllNotes())
+        (view!!.application as Application).repository.addAll((view!!.application as Application).localDataBase.noteDao().getAllNotes())
 
 
         //Старый метод, шпаргалка по Moshi
@@ -104,7 +96,7 @@ class NoteActivityPresenter : NotesActivityContract.NoteActivityPresenterInterfa
     }
 
     private fun setStartFragment(bottomNavigationItemView: BottomNavigationView) {
-        if ((view?.application as Application).internet.isLogged) {
+        if ((view?.application as Application).router.isLogged) {
             bottomNavigationItemView.selectedItemId = R.id.notes_item_menu
         } else {
             bottomNavigationItemView.selectedItemId = R.id.profile_item_menu

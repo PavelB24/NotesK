@@ -42,4 +42,5 @@
     <string name="profile_login_edittext_hint">Login</string>
     <string name="profile_password_edittext_hint">Password</string>
     <string name="profile_button_text">Enter</string>
+    <string name="registration_title">Create a new account</string>
 </resources>
