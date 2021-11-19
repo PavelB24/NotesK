@@ -7,7 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="toolbar_grey">#78909c</color>
+    <color name="cherry">#680202</color>
     <color name="card_view_grey">#B2546E7A</color>
     <color name="apply_button_color">#659C27B0</color>
     <color name="back_button_color">#9C000000</color>
@@ -20,5 +20,7 @@
     <color name="blue">#141F8C</color>
     <color name="deep_blue">#141B68</color>
     <color name="deep_blue_2">#0D1137</color>
+    830202
+    680202
 
 </resources>

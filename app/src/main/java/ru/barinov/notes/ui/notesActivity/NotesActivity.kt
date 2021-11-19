@@ -46,5 +46,9 @@ class NotesActivity : AppCompatActivity(), Callable {
      presenter.openNote()
     }
 
+    fun getBinding(): MainLayoutBinding{
+        return binding
+    }
+
 
 }

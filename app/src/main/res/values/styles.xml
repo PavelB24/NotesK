@@ -39,7 +39,7 @@
         <item name="android:textSize">@dimen/title_text_size</item>
         <item name="android:textStyle">bold</item>
         <item name="android:shadowColor">@color/white</item>
-        <item name="android:textColor">#011F22</item>
+        <item name="android:textColor">@color/black</item>
 
     </style>
 

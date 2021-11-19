@@ -37,14 +37,16 @@ class DataManagerFragment: Fragment(), DataManagerFragmentContract.ViewInterface
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val prefs = requireActivity().getSharedPreferences("safe", Context.MODE_PRIVATE)
-        val editor = prefs.edit()
-        (requireActivity() as NotesActivity).bottomNavigationItemView.setBackgroundColor(resources.getColor(R.color.toolbar_grey))
+        (requireActivity() as NotesActivity).bottomNavigationItemView.setBackgroundColor(resources.getColor(R.color.cherry))
         presenter.onAttach(this)
         deleteImageButton= binding.deleteStorageButton
         initDeleteButton()
         switchMaterial= binding.dataManagerSwitch
         presenter.onSwitchListener(switchMaterial)
+        if(switchMaterial.isChecked){
+            binding.dataManagerSwitchTextView.setText(R.string.way_of_storage_cloud)
+
+        }
     }
 
 
@@ -69,10 +71,6 @@ class DataManagerFragment: Fragment(), DataManagerFragmentContract.ViewInterface
         binding.dataManagerSwitchTextView.setText(R.string.way_of_storage_local)
     }
 
-    override fun onDestroy() {
-        presenter.savePref(switchMaterial)
-        super.onDestroy()
-    }
 }
 
 

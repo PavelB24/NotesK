@@ -3,7 +3,7 @@
     android:id="@+id/note_view_fragment_scrollview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/abstract_painting"
+    android:background="@drawable/blue_note_view_background"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
     <androidx.constraintlayout.widget.ConstraintLayout

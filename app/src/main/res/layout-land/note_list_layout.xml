@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/trees"
+    android:background="@drawable/light_abstract_structure_sunlight"
     android:orientation="vertical"
     tools:context=".ui.MainActivity">
 
@@ -16,7 +16,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/toolbar_grey"
+            android:background="@color/cherry"
             android:title="@string/app_name" />
     </com.google.android.material.appbar.AppBarLayout>
 

@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/data_manager_main_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/grey_wall">
+    android:orientation="vertical"
+    android:background="@drawable/red_srteams_black_background">
 
 
     <TextView
         android:id="@+id/data_manager_title_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/data_manager_light_grey"
+        android:background="#03BCC2ED"
         android:padding="@dimen/standart_padding"
         android:text="@string/data_manager_title"
         android:textAlignment="center"
-        android:textColor="@color/dark_grey"
+        android:textColor="@color/black"
         android:textSize="@dimen/data_manager_title"
-        android:textStyle="bold"
+        android:textStyle="italic"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
@@ -33,7 +35,7 @@
             android:layout_weight="1"
             android:backgroundTint="@color/black"
             android:text="@string/delete_all_notes_text"
-            android:textColor="@color/dark_grey"
+            android:textColor="@color/black"
             android:textSize="32sp"
             android:textStyle="bold" />
 
@@ -41,11 +43,11 @@
             android:id="@+id/delete_storage_button"
             style="@style/delete_all_notes_img_button_style"
             android:clickable="true"
+
             android:focusable="true"
             android:src="@drawable/ic_baseline_delete_forever_24"
-            app:tint="@color/dark_grey"
+            app:tint="@color/black"
             />
-
 
     </LinearLayout>
 
@@ -63,7 +65,7 @@
             android:text="@string/way_of_storage_local"
             android:textSize="32sp"
             android:textStyle="bold"
-            android:textColor="@color/dark_grey"/>
+            android:textColor="@color/black"/>
 
 
         <com.google.android.material.switchmaterial.SwitchMaterial
@@ -74,7 +76,5 @@
             />
 
     </LinearLayout>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

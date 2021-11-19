@@ -39,6 +39,7 @@ class DataManagerFragmentPresenter: DataManagerFragmentContract.DataManagerFragm
             }
             else { view?.localStorageText()
             }
+            savePref(switchMaterial)
         }
     }
 

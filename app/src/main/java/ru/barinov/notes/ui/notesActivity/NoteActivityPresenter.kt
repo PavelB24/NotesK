@@ -1,9 +1,15 @@
 package ru.barinov.notes.ui.notesActivity
 
 import android.content.res.Configuration
+import android.os.Build
+import android.view.View
+import android.widget.LinearLayout
+import androidx.annotation.RequiresApi
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.barinov.R
+import ru.barinov.databinding.MainLayoutBinding
 import ru.barinov.notes.domain.NotesRepository
 import ru.barinov.notes.ui.Application
 import ru.barinov.notes.ui.dataManagerFragment.DataManagerFragment
@@ -104,10 +110,11 @@ class NoteActivityPresenter : NotesActivityContract.NoteActivityPresenterInterfa
     }
 
     private fun openProfileFragment() {
+        fragmentManager.fragments.forEach { fragmentManager.beginTransaction().remove(it).commit() }
         if (view!!.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             fragmentManager.beginTransaction()
                 .replace(
-                    R.id.container_for_fragment_land_1,
+                    R.id.layout_horizontal_unit_container,
                     ProfileFragment()
                 ).commit()
         } else {
@@ -118,10 +125,11 @@ class NoteActivityPresenter : NotesActivityContract.NoteActivityPresenterInterfa
     }
 
     private fun openDataManagerFragment() {
+        fragmentManager.fragments.forEach { fragmentManager.beginTransaction().remove(it).commit() }
         if (view!!.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
         fragmentManager.beginTransaction()
             .replace(
-                R.id.container_for_fragment_land_1,
+                R.id.layout_horizontal_unit_container,
                 DataManagerFragment()
             )
             .commit()
@@ -135,10 +143,12 @@ class NoteActivityPresenter : NotesActivityContract.NoteActivityPresenterInterfa
     }
     }
 
+
     private fun openNoteListFragment() {
+        fragmentManager.fragments.forEach { fragmentManager.beginTransaction().remove(it).commit() }
         if (view!!.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             fragmentManager.beginTransaction()
-                .replace(R.id.container_for_fragment_land_1, NoteListFragment())
+                .add(R.id.container_for_fragment_land_1, NoteListFragment())
                 .commit()
         } else {
             fragmentManager.beginTransaction().replace(
@@ -147,31 +157,31 @@ class NoteActivityPresenter : NotesActivityContract.NoteActivityPresenterInterfa
             )
                 .commit()
         }
-        fragmentManager.popBackStack()
     }
 
     override fun editNote() {
-        fragmentManager.popBackStack()
-        if (view!!.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (view!!.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                fragmentManager.popBackStackImmediate()
             fragmentManager.beginTransaction()
-                .add(R.id.container_for_fragment_land_2, NoteEditFragment())
+                .replace(R.id.container_for_fragment_land_2, NoteEditFragment())
                 .addToBackStack(null).commit()
         } else {
             fragmentManager.beginTransaction()
-                .add(R.id.container_for_fragment, NoteEditFragment())
+                .replace(R.id.container_for_fragment, NoteEditFragment())
                 .addToBackStack(null).commit()
         }
     }
 
     override fun openNote() {
-        if (view!!.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (view!!.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                fragmentManager.popBackStackImmediate()
             fragmentManager.beginTransaction()
-                .add(R.id.container_for_fragment_land_2, NoteViewFragment())
-                .addToBackStack(null).commit()
+                .replace(R.id.container_for_fragment_land_2, NoteViewFragment()).addToBackStack(null)
+                .commit()
         } else {
             fragmentManager.beginTransaction()
-                .add(R.id.container_for_fragment, NoteViewFragment())
-                .addToBackStack(null).commit()
+                .replace(R.id.container_for_fragment, NoteViewFragment()).addToBackStack(null)
+                .commit()
         }
     }
 }

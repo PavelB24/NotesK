@@ -27,6 +27,7 @@ class ProfileFragment: Fragment() {
     ): View {
         binding = ProfileEnterLayoutBinding.inflate(inflater, container, false)
         return binding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,11 +40,12 @@ class ProfileFragment: Fragment() {
 
     private fun startRegistrationFragment(){
         if (this.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            parentFragmentManager.beginTransaction().add(R.id.horizontal_unit_container, RegistrationFragment())
+            parentFragmentManager.beginTransaction().add(R.id.layout_horizontal_unit_container, RegistrationFragment())
                 .addToBackStack(RegistrationFragment::class.simpleName).commit()}
         else{
             parentFragmentManager.beginTransaction().add(R.id.container_for_fragment, RegistrationFragment())
                 .addToBackStack(RegistrationFragment::class.simpleName).commit()}
         }
+
         }
 

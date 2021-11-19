@@ -37,7 +37,7 @@ class NoteListFragment : Fragment(), NoteListFragmentContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter.onAttach(this)
-        (requireActivity() as NotesActivity).bottomNavigationItemView.setBackgroundColor(resources.getColor(R.color.toolbar_grey))
+        (requireActivity() as NotesActivity).bottomNavigationItemView.setBackgroundColor(resources.getColor(R.color.cherry))
         initViews()
         presenter.getResultsFromNoteEditFragment(adapter)
         super.onViewCreated(view, savedInstanceState)

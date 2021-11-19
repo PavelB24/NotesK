@@ -1,5 +1,6 @@
 package ru.barinov.notes.ui.noteViewFragment
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.text.util.Linkify
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import ru.barinov.R
 import ru.barinov.databinding.NoteViewFramentLayoutBinding
 import ru.barinov.notes.domain.NoteEntity
 import ru.barinov.notes.ui.notesActivity.NoteActivityPresenter
+import ru.barinov.notes.ui.notesActivity.NotesActivity
 import java.net.URI
 import java.net.URL
 
@@ -29,6 +31,9 @@ class NoteViewFragment : Fragment(), NoteViewFragmentContract.ViewInterface {
         savedInstanceState: Bundle?
     ): View {
         binding = NoteViewFramentLayoutBinding.inflate(inflater, container, false)
+        (requireActivity() as NotesActivity).bottomNavigationItemView.setBackgroundColor(resources.getColor(
+            R.color.blue
+        ))
         return binding.root
     }
 
@@ -70,9 +75,13 @@ class NoteViewFragment : Fragment(), NoteViewFragmentContract.ViewInterface {
     }
 
     override fun onDestroy() {
+        if(requireActivity().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
+            (requireActivity() as NotesActivity).bottomNavigationItemView.setBackgroundColor(resources.getColor(R.color.cherry))
+        }
         presenter.onDetach()
         super.onDestroy()
     }
+
 
 
 //    companion object {
