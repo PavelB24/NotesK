@@ -1,4 +1,6 @@
-package ru.barinov.notes.domain
+package ru.barinov.notes.domain.curentDataBase
+
+import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
 
 interface RepositoryInterface {
     val allNotes: MutableList<NoteEntity>

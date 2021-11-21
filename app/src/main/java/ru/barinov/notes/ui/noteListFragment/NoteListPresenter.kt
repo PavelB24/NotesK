@@ -7,21 +7,24 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.FragmentResultListener
 import ru.barinov.R
 import ru.barinov.notes.domain.*
-import ru.barinov.notes.domain.Iterator
+import ru.barinov.notes.domain.curentDataBase.Iterator
+import ru.barinov.notes.domain.curentDataBase.NotesRepository
+import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
+import ru.barinov.notes.domain.noteEntityAndService.NotesAdapter
 import ru.barinov.notes.ui.AgreementDialogFragment
 import ru.barinov.notes.ui.Application
 import ru.barinov.notes.ui.application
 import ru.barinov.notes.ui.noteEditFragment.NoteEditFragment
 
-class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresenterInterface,  OnNoteClickListener {
+class NoteListPresenter: NoteListContract.NoteListFragmentPresenterInterface,  OnNoteClickListener {
 
-    private  var view:  NoteListFragment? = null
+    private  var view:  NoteList? = null
     private lateinit var  repository: NotesRepository
     private lateinit var  adapter: NotesAdapter
     private lateinit var cache: Iterator
     private val DELETE = "OK"
 
-    override fun onAttach(view: NoteListFragment) {
+    override fun onAttach(view: NoteList) {
         this.view= view
         repository= (view.requireActivity().application as Application).repository
         cache = (view.requireActivity().application as Application).cache
@@ -62,28 +65,28 @@ class NoteListFragmentPresenter: NoteListFragmentContract.NoteListFragmentPresen
         adapter.data = repository.getNotes()
         adapter.setListener(object: OnNoteClickListener {
             override fun onClickEdit(note: NoteEntity?) {
-                this@NoteListFragmentPresenter.onNoteClick(note!!)
+                this@NoteListPresenter.onNoteClick(note!!)
             }
 
             override fun onClickDelete(note: NoteEntity) {
-               this@NoteListFragmentPresenter.onClickDelete(note)
+               this@NoteListPresenter.onClickDelete(note)
             }
 
             override fun onNoteClick(note: NoteEntity) {
-                this@NoteListFragmentPresenter.onNoteClick(note)
+                this@NoteListPresenter.onNoteClick(note)
             }
 
             override fun onNoteLongClick(note: NoteEntity, view: View) {
-                this@NoteListFragmentPresenter.onNoteLongClick(note, view)
+                this@NoteListPresenter.onNoteLongClick(note, view)
 
             }
 
             override fun onNoteChecked(note: NoteEntity) {
-                this@NoteListFragmentPresenter.onNoteChecked(note)
+                this@NoteListPresenter.onNoteChecked(note)
             }
 
             override fun onNoteUnChecked(note: NoteEntity) {
-                this@NoteListFragmentPresenter.onNoteUnChecked(note)
+                this@NoteListPresenter.onNoteUnChecked(note)
             }
         })
     }

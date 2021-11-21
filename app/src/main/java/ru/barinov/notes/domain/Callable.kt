@@ -4,6 +4,5 @@ import android.os.Bundle
 
 interface Callable {
     fun callEditionFragment()
-    fun callSettingsFragment()
     fun callNoteViewFragment()
 }

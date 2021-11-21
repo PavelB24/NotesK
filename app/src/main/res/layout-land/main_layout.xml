@@ -3,40 +3,47 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="2"
-    android:orientation="horizontal">
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/navigation_bar"
+        app:layout_constraintTop_toTopOf="parent">
 
 
-    <androidx.percentlayout.widget.PercentFrameLayout
-        app:layout_constraintStart_toStartOf="@+id/layout_horizontal_unit_container"
-        android:id="@+id/container_for_fragment_land_1"
-        android:layout_width="0dp"
-        app:layout_constraintWidth_percent=".50"
-        android:layout_height="match_parent"
-        />
+        <androidx.percentlayout.widget.PercentFrameLayout
+            android:id="@+id/container_for_fragment_land_1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toStartOf="@+id/layout_horizontal_unit_container"
+            app:layout_constraintWidth_percent=".50" />
 
-    <androidx.percentlayout.widget.PercentFrameLayout
-        app:layout_constraintStart_toEndOf="@+id/container_for_fragment_land_1"
-        android:layout_weight="0"
-        android:id="@+id/container_for_fragment_land_2"
-        app:layout_constraintWidth_percent=".50"
-        android:layout_height="match_parent"
-        android:background="@drawable/red_srteams_black_background"
-       android:layout_width="0dp"/>
-    <FrameLayout
-        app:layout_constraintEnd_toStartOf="parent"
-        android:id="@+id/layout_horizontal_unit_container"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        />
+        <androidx.percentlayout.widget.PercentFrameLayout
+            android:id="@+id/container_for_fragment_land_2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:background="@drawable/red_srteams_black_background"
+            app:layout_constraintStart_toEndOf="@+id/container_for_fragment_land_1"
+            app:layout_constraintVertical_weight="1"
+            app:layout_constraintWidth_percent=".50" />
+
+        <FrameLayout
+            android:id="@+id/layout_horizontal_unit_container"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:background="@color/cherry"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_navigation_menu" />

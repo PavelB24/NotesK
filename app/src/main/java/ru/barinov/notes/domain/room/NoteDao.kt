@@ -1,6 +1,7 @@
-package ru.barinov.notes.domain
+package ru.barinov.notes.domain.room
 
 import androidx.room.*
+import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
 
 
 @Dao

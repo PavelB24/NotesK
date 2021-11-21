@@ -1,6 +1,7 @@
-package ru.barinov.notes.domain
+package ru.barinov.notes.domain.curentDataBase
 
 import android.util.Log
+import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
 
 class Iterator {
     private val searchCache = ArrayList<NoteEntity>()

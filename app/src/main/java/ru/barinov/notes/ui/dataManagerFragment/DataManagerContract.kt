@@ -3,9 +3,9 @@ package ru.barinov.notes.ui.dataManagerFragment
 import com.google.android.material.switchmaterial.SwitchMaterial
 import ru.barinov.notes.ui.Application
 
-class DataManagerFragmentContract {
+class DataManagerContract {
     interface DataManagerFragmentPresenterInterface{
-        fun onAttach(view: DataManagerFragment)
+        fun onAttach(view: DataManager)
         fun onDetach()
 
         fun deleteAllNotes(app: Application)

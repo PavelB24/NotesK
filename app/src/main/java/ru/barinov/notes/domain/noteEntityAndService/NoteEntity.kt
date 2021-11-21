@@ -1,4 +1,4 @@
-package ru.barinov.notes.domain
+package ru.barinov.notes.domain.noteEntityAndService
 
 import android.os.Parcelable
 import android.os.Parcel

@@ -1,6 +1,7 @@
 package ru.barinov.notes.domain
 
 import android.view.View
+import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
 
 interface OnNoteClickListener {
     fun onClickEdit(note: NoteEntity?)

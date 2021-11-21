@@ -5,9 +5,8 @@
     android:id="@+id/scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bokeh"
-    android:orientation="vertical"
-    tools:context=".ui.NoteEditFragment">
+    android:background="@drawable/imgonline_flop"
+    android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -18,19 +17,22 @@
         <EditText
             android:id="@+id/title_edittext"
             style="@style/title_edittext_style"
-            app:layout_constraintStart_toStartOf="parent"
             android:hint="@string/add_title_hint"
-            android:layout_marginTop="0dp"
             android:textColor="@color/black"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints"
+            android:backgroundTint="@color/black"
+            android:textCursorDrawable="@color/black"/>
 
         <EditText
             android:id="@+id/description_edittext"
             style="@style/description_edittext_style"
-            android:hint="Major text"
+            android:hint="@string/notes_description_hint_text"
             android:textColor="@color/black"
             app:layout_constraintTop_toBottomOf="@id/title_edittext"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="MissingConstraints"
+            android:backgroundTint="@color/black"
+            android:textCursorDrawable="@color/black"/>
 
         <TextView
             android:id="@+id/date_picker_title_textview"
@@ -46,12 +48,14 @@
             app:layout_constraintTop_toBottomOf="@id/date_picker_title_textview"
             tools:ignore="MissingConstraints" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
+            app:layout_constraintStart_toStartOf="parent"
             android:id="@+id/apply_button"
             style="@style/apply_button_style"
             android:text="@string/apply_button_text"
             app:layout_constraintTop_toBottomOf="@id/date_picker_actions"
-            tools:ignore="MissingConstraints" />
+            android:layout_marginBottom="150dp"
+            />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

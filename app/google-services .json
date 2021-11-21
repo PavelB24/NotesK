@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "832647799681",
+    "project_id": "notebookproject-80143",
+    "storage_bucket": "notebookproject-80143.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:832647799681:android:c65abbb8ae93d4b9eb3e80",
+        "android_client_info": {
+          "package_name": "ru.barinov.notes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "832647799681-tvrgir46a0r1fukoq8oop2u3bld9si2h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzZAYYdaNgcdanBBo-R_ogFiguggmCFjU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "832647799681-tvrgir46a0r1fukoq8oop2u3bld9si2h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

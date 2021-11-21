@@ -43,4 +43,8 @@
     <string name="profile_password_edittext_hint">Password</string>
     <string name="profile_button_text">Enter</string>
     <string name="registration_title">Create a new account</string>
+    <string name="on_fail_auth">Authentication failed.</string>
+    <string name="on_success_auth">Authentication success.</string>
+    <string name="reg_button_text">Registration</string>
+    <string name="profile_ask_text">Have not got a profile yet?</string>
 </resources>

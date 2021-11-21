@@ -1,16 +1,13 @@
-package ru.barinov.notes.domain
+package ru.barinov.notes.domain.noteEntityAndService
 
-import android.annotation.SuppressLint
-import android.os.Build
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
-import androidx.core.graphics.alpha
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.barinov.R
+import ru.barinov.notes.domain.DiffCallback
+import ru.barinov.notes.domain.OnNoteClickListener
 import java.util.ArrayList
 
 class NotesAdapter: RecyclerView.Adapter<NoteViewHolder>() {
@@ -20,7 +17,7 @@ class NotesAdapter: RecyclerView.Adapter<NoteViewHolder>() {
             field = newData
             result.dispatchUpdatesTo(this)
         }
-    private lateinit var listener:OnNoteClickListener
+    private lateinit var listener: OnNoteClickListener
 
 
 

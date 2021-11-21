@@ -1,8 +1,9 @@
-package ru.barinov.notes.domain
+package ru.barinov.notes.domain.curentDataBase
 
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.Log
+import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
 
 class NotesRepository : RepositoryInterface, Parcelable {
     override val allNotes: MutableList<NoteEntity> = mutableListOf()

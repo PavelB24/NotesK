@@ -1,11 +1,11 @@
 package ru.barinov.notes.ui.noteListFragment
 
-import ru.barinov.notes.domain.NotesAdapter
+import ru.barinov.notes.domain.noteEntityAndService.NotesAdapter
 
-class NoteListFragmentContract {
+class NoteListContract {
 
     interface NoteListFragmentPresenterInterface{
-        fun onAttach(view: NoteListFragment)
+        fun onAttach(view: NoteList)
         fun onDetach()
 
         fun onSearchStarted(search: android.widget.SearchView)

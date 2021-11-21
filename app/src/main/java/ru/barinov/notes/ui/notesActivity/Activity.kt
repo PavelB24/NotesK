@@ -4,12 +4,14 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.FirebaseApp
 import ru.barinov.databinding.MainLayoutBinding
 import ru.barinov.notes.domain.Callable
+import ru.barinov.notes.ui.Application
 
 
-class NotesActivity : AppCompatActivity(), Callable {
-    private var presenter = NoteActivityPresenter()
+class Activity : AppCompatActivity(), Callable {
+    private var presenter = ActivityPresenter()
     private lateinit var binding: MainLayoutBinding
     lateinit var bottomNavigationItemView: BottomNavigationView
 
@@ -20,35 +22,34 @@ class NotesActivity : AppCompatActivity(), Callable {
         presenter.onAttach(this)
         setNavigation()
         //todo переписать под 2 варианта хранения
-        presenter.onReadNotes()
+        presenter.readNotes()
+    }
+
+    override fun onStart() {
+        val currentUser = (application as Application).authentication.auth.currentUser
+        if (currentUser != null) {
+            //TODO
+        }
+        super.onStart()
     }
 
     private fun setNavigation() {
-        //TODO
         bottomNavigationItemView = binding.navigationBar
         presenter.setNavigationListeners(bottomNavigationItemView)
     }
 
-    override fun onPause() {
-        presenter.onSafeNotes()
-        super.onPause()
-    }
 
     override fun callEditionFragment() {
         presenter.editNote()
     }
 
-    override fun callSettingsFragment() {
-        TODO("Not yet implemented")
-    }
+
 
     override fun callNoteViewFragment() {
      presenter.openNote()
     }
 
-    fun getBinding(): MainLayoutBinding{
-        return binding
-    }
+
 
 
 }

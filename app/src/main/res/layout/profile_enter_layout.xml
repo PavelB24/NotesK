@@ -15,6 +15,7 @@
         android:textAlignment="center"
         android:textSize="@dimen/title_text_size"/>
     <EditText
+        android:inputType="textWebEmailAddress"
         android:id="@+id/profile_login_edittext"
         android:hint="@string/profile_login_edittext_hint"
         android:layout_marginTop="@dimen/edittext_margin_top"
@@ -24,6 +25,7 @@
         android:backgroundTint="@color/black"
         />
     <EditText
+        android:inputType="textWebPassword"
         android:id="@+id/profile_password_edittext"
         android:hint="@string/profile_password_edittext_hint"
         android:layout_marginTop="@dimen/edittext_margin_top"
@@ -44,18 +46,17 @@
 
             android:layout_marginHorizontal="@dimen/fab_margin"
             android:layout_width="0dp"
-            android:text="Have not got a profile yet?"
+            android:text="@string/profile_ask_text"
             android:textStyle="bold"
             android:textSize="20sp"
             android:layout_weight="1"
             android:layout_height="match_parent"/>
         <com.google.android.material.button.MaterialButton
             android:id="@+id/profile_create_new_profile_button"
-            android:text="Registration"
+            android:text="@string/reg_button_text"
             android:textColor="@color/checkbox_activated_color"
             android:layout_marginHorizontal="@dimen/fab_margin"
             android:layout_weight="1"
-            android:focusable="false"
             android:layout_width="0dp"
             android:backgroundTint="#45000000"
             android:layout_height="wrap_content"/>

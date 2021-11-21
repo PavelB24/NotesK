@@ -3,19 +3,19 @@ package ru.barinov.notes.ui.dataManagerFragment
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.android.material.switchmaterial.SwitchMaterial
-import ru.barinov.notes.domain.NotesRepository
+import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.ui.Application
 
 
-class DataManagerFragmentPresenter: DataManagerFragmentContract.DataManagerFragmentPresenterInterface {
-    private  var view: DataManagerFragment? = null
+class DataManagerPresenter: DataManagerContract.DataManagerFragmentPresenterInterface {
+    private  var view: DataManager? = null
     private lateinit var  repository: NotesRepository
     private lateinit  var  pref: SharedPreferences
     private lateinit var  editor: SharedPreferences.Editor
 
-    override fun onAttach(view: DataManagerFragment) {
+    override fun onAttach(view: DataManager) {
         this.view= view
-        pref= view.requireActivity().getSharedPreferences("settings", Context.MODE_PRIVATE)
+        pref= view.requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
         editor= pref.edit()
         repository= (view.requireActivity().application as Application).repository
     }
@@ -32,7 +32,7 @@ class DataManagerFragmentPresenter: DataManagerFragmentContract.DataManagerFragm
     }
 
     override fun onSwitchListener(switchMaterial: SwitchMaterial) {
-        switchMaterial.isChecked= pref.getBoolean("switch_state", false)
+        switchMaterial.isChecked= pref.getBoolean("switchState", false)
         switchMaterial.setOnClickListener {
             if (switchMaterial.isChecked)
             {view?.cloudStorageText()
@@ -44,6 +44,6 @@ class DataManagerFragmentPresenter: DataManagerFragmentContract.DataManagerFragm
     }
 
     fun savePref(switchMaterial: SwitchMaterial){
-        editor.putBoolean("switch_state", switchMaterial.isChecked ).apply()
+        editor.putBoolean("switchState", switchMaterial.isChecked ).apply()
     }
 }

@@ -2,7 +2,6 @@ package ru.barinov.notes.ui.noteListFragment
 
 import android.os.Bundle
 import android.view.*
-import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -11,17 +10,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.barinov.R
 import ru.barinov.databinding.NoteListLayoutBinding
-import ru.barinov.notes.domain.*
-import ru.barinov.notes.ui.AgreementDialogFragment
-import ru.barinov.notes.ui.notesActivity.NotesActivity
+import ru.barinov.notes.domain.noteEntityAndService.NotesAdapter
+import ru.barinov.notes.ui.notesActivity.Activity
 
-class NoteListFragment : Fragment(), NoteListFragmentContract.View {
+class NoteList : Fragment(), NoteListContract.View {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: NotesAdapter
     private lateinit var binding: NoteListLayoutBinding
     private lateinit var toolbar: Toolbar
     private lateinit var searchItem: MenuItem
-    private lateinit var presenter: NoteListFragmentPresenter
+    private lateinit var presenter: NoteListPresenter
 
 
     override fun onCreateView(
@@ -31,13 +29,13 @@ class NoteListFragment : Fragment(), NoteListFragmentContract.View {
     ): View {
         setHasOptionsMenu(true)
         binding = NoteListLayoutBinding.inflate(inflater, container, false)
-        presenter = NoteListFragmentPresenter()
+        presenter = NoteListPresenter()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter.onAttach(this)
-        (requireActivity() as NotesActivity).bottomNavigationItemView.setBackgroundColor(resources.getColor(R.color.cherry))
+        (requireActivity() as Activity).bottomNavigationItemView.setBackgroundColor(resources.getColor(R.color.cherry))
         initViews()
         presenter.getResultsFromNoteEditFragment(adapter)
         super.onViewCreated(view, savedInstanceState)

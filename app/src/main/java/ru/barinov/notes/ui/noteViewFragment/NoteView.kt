@@ -11,18 +11,14 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import ru.barinov.R
 import ru.barinov.databinding.NoteViewFramentLayoutBinding
-import ru.barinov.notes.domain.NoteEntity
-import ru.barinov.notes.ui.notesActivity.NoteActivityPresenter
-import ru.barinov.notes.ui.notesActivity.NotesActivity
-import java.net.URI
-import java.net.URL
+import ru.barinov.notes.ui.notesActivity.Activity
 
-class NoteViewFragment : Fragment(), NoteViewFragmentContract.ViewInterface {
+class NoteView : Fragment(), NoteViewContract.ViewInterface {
     private lateinit var binding: NoteViewFramentLayoutBinding
     private lateinit var title: TextView
     private lateinit var body: TextView
     private lateinit var date: TextView
-    private var presenter = NoteViewFragmentPresenter()
+    private var presenter = NoteViewPresenter()
     private lateinit var backButton: Button
 
     override fun onCreateView(
@@ -31,7 +27,7 @@ class NoteViewFragment : Fragment(), NoteViewFragmentContract.ViewInterface {
         savedInstanceState: Bundle?
     ): View {
         binding = NoteViewFramentLayoutBinding.inflate(inflater, container, false)
-        (requireActivity() as NotesActivity).bottomNavigationItemView.setBackgroundColor(resources.getColor(
+        (requireActivity() as Activity).bottomNavigationItemView.setBackgroundColor(resources.getColor(
             R.color.blue
         ))
         return binding.root
@@ -76,7 +72,7 @@ class NoteViewFragment : Fragment(), NoteViewFragmentContract.ViewInterface {
 
     override fun onDestroy() {
         if(requireActivity().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
-            (requireActivity() as NotesActivity).bottomNavigationItemView.setBackgroundColor(resources.getColor(R.color.cherry))
+            (requireActivity() as Activity).bottomNavigationItemView.setBackgroundColor(resources.getColor(R.color.cherry))
         }
         presenter.onDetach()
         super.onDestroy()

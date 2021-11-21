@@ -11,9 +11,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import ru.barinov.R
 import ru.barinov.databinding.NoteEditLayoutBinding
-import ru.barinov.notes.domain.NoteEntity
-import ru.barinov.notes.ui.notesActivity.NoteActivityPresenter
-import java.util.*
 
 class NoteEditFragment() : Fragment(), NoteEditFragmentContract.ViewInterface {
     private lateinit var applyButton: Button

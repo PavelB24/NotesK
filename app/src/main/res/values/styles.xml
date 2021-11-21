@@ -47,8 +47,8 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">@dimen/apply_button_top_margin</item>
-        <item name="android:backgroundTint">#971565C0</item>
-        <item name="android:textColor">#18205E</item>
+        <item name="android:backgroundTint">#CC626A6E</item>
+        <item name="android:textColor">@color/back_button_color</item>
         <item name="android:textStyle">bold</item>
     </style>
 

@@ -1,15 +1,15 @@
 package ru.barinov.notes.ui.noteViewFragment
 
 import android.util.Log
-import ru.barinov.notes.domain.NoteEntity
+import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
 import ru.barinov.notes.ui.Application
 
 
-class NoteViewFragmentPresenter: NoteViewFragmentContract.NoteViewFragmentPresenterInterface {
-    private var view:  NoteViewFragment? = null
+class NoteViewPresenter: NoteViewContract.NoteViewFragmentPresenterInterface {
+    private var view:  NoteView? = null
     private  var  note: NoteEntity? = null
 
-    override fun onAttach(view: NoteViewFragment) {
+    override fun onAttach(view: NoteView) {
         this.view=view
         note = (view.requireActivity().application as Application).repository.getById(getIdFromRouter())
         Log.d("@@@", (view.requireActivity().application as Application).router.getId()!!)

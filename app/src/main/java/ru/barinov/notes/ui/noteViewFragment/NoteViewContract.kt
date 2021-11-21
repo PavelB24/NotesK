@@ -1,9 +1,9 @@
 package ru.barinov.notes.ui.noteViewFragment
 
-class NoteViewFragmentContract {
+class NoteViewContract {
 
     interface NoteViewFragmentPresenterInterface{
-        fun onAttach(view: NoteViewFragment)
+        fun onAttach(view: NoteView)
         fun onDetach()
 
 

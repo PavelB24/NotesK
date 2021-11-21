@@ -2,21 +2,25 @@ package ru.barinov.notes.ui;
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
+import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
 import ru.barinov.notes.domain.*
-import ru.barinov.notes.domain.Iterator
+import ru.barinov.notes.domain.curentDataBase.Iterator
+import ru.barinov.notes.domain.curentDataBase.NotesRepository
+import ru.barinov.notes.domain.room.DataBase
 
 
 class Application : Application() {
     val repository = NotesRepository()
     val router= Router()
     val cache= Iterator()
-    val  internet = Internet()
+    lateinit var authentication: Authentication
     lateinit var localDataBase: DataBase
 
 
     override fun onCreate() {
-        val fDataBase = FirebaseFirestore.getInstance()
+        FirebaseApp.initializeApp(this);
+        authentication =Authentication()
        localDataBase = Room.databaseBuilder(
             this,
             DataBase::class.java, "notes_database").allowMainThreadQueries().build()

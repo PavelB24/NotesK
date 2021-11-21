@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/light_abstract_structure_sunlight"
     android:orientation="vertical"
-    tools:context=".notes.ui.notesActivity.NotesActivity">
+    tools:context=".notes.ui.notesActivity.Activity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
