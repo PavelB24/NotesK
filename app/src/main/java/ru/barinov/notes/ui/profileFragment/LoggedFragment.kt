@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import ru.barinov.R
 
@@ -13,7 +14,7 @@ import ru.barinov.databinding.ProfileSingedLayoutBinding
 import ru.barinov.notes.ui.Application
 import ru.barinov.notes.ui.notesActivity.Activity
 
-class SignedFragment: Fragment() {
+class LoggedFragment: Fragment() {
     private lateinit var binding: ProfileSingedLayoutBinding
 
     override fun onCreateView(
@@ -30,6 +31,7 @@ class SignedFragment: Fragment() {
             R.color.deep_blue_2))
         binding.profileOutButton.setOnClickListener {
             singOut()
+            Toast.makeText(context, "Logged out", Toast.LENGTH_SHORT ).show()
         }
         binding.profileNameTextView.text = (requireActivity().application as Application).authentication.auth.currentUser?.email.toString()
         super.onViewCreated(view, savedInstanceState)

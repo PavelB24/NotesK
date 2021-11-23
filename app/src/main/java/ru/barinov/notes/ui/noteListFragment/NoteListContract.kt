@@ -1,5 +1,6 @@
 package ru.barinov.notes.ui.noteListFragment
 
+import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
 import ru.barinov.notes.domain.noteEntityAndService.NotesAdapter
 
 class NoteListContract {
@@ -13,6 +14,7 @@ class NoteListContract {
         fun getResultsFromNoteEditFragment(adapter: NotesAdapter)
         fun createNewNote() : Boolean
         fun deleteChosenNotes()
+        fun addToCloud(note: NoteEntity)
 
     }
     interface View{

@@ -14,6 +14,8 @@ import ru.barinov.notes.domain.noteEntityAndService.NotesAdapter
 import ru.barinov.notes.ui.AgreementDialogFragment
 import ru.barinov.notes.ui.Application
 import ru.barinov.notes.ui.application
+import ru.barinov.notes.ui.dataManagerFragment.DataManager
+import ru.barinov.notes.ui.dataManagerFragment.DataManagerPresenter
 import ru.barinov.notes.ui.noteEditFragment.NoteEditFragment
 
 class NoteListPresenter: NoteListContract.NoteListFragmentPresenterInterface,  OnNoteClickListener {
@@ -101,11 +103,14 @@ class NoteListPresenter: NoteListContract.NoteListFragmentPresenterInterface,  O
                     Thread{
                     (view!!.requireActivity().application()).localDataBase.noteDao().addNote(note)}.start()
                     repository.addNote(note)
+                    addToCloud(note)
                 } else {
                     Log.d("@@@", "2")
                     repository.updateNote(note.id, note)
                     Thread{
                     (view!!.requireActivity().application()).localDataBase.noteDao().update(note)}.start()
+                     addToCloud(note)
+
                 }
                 adapter.data= repository.getNotes()
             }
@@ -122,6 +127,19 @@ class NoteListPresenter: NoteListContract.NoteListFragmentPresenterInterface,  O
             view!!.requireActivity().application().localDataBase.noteDao().delete(it)
             adapter.data = repository.getNotes()}
         cache.clearSelectedCache()
+    }
+
+    override fun addToCloud(note: NoteEntity){
+        view?.parentFragmentManager?.setFragmentResultListener(DataManager::class.simpleName!!, view!!.requireActivity(), FragmentResultListener { requestKey, result ->
+            if(result.getBoolean(DataManager::class.simpleName!!)){
+                    Thread{
+                        (view!!.activity?.application() as Application).cloudDataBase.cloud.collection((view!!.activity?.application() as Application).authentication.auth.currentUser?.uid.toString())
+                            .document(note.id)
+                            .set(note).addOnSuccessListener {Log.d("@@@", "Added to cloud")  }
+                            .addOnFailureListener { Log.d("@@@", "Not added to cloud") }
+                    }.start()
+            }
+        })
     }
 
     override fun onClickEdit(note: NoteEntity?) {

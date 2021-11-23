@@ -1,15 +1,18 @@
 package ru.barinov.notes.ui.noteViewFragment
 
+import ru.barinov.notes.domain.curentDataBase.NotesRepository
+import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
+import ru.barinov.notes.ui.noteEditFragment.NoteEditFragmentContract
+
 class NoteViewContract {
 
     interface NoteViewFragmentPresenterInterface{
-        fun onAttach(view: NoteView)
+        var view: ViewInterface?
+        var repository: NotesRepository?
+        var id: String?
+        fun onAttach(view: ViewInterface, repository: NotesRepository, id: String)
         fun onDetach()
-
-
         fun getNote()
-        fun onBackPressed()
-        fun getIdFromRouter(): String?
     }
     interface ViewInterface{
         fun fillTheFields(noteTitle: String, detail: String, dateAsString: String)

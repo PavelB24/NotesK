@@ -1,5 +1,6 @@
 package ru.barinov.notes.domain
 
+import android.content.Context
 import com.google.firebase.auth.ktx.auth
 
 import com.google.firebase.ktx.Firebase

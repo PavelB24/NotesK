@@ -1,49 +1,42 @@
 package ru.barinov.notes.ui.dataManagerFragment
 
-import android.content.Context
-import android.content.SharedPreferences
-import com.google.android.material.switchmaterial.SwitchMaterial
+
+import com.google.firebase.auth.FirebaseAuth
+import ru.barinov.notes.domain.CloudRepository
 import ru.barinov.notes.domain.curentDataBase.NotesRepository
-import ru.barinov.notes.ui.Application
+import ru.barinov.notes.domain.room.DataBase
 
 
 class DataManagerPresenter: DataManagerContract.DataManagerFragmentPresenterInterface {
-    private  var view: DataManager? = null
+    private  var view: DataManagerContract.ViewInterface? = null
     private lateinit var  repository: NotesRepository
-    private lateinit  var  pref: SharedPreferences
-    private lateinit var  editor: SharedPreferences.Editor
+    private lateinit var  localDB: DataBase
+    private lateinit var  cloudDataBase: CloudRepository
 
-    override fun onAttach(view: DataManager) {
+
+    override fun onAttach(
+        view: DataManagerContract.ViewInterface,
+        repository: NotesRepository,
+        localDB: DataBase,
+        cloudDataBase: CloudRepository
+    ) {
+        this.cloudDataBase = cloudDataBase
         this.view= view
-        pref= view.requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        editor= pref.edit()
-        repository= (view.requireActivity().application as Application).repository
+        this.repository = repository
     }
 
     override fun onDetach() {
         view= null
     }
 
-    override fun deleteAllNotes(app: Application) {
+    override fun deleteAllNotes(auth: FirebaseAuth) {
         repository.deleteAll()
-        Thread{
-        app.localDataBase.clearAllTables()}.start()
-        view?.onDeletedMessage()
-    }
-
-    override fun onSwitchListener(switchMaterial: SwitchMaterial) {
-        switchMaterial.isChecked= pref.getBoolean("switchState", false)
-        switchMaterial.setOnClickListener {
-            if (switchMaterial.isChecked)
-            {view?.cloudStorageText()
-            }
-            else { view?.localStorageText()
-            }
-            savePref(switchMaterial)
+        Thread {
+            localDB.clearAllTables()
+        }.start()
+        if (auth.currentUser != null) {
+            //ToDo}
+            view?.onDeletedMessage()
         }
-    }
-
-    fun savePref(switchMaterial: SwitchMaterial){
-        editor.putBoolean("switchState", switchMaterial.isChecked ).apply()
     }
 }

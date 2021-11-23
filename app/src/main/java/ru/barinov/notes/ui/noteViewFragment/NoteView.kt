@@ -11,6 +11,8 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import ru.barinov.R
 import ru.barinov.databinding.NoteViewFramentLayoutBinding
+import ru.barinov.notes.ui.Application
+import ru.barinov.notes.ui.application
 import ru.barinov.notes.ui.notesActivity.Activity
 
 class NoteView : Fragment(), NoteViewContract.ViewInterface {
@@ -34,7 +36,8 @@ class NoteView : Fragment(), NoteViewContract.ViewInterface {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        presenter.onAttach(this)
+        presenter.onAttach(this, requireActivity().application().repository, getIdFromRouter()!!)
+        requireActivity().application().router.resetId()
         initViews()
         presenter.getNote()
         super.onViewCreated(view, savedInstanceState)
@@ -51,7 +54,7 @@ class NoteView : Fragment(), NoteViewContract.ViewInterface {
     private fun initBackButton() {
         backButton = binding.noteViewFragmentBackButton
         backButton.setOnClickListener {
-            presenter.onBackPressed()
+            parentFragmentManager.popBackStack()
         }
 
     }
@@ -66,7 +69,7 @@ class NoteView : Fragment(), NoteViewContract.ViewInterface {
     }
 
     override fun onPause() {
-        presenter.onBackPressed()
+        parentFragmentManager.popBackStackImmediate()
         super.onPause()
     }
 
@@ -77,6 +80,8 @@ class NoteView : Fragment(), NoteViewContract.ViewInterface {
         presenter.onDetach()
         super.onDestroy()
     }
+    private fun getIdFromRouter(): String?{
+        return (requireActivity().application()).router.getId()
 
 
 
@@ -86,4 +91,4 @@ class NoteView : Fragment(), NoteViewContract.ViewInterface {
 //            noteViewInstance.arguments = data
 //            return noteViewInstance
 //        }
-}
+}}

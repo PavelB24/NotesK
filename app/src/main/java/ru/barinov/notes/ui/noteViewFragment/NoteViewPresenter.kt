@@ -1,37 +1,35 @@
 package ru.barinov.notes.ui.noteViewFragment
 
 import android.util.Log
+import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
 import ru.barinov.notes.ui.Application
+import ru.barinov.notes.ui.noteEditFragment.NoteEditFragmentContract
 
 
 class NoteViewPresenter: NoteViewContract.NoteViewFragmentPresenterInterface {
-    private var view:  NoteView? = null
-    private  var  note: NoteEntity? = null
+    override var view: NoteViewContract.ViewInterface? = null
+    override  var  repository: NotesRepository? = null
+    override  var  id: String? = null
 
-    override fun onAttach(view: NoteView) {
+    override fun onAttach(view: NoteViewContract.ViewInterface, repository: NotesRepository, id: String) {
         this.view=view
-        note = (view.requireActivity().application as Application).repository.getById(getIdFromRouter())
-        Log.d("@@@", (view.requireActivity().application as Application).router.getId()!!)
-        (view.requireActivity().application as Application).router.resetId()
+        this.repository = repository
+        this.id = id
 
     }
 
     override fun onDetach() {
         view= null
-        note= null
+        repository= null
     }
 
     override fun getNote() {
+        var note = repository?.getById(id)
         Log.d("@@@", note.toString())
-        view?.fillTheFields(note!!.title, note!!.detail, note!!.dateAsString)
+        view?.fillTheFields(note!!.title, note.detail, note.dateAsString)
     }
 
-    override fun onBackPressed() {
-        view?.parentFragmentManager?.popBackStack()
-    }
 
-    override fun getIdFromRouter(): String?{
-        return (view?.requireActivity()?.application as Application).router.getId()
-    }
+
 }

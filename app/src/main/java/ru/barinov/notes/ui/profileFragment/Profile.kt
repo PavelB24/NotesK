@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -103,12 +102,12 @@ class Profile : Fragment() {
         if (this.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             parentFragmentManager.beginTransaction().replace(
                 R.id.layout_horizontal_unit_container,
-                SignedFragment()
+                LoggedFragment()
             ).commit()
         } else {
             parentFragmentManager.beginTransaction().replace(
                 R.id.container_for_fragment,
-                SignedFragment()
+                LoggedFragment()
             ).commit()
         }
     }

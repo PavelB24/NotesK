@@ -8,7 +8,7 @@ import ru.barinov.notes.ui.noteEditFragment.NoteEditFragment
 import ru.barinov.notes.ui.noteListFragment.NoteList
 import ru.barinov.notes.ui.noteViewFragment.NoteView
 import ru.barinov.notes.ui.profileFragment.Profile
-import ru.barinov.notes.ui.profileFragment.SignedFragment
+import ru.barinov.notes.ui.profileFragment.LoggedFragment
 
 class Router {
     var isLogged = false
@@ -90,7 +90,7 @@ class Router {
             if(isOnline){
                 fragmentManager.beginTransaction()
                     .replace(R.id.layout_horizontal_unit_container,
-                        SignedFragment()).commit() }
+                        LoggedFragment()).commit() }
             else{
             fragmentManager.beginTransaction()
                 .replace(
@@ -101,7 +101,7 @@ class Router {
             if(isOnline){
                 fragmentManager.beginTransaction()
                     .replace(R.id.container_for_fragment,
-                        SignedFragment()).commit() }
+                        LoggedFragment()).commit() }
             else{
             fragmentManager.beginTransaction()
                 .replace(R.id.container_for_fragment, Profile())

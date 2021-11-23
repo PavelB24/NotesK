@@ -6,6 +6,7 @@ import ru.barinov.R
 import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.domain.Router
 import ru.barinov.notes.ui.Application
+import ru.barinov.notes.ui.application
 import java.io.IOException
 
 class ActivityPresenter : ActivityContract.NoteActivityPresenterInterface {
@@ -123,5 +124,9 @@ class ActivityPresenter : ActivityContract.NoteActivityPresenterInterface {
 
     private fun getOrientation(): Int{
         return view!!.resources.configuration.orientation
+    }
+
+    fun logOut() {
+        view!!.application().authentication.auth.signOut()
     }
 }

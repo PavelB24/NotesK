@@ -49,6 +49,11 @@ class Activity : AppCompatActivity(), Callable {
      presenter.openNote()
     }
 
+    override fun onDestroy() {
+        presenter.logOut()
+        super.onDestroy()
+    }
+
 
 
 
