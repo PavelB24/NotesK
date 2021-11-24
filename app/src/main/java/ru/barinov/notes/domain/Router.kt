@@ -11,7 +11,6 @@ import ru.barinov.notes.ui.profileFragment.Profile
 import ru.barinov.notes.ui.profileFragment.LoggedFragment
 
 class Router {
-    var isLogged = false
     private var id: String? = null
 
     fun setId(id: String){

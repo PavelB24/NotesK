@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import ru.barinov.R
 import ru.barinov.databinding.ProfileEnterLayoutBinding
 import ru.barinov.notes.ui.Application
+import ru.barinov.notes.ui.dataManagerFragment.DataManager
 import ru.barinov.notes.ui.notesActivity.Activity
 
 
@@ -99,6 +100,9 @@ class Profile : Fragment() {
     }
 
     private fun singIn() {
+        parentFragmentManager.setFragmentResult(
+            DataManager::class.simpleName!!,
+            Bundle().also { it.putBoolean(DataManager::class.simpleName!!, true) })
         if (this.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             parentFragmentManager.beginTransaction().replace(
                 R.id.layout_horizontal_unit_container,

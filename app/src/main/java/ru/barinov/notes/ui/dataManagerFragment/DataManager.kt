@@ -76,17 +76,25 @@ class DataManager: Fragment(), DataManagerContract.ViewInterface {
     private fun showCloudIsNotAvailableMassage(){
         Toast.makeText(context, "Please, log in to use cloud storage", Toast.LENGTH_SHORT).show()
     }
-    fun setOnSwitchListener() {
+    private fun setOnSwitchListener() {
         switchMaterial.isChecked= pref.getBoolean(switchStateKey, false)
+        if (pref.getBoolean(switchStateKey, false)){
+            binding.dataManagerSwitchTextView.setText(R.string.way_of_storage_cloud)
+        }
+        if(requireActivity().application().authentication.auth.currentUser== null){
+            switchMaterial.isChecked = false
+        }
         switchMaterial.setOnClickListener {
             if (switchMaterial.isChecked) {
-                if ((requireActivity().application as Application).authentication.auth.currentUser != null) {
+                if (requireActivity().application().authentication.auth.currentUser != null) {
                     cloudStorageText()
                     parentFragmentManager.setFragmentResult(DataManager::class.simpleName!!,
                         Bundle().also { it.putBoolean(DataManager::class.simpleName!!, true) })
                 }
                 else {
                     switchMaterial.isChecked= false
+                    parentFragmentManager.setFragmentResult(DataManager::class.simpleName!!,
+                        Bundle().also { it.putBoolean(DataManager::class.simpleName!!, false) })
                     showCloudIsNotAvailableMassage()
                 }
             }

@@ -16,8 +16,7 @@ data class NoteEntity(
     var originMonth: Int,
     var originYear: Int
 ) : Parcelable {
-
-
+    constructor() : this("", "", "", -1, -1, -1 )
     val dateAsString: String
         get() = "$originDay.$originMonth.$originYear"
 

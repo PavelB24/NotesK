@@ -20,6 +20,7 @@ class DataManagerPresenter: DataManagerContract.DataManagerFragmentPresenterInte
         localDB: DataBase,
         cloudDataBase: CloudRepository
     ) {
+        this.localDB = localDB
         this.cloudDataBase = cloudDataBase
         this.view= view
         this.repository = repository
@@ -36,7 +37,7 @@ class DataManagerPresenter: DataManagerContract.DataManagerFragmentPresenterInte
         }.start()
         if (auth.currentUser != null) {
             //ToDo}
-            view?.onDeletedMessage()
         }
+            view?.onDeletedMessage()
     }
 }

@@ -1,12 +1,15 @@
 package ru.barinov.notes.ui.notesActivity
 
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentResultListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.barinov.R
 import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.domain.Router
+import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
 import ru.barinov.notes.ui.Application
 import ru.barinov.notes.ui.application
+import ru.barinov.notes.ui.dataManagerFragment.DataManager
 import java.io.IOException
 
 class ActivityPresenter : ActivityContract.NoteActivityPresenterInterface {
@@ -49,6 +52,12 @@ class ActivityPresenter : ActivityContract.NoteActivityPresenterInterface {
     override fun readNotes() {
         if (repository.allNotes.isEmpty()) {
             toInitNotesInRepository()
+            fragmentManager.setFragmentResultListener( DataManager::class.simpleName!!, view!!, FragmentResultListener { requestKey, result ->
+                if(result.getBoolean(DataManager::class.simpleName!!)){
+                    toInitNotesFromCloud()
+                }
+            })
+
         }
     }
 
@@ -76,6 +85,23 @@ class ActivityPresenter : ActivityContract.NoteActivityPresenterInterface {
 //        fileInputStream!!.close()
     }
 
+
+    override fun toInitNotesFromCloud() {
+        if (view!!.application().authentication.auth.currentUser != null) {
+            Thread {
+                view!!.application().cloudDataBase.cloud.collection(view!!.application().authentication.auth.currentUser?.uid.toString())
+                    .get().addOnSuccessListener { result ->
+                    for (document in result) {
+                        val note = document.toObject(NoteEntity::class.java)
+                        if (!repository.findById(note.id)) {
+                            repository.addNote(note)
+                        }
+                    }
+
+                }
+            }.start()
+        }
+    }
     override fun setNavigationListeners(bottomNavigationItemView: BottomNavigationView) {
         bottomNavigationItemView.setOnItemSelectedListener { item ->
             when (item.itemId) {
@@ -94,7 +120,7 @@ class ActivityPresenter : ActivityContract.NoteActivityPresenterInterface {
     }
 
     private fun setStartFragment(bottomNavigationItemView: BottomNavigationView) {
-        if ((view?.application as Application).router.isLogged) {
+        if (view!!.application().authentication.auth.currentUser!=null) {
             bottomNavigationItemView.selectedItemId = R.id.notes_item_menu
         } else {
             bottomNavigationItemView.selectedItemId = R.id.profile_item_menu
@@ -102,7 +128,7 @@ class ActivityPresenter : ActivityContract.NoteActivityPresenterInterface {
     }
 
     private fun openProfile() {
-        router.openProfileFragment(getOrientation(), fragmentManager, (view?.application as Application).authentication.isOnline)
+        router.openProfileFragment(getOrientation(), fragmentManager, (view?.application as Application).authentication.auth.currentUser!=null)
     }
 
     private fun openDataManager() {
@@ -127,6 +153,9 @@ class ActivityPresenter : ActivityContract.NoteActivityPresenterInterface {
     }
 
     fun logOut() {
+        Thread{
         view!!.application().authentication.auth.signOut()
+        }.start()
+        view!!.application().authentication.isOnline = false
     }
 }

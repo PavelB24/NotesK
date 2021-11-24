@@ -9,7 +9,7 @@ class ActivityContract {
     interface NoteActivityPresenterInterface{
         fun onAttach(view: Activity)
         fun onDetach()
-
+        fun toInitNotesFromCloud()
         fun safeNotes()
         fun readNotes()
         fun onChoseNavigationItem()

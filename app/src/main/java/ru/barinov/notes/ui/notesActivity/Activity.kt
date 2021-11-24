@@ -8,6 +8,7 @@ import com.google.firebase.FirebaseApp
 import ru.barinov.databinding.MainLayoutBinding
 import ru.barinov.notes.domain.Callable
 import ru.barinov.notes.ui.Application
+import ru.barinov.notes.ui.application
 
 
 class Activity : AppCompatActivity(), Callable {
@@ -50,6 +51,7 @@ class Activity : AppCompatActivity(), Callable {
     }
 
     override fun onDestroy() {
+        application().repository.deleteAll()
         presenter.logOut()
         super.onDestroy()
     }

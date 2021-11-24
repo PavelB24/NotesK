@@ -68,10 +68,7 @@ class NoteView : Fragment(), NoteViewContract.ViewInterface {
 
     }
 
-    override fun onPause() {
-        parentFragmentManager.popBackStackImmediate()
-        super.onPause()
-    }
+
 
     override fun onDestroy() {
         if(requireActivity().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
