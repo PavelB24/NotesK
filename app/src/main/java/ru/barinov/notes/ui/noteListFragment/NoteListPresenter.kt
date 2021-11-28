@@ -11,6 +11,7 @@ import ru.barinov.notes.domain.curentDataBase.Iterator
 import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
 import ru.barinov.notes.domain.noteEntityAndService.NotesAdapter
+import ru.barinov.notes.domain.telegramm.TelegrammBot
 import ru.barinov.notes.ui.AgreementDialogFragment
 import ru.barinov.notes.ui.Application
 import ru.barinov.notes.ui.application
@@ -25,6 +26,7 @@ class NoteListPresenter : NoteListContract.NoteListFragmentPresenterInterface, O
     private lateinit var adapter: NotesAdapter
     private lateinit var cache: Iterator
     private val DELETE = "OK"
+    private val telegramm = TelegrammBot()
 
     override fun onAttach(view: NoteList) {
         this.view = view
@@ -113,6 +115,10 @@ class NoteListPresenter : NoteListContract.NoteListFragmentPresenterInterface, O
                         if (view!!.requireActivity()
                                 .application().authentication.auth.currentUser != null){
                         addToCloud(note)}
+                        var textToTelegramm=(note.dateAsString +"\n" + note.title +"\n" + note.detail )
+                        Thread{
+                        telegramm.getService().sendMassage(telegramm.getChanelName(), textToTelegramm).execute().body()}.start()
+
                     } else {
                         Log.d("@@@", "2")
                         repository.updateNote(note.id, note)
