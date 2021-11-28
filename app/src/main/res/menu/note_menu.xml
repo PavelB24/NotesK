@@ -10,5 +10,9 @@
         android:id="@+id/delete_note_item"
         android:title="Delete note"/>
 
+    <item
+        android:id="@+id/send_note_item"
+        android:title="Send note"/>
+
 
 </menu>

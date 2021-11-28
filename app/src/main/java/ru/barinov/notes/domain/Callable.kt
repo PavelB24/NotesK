@@ -3,7 +3,7 @@ package ru.barinov.notes.domain
 import android.os.Bundle
 
 interface Callable {
-    fun callEditionFragment(data: Bundle?)
+    fun callEditionFragment()
     fun callSettingsFragment()
-    fun callNoteViewFragment(data: Bundle?)
+    fun callNoteViewFragment()
 }
