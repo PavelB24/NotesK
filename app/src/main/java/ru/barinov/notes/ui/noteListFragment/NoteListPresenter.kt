@@ -1,44 +1,47 @@
 package ru.barinov.notes.ui.noteListFragment
 
+import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.FragmentResultListener
+import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import ru.barinov.R
 import ru.barinov.notes.domain.*
 import ru.barinov.notes.domain.curentDataBase.Iterator
 import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
 import ru.barinov.notes.domain.noteEntityAndService.NotesAdapter
+import ru.barinov.notes.domain.room.DataBase
 import ru.barinov.notes.domain.telegramm.TelegrammBot
 import ru.barinov.notes.ui.AgreementDialogFragment
-import ru.barinov.notes.ui.Application
-import ru.barinov.notes.ui.application
-import ru.barinov.notes.ui.dataManagerFragment.DataManager
-import ru.barinov.notes.ui.dataManagerFragment.DataManagerPresenter
-import ru.barinov.notes.ui.noteEditFragment.NoteEditFragment
 
-class NoteListPresenter : NoteListContract.NoteListFragmentPresenterInterface, OnNoteClickListener {
+class NoteListPresenter(
+    private val repository: NotesRepository,
+    private val adapter: NotesAdapter,
+    private val cache: Iterator,
+    private val localDataBase: DataBase,
+    private val authentication: Authentication,
+    private val cloudDataBase: CloudRepository,
+    private val activity: Callable,
+    private val router: Router
+) :
+    NoteListContract.NoteListFragmentPresenterInterface, OnNoteClickListener {
 
-    private var view: NoteList? = null
-    private lateinit var repository: NotesRepository
-    private lateinit var adapter: NotesAdapter
-    private lateinit var cache: Iterator
-    private val DELETE = "OK"
-    private val telegramm = TelegrammBot()
+    private val telegram = TelegrammBot()
+    private lateinit var tempNote: NoteEntity
 
-    override fun onAttach(view: NoteList) {
-        this.view = view
-        repository = (view.requireActivity().application as Application).repository
-        cache = (view.requireActivity().application as Application).cache
-    }
+    private val _onNoteDeletion = MutableLiveData<DialogFragment>()
+    val onNoteDeletion: LiveData<DialogFragment> = _onNoteDeletion
 
-    override fun onDetach() {
-        view = null
-        cache.clearSelectedCache()
-        cache.clearSearchCache()
-    }
+    private val  _editionModeMessage = MutableLiveData<Boolean>()
+    val editionModeMessage: LiveData<Boolean> = _editionModeMessage
+
+    private val  _onUnsuccessfulSearch = MutableLiveData<Boolean>()
+    val onUnsuccessfulSearch: LiveData<Boolean> = _onUnsuccessfulSearch
+
 
     override fun onSearchStarted(search: android.widget.SearchView) {
         search.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
@@ -48,7 +51,7 @@ class NoteListPresenter : NoteListContract.NoteListFragmentPresenterInterface, O
                 if (!(cache.isSearchCacheEmpty())) {
                     adapter.data = cache.getSearchedNotes()
                 } else {
-                    view?.searchWasUnsuccessfulMessage()
+                    _onUnsuccessfulSearch.postValue(true)
                 }
                 return false
             }
@@ -64,8 +67,7 @@ class NoteListPresenter : NoteListContract.NoteListFragmentPresenterInterface, O
         }
     }
 
-    override fun setAdapter(adapter: NotesAdapter) {
-        this.adapter = adapter
+    override fun setAdapter() {
         adapter.data = repository.getNotes()
         adapter.setListener(object : OnNoteClickListener {
             override fun onClickEdit(note: NoteEntity?) {
@@ -96,58 +98,52 @@ class NoteListPresenter : NoteListContract.NoteListFragmentPresenterInterface, O
     }
 
 
-    override fun getResultsFromNoteEditFragment(adapter: NotesAdapter) {
-        view?.parentFragmentManager?.setFragmentResultListener(
-            NoteEditFragment::class.simpleName!!,
-            view!!.requireActivity(),
-            FragmentResultListener { requestKey, result ->
-                Log.d("@@@", "Зашёл сюда")
-                if (!(result.isEmpty)) {
-                    val note: NoteEntity = result.getParcelable(NoteEntity::class.simpleName)!!
-                    if (!repository.findById(note.id)) {
-                        Log.d("@@@", "1")
-                        Thread {
-                            (view!!.requireActivity().application()).localDataBase.noteDao()
-                                .addNote(note)
-                        }.start()
-                        repository.addNote(note)
-                        Log.d("@@@", "1-1")
-                        if (view!!.requireActivity()
-                                .application().authentication.auth.currentUser != null){
-                        addToCloud(note)}
-                        var textToTelegramm=(note.dateAsString +"\n" + note.title +"\n" + note.detail )
-                        Thread{
-                        telegramm.getService().sendMassage(telegramm.getChanelName(), textToTelegramm).execute().body()}.start()
-
-                    } else {
-                        Log.d("@@@", "2")
-                        repository.updateNote(note.id, note)
-                        Thread {
-                            (view!!.requireActivity().application()).localDataBase.noteDao()
-                                .update(note)
-                        }.start()
-                        Log.d("@@@", "2-1")
-                        if (view!!.requireActivity()
-                                .application().authentication.auth.currentUser != null) {
-                            updInCloud(note)
-                        }
-                    }
-
+    override fun getResultsFromNoteEditFragment(result: Bundle) {
+        if (!(result.isEmpty)) {
+            val note: NoteEntity = result.getParcelable(NoteEntity::class.simpleName)!!
+            if (!repository.findById(note.id)) {
+                Log.d("@@@", "1")
+                Thread {
+                    localDataBase.noteDao()
+                        .addNote(note)
+                }.start()
+                repository.addNote(note)
+                Log.d("@@@", "1-1")
+                if (authentication.auth.currentUser != null
+                ) {
+                    addToCloud(note)
                 }
-                adapter.data = repository.getNotes()
-            })
+                val textToTelegram = (note.dateAsString + "\n" + note.title + "\n" + note.detail)
+                Thread {
+                    telegram.getService().sendMassage(telegram.getChanelName(), textToTelegram)
+                        .execute().body()
+                }.start()
+
+            } else {
+                Log.d("@@@", "2")
+                repository.updateNote(note.id, note)
+                Thread {
+                    localDataBase.noteDao().update(note)
+                }.start()
+                Log.d("@@@", "2-1")
+                if (authentication.auth.currentUser != null) {
+                    updInCloud(note)
+                }
+            }
+
+        }
+        adapter.data = repository.getNotes()
     }
+
 
     private fun updInCloud(note: NoteEntity) {
         Log.d("@@@", "Облако")
         Thread {
-            view!!.requireActivity().application().cloudDataBase.cloud.collection(
-                view!!.requireActivity()
-                    .application().authentication.auth.currentUser?.uid.toString()
+            cloudDataBase.cloud.collection(
+                authentication.auth.currentUser?.uid.toString()
             ).document(note.id).delete()
-            view!!.requireActivity().application().cloudDataBase.cloud.collection(
-                view!!.requireActivity()
-                    .application().authentication.auth.currentUser?.uid.toString()
+            cloudDataBase.cloud.collection(
+                authentication.auth.currentUser?.uid.toString()
             )
                 .document(note.id)
                 .set(note).addOnSuccessListener { Log.d("@@@", "Added to cloud") }
@@ -157,7 +153,7 @@ class NoteListPresenter : NoteListContract.NoteListFragmentPresenterInterface, O
 
 
     override fun createNewNote(): Boolean {
-        (view?.requireActivity() as Callable).callEditionFragment()
+        activity.callEditionFragment()
         return true
     }
 
@@ -167,7 +163,7 @@ class NoteListPresenter : NoteListContract.NoteListFragmentPresenterInterface, O
             Thread {
                 deleteNoteInCloud(it)
             }.start()
-            view!!.requireActivity().application().localDataBase.noteDao().delete(it)
+            localDataBase.noteDao().delete(it)
             adapter.data = repository.getNotes()
         }
         cache.clearSelectedCache()
@@ -175,56 +171,41 @@ class NoteListPresenter : NoteListContract.NoteListFragmentPresenterInterface, O
 
     override fun addToCloud(note: NoteEntity) {
         Thread {
-            (view!!.requireActivity().application().cloudDataBase.cloud.collection(
-                view!!.requireActivity()
-                    .application().authentication.auth.currentUser?.uid.toString()
+            cloudDataBase.cloud.collection(
+                authentication.auth.currentUser?.uid.toString()
             )
                 .document(note.id)
                 .set(note).addOnSuccessListener { Log.d("@@@", "Added to cloud") }
-                .addOnFailureListener { Log.d("@@@", "Not added to cloud") })
+                .addOnFailureListener { Log.d("@@@", "Not added to cloud") }
         }.start()
     }
 
     override fun onClickEdit(note: NoteEntity?) {
-        view?.onEditionModeToastMessage()
-        (view?.requireActivity()?.application as Application).router.setId(note!!.id)
-        (view?.requireActivity() as Callable).callEditionFragment()
+        //todo liveData
+        _editionModeMessage.postValue(true)
+        router.setId(note!!.id)
+        activity.callEditionFragment()
     }
 
     override fun onClickDelete(note: NoteEntity) {
         val confirmation = AgreementDialogFragment()
-        confirmation.show(view!!.parentFragmentManager, DELETE)
-        view?.parentFragmentManager?.setFragmentResultListener(
-            AgreementDialogFragment::class.simpleName!!,
-            view!!.requireActivity(), { requestKey, result ->
-                val isConfirmed = result.getBoolean(confirmation.AGREEMENT_KEY)
-                if (isConfirmed) {
-                    repository.removeNote(note.id)
-                    Thread {
-                        (view!!.requireActivity().application()).localDataBase.noteDao()
-                            .delete(note)
-                    }.start()
-                    adapter.data = repository.getNotes()
-                    deleteNoteInCloud(note)
-                }
-            })
+        //todo LD with DialogFragment
+        tempNote = note
+        _onNoteDeletion.postValue(confirmation)
     }
 
     private fun deleteNoteInCloud(note: NoteEntity) {
-        if (view!!.requireActivity().application().authentication.auth.currentUser != null)
+        if (authentication.auth.currentUser != null)
             Thread {
-                view!!.requireActivity().application().cloudDataBase.cloud
-                    .collection(
-                        view!!.requireActivity()
-                            .application().authentication.auth.currentUser?.uid.toString()
-                    )
+                cloudDataBase.cloud.collection(
+                        authentication.auth.currentUser?.uid.toString())
                     .document(note.id).delete()
             }.start()
     }
 
     override fun onNoteClick(note: NoteEntity) {
-        (view?.requireActivity()?.application as Application).router.setId(note.id)
-        (view?.requireActivity() as Callable).callNoteViewFragment()
+        router.setId(note.id)
+        activity.callNoteViewFragment()
 
     }
 
@@ -250,6 +231,19 @@ class NoteListPresenter : NoteListContract.NoteListFragmentPresenterInterface, O
     override fun onNoteUnChecked(note: NoteEntity) {
         if (cache.findInSelectedCache(note.id)) {
             cache.removeNoteFromSelectedCache(note.id)
+        }
+    }
+
+    fun deleteNoteInRepos(result: Bundle, key: String) {
+        val isConfirmed = result.getBoolean(key)
+        if (isConfirmed) {
+            repository.removeNote(tempNote.id)
+            Thread {
+                localDataBase.noteDao()
+                    .delete(tempNote)
+            }.start()
+            adapter.data = repository.getNotes()
+            deleteNoteInCloud(tempNote)
         }
     }
 }

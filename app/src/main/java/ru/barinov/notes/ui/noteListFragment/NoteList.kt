@@ -6,20 +6,29 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentResultListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.barinov.R
 import ru.barinov.databinding.NoteListLayoutBinding
+import ru.barinov.notes.domain.Callable
+import ru.barinov.notes.domain.CloudRepository
+import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.domain.noteEntityAndService.NotesAdapter
+import ru.barinov.notes.domain.room.DataBase
+import ru.barinov.notes.ui.AgreementDialogFragment
+import ru.barinov.notes.ui.application
+import ru.barinov.notes.ui.noteEditFragment.NoteEditFragment
 import ru.barinov.notes.ui.notesActivity.Activity
 
-class NoteList : Fragment(), NoteListContract.View {
+class NoteList : Fragment(){
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: NotesAdapter
+    private val adapter= NotesAdapter()
     private lateinit var binding: NoteListLayoutBinding
     private lateinit var toolbar: Toolbar
     private lateinit var searchItem: MenuItem
     private lateinit var presenter: NoteListPresenter
+    private val DELETE = "OK"
 
 
     override fun onCreateView(
@@ -29,17 +38,36 @@ class NoteList : Fragment(), NoteListContract.View {
     ): View {
         setHasOptionsMenu(true)
         binding = NoteListLayoutBinding.inflate(inflater, container, false)
-        presenter = NoteListPresenter()
+        presenter = NoteListPresenter(getRepository(), adapter, requireActivity().application().cache, getLocalDB(), requireActivity().application().authentication,
+        getCloudDB(), (requireActivity() as Callable), requireActivity().application().router)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        presenter.onAttach(this)
         (requireActivity() as Activity).bottomNavigationItemView.setBackgroundColor(resources.getColor(R.color.cherry))
         initViews()
-        presenter.getResultsFromNoteEditFragment(adapter)
+        parentFragmentManager.setFragmentResultListener(
+            NoteEditFragment::class.simpleName!!,
+            requireActivity(),
+            FragmentResultListener { requestKey, result ->
+                presenter.getResultsFromNoteEditFragment(result)
+                })
+        createDialog()
+        searchWasUnsuccessfulMessage()
+        onEditionModeToastMessage()
         super.onViewCreated(view, savedInstanceState)
 
+    }
+
+    private fun createDialog() {
+        presenter.onNoteDeletion.observe(requireActivity()) { it ->
+            it.show(parentFragmentManager, DELETE)
+            parentFragmentManager.setFragmentResultListener(
+                AgreementDialogFragment::class.simpleName!!,
+                requireActivity(), { requestKey, result ->
+                    presenter.deleteNoteInRepos(result, DELETE)
+                })
+        }
     }
 
 
@@ -67,7 +95,6 @@ class NoteList : Fragment(), NoteListContract.View {
 
 
     private fun initViews() {
-        initAdapter()
         setRecyclerView()
         setToolbar()
     }
@@ -77,29 +104,38 @@ class NoteList : Fragment(), NoteListContract.View {
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
     }
 
-    private fun initAdapter() {
-        adapter = NotesAdapter()
-        presenter.setAdapter(adapter)
-    }
+
 
     private fun setRecyclerView() {
+        presenter.setAdapter()
         recyclerView = binding.recyclerview
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
     }
 
-    override fun onDestroy() {
-        presenter.onDetach()
-        super.onDestroy()
+
+
+    private fun searchWasUnsuccessfulMessage() {
+        presenter.onUnsuccessfulSearch.observe(requireActivity()){
+            Toast.makeText(view?.context, R.string.unsuccessful_search_toast_text, Toast.LENGTH_SHORT)
+                .show()
+        }
     }
 
-    override fun searchWasUnsuccessfulMessage() {
-        Toast.makeText(view?.context, R.string.unsuccessful_search_toast_text, Toast.LENGTH_SHORT)
-            .show()
-    }
-
-    override fun onEditionModeToastMessage() {
+    private fun onEditionModeToastMessage() {
+        presenter.editionModeMessage.observe(requireActivity()){
         Toast.makeText(activity, R.string.edition_mode_toast_text, Toast.LENGTH_SHORT).show()
+        }
+    }
+    private fun getRepository(): NotesRepository {
+        return requireActivity().application().repository
+    }
+
+    private fun getLocalDB(): DataBase {
+        return requireActivity().application().localDataBase
+    }
+    private fun getCloudDB(): CloudRepository {
+        return requireActivity().application().cloudDataBase
     }
 }
 

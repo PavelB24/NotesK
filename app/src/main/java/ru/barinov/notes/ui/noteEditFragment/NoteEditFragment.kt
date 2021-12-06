@@ -11,14 +11,16 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import ru.barinov.R
 import ru.barinov.databinding.NoteEditLayoutBinding
+import ru.barinov.notes.ui.Application
+import ru.barinov.notes.ui.application
 
-class NoteEditFragment() : Fragment(), NoteEditFragmentContract.ViewInterface {
+class NoteEditFragment() : Fragment() {
     private lateinit var applyButton: Button
     private lateinit var titleEditText: EditText
     private lateinit var descriptionEditText: EditText
     private lateinit var datePicker: DatePicker
     private lateinit var binding: NoteEditLayoutBinding
-    private var presenter = NoteEditFragmentPresenter()
+    private lateinit var presenter: NoteEditFragmentPresenter
 
 
     override fun onCreateView(
@@ -31,13 +33,23 @@ class NoteEditFragment() : Fragment(), NoteEditFragmentContract.ViewInterface {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        presenter.onAttach(this)
         initViews()
         initButton()
+        presenter = NoteEditFragmentPresenter(applyButton, titleEditText, descriptionEditText,
+            datePicker, getIdFromRouter(), parentFragmentManager, requireActivity().application().repository )
+        presenter.safeNote()
         presenter.fillTheViews()
+        presenter.fieldsIsNotFilledMassageLiveData.observe(requireActivity()){
+            Toast.makeText(activity, R.string.warning_toast, Toast.LENGTH_SHORT).show()
+        }
+        presenter.viewContentLiveData.observe(requireActivity()){it->
+            titleEditText.setText(it[0])
+            descriptionEditText.setText(it[1])
+            datePicker.updateDate(it[2].toInt(), it[3].toInt(),  it[4].toInt())
+
+        }
         super.onViewCreated(view, savedInstanceState)
     }
-
 
 
     private fun initViews() {
@@ -48,8 +60,6 @@ class NoteEditFragment() : Fragment(), NoteEditFragmentContract.ViewInterface {
 
     private fun initButton() {
         applyButton = binding.applyButton as Button
-        presenter.safeNote(applyButton, titleEditText, descriptionEditText, datePicker)
-
     }
 
     override fun onPause() {
@@ -58,19 +68,8 @@ class NoteEditFragment() : Fragment(), NoteEditFragmentContract.ViewInterface {
     }
 
 
-    override fun onDestroy() {
-        presenter.onDetach()
-        super.onDestroy()
-    }
-
-    override fun fillTheFields(title: String?, detail: String?, year: Int?, month: Int?, day: Int?) {
-            titleEditText.setText(title)
-            descriptionEditText.setText(detail)
-            datePicker.updateDate(year!!, month!! - 1, day!!)
-    }
-
-    override fun fieldsIsNotFilledMassageToast() {
-        Toast.makeText(activity, R.string.warning_toast, Toast.LENGTH_SHORT).show()
+    private fun getIdFromRouter(): String? {
+        return (requireActivity().application as Application).router.getId()
     }
 
 }

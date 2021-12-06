@@ -4,68 +4,70 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.DatePicker
 import android.widget.EditText
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import ru.barinov.notes.domain.Router
+import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
 import ru.barinov.notes.ui.Application
 import java.util.*
 
 
-class NoteEditFragmentPresenter : NoteEditFragmentContract.NoteEditFragmentPresenterInterface {
-    private var view: NoteEditFragment? = null
-    private var tempNote: NoteEntity? = null
+class NoteEditFragmentPresenter(
+    private val applyButton: Button,
+    private val title: EditText,
+    private val body: EditText,
+    private val datePicker: DatePicker,
+    id: String?,
+    private val manager: FragmentManager,
+    repository: NotesRepository
+) : NoteEditFragmentContract.NoteEditFragmentPresenterInterface {
+    private var tempNote: NoteEntity? = repository.getById(id)
     private lateinit var uuid: UUID
     private var data: Bundle? = null
 
-    override fun onAttach(view: NoteEditFragment) {
-        this.view = view
-        tempNote = (view.requireActivity().application as Application).repository.getById(getIdFromRouter())
-        (view.requireActivity().application as Application).router.resetId()
-    }
+    private val _fieldsIsNotFilledMassageLiveData= MutableLiveData<Boolean>()
+    val fieldsIsNotFilledMassageLiveData: LiveData<Boolean> = _fieldsIsNotFilledMassageLiveData
 
-    override fun onDetach() {
-        data = null
-        view = null
-        tempNote = null
-    }
+    private val _viewContentLiveData= MutableLiveData<Array<String>>()
+    val viewContentLiveData: LiveData<Array<String>> = _viewContentLiveData
 
-//Переписать под получение строк и интов, а не вьюшек
-    override fun safeNote(
-        applyButton: Button,
-        titleEditText: EditText,
-        descriptionEditText: EditText,
-        datePicker: DatePicker
-    ) {
+
+    //Переписать под получение строк и интов, а не вьюшек
+    override fun safeNote() {
         applyButton.setOnClickListener {
             uuid = UUID.randomUUID()
             //Редактирование
-            if (checkOnEditionMode() && (titleEditText.text.isNotEmpty() && descriptionEditText.text.isNotEmpty())) {
+            if (checkOnEditionMode() && (title.text.toString().isNotEmpty() && body.text.toString().isNotEmpty())) {
                 val note = NoteEntity(
-                    tempNote!!.id, titleEditText.text.toString(),
-                    descriptionEditText.text.toString(),
+                    tempNote!!.id, title.text.toString(),
+                    body.text.toString(),
                     datePicker.dayOfMonth, datePicker.month, datePicker.year
                 )
                 data = Bundle()
                 data?.putParcelable(NoteEntity::class.simpleName, note)
-                view?.parentFragmentManager?.setFragmentResult(
+                manager.setFragmentResult(
                     NoteEditFragment::class.simpleName!!,
                     data!!
                 )
-                view?.parentFragmentManager?.popBackStackImmediate()
+                manager.popBackStackImmediate()
             }//Создаём новую заметку
-            else if (titleEditText.text.isNotEmpty() && descriptionEditText.text.isNotEmpty()) {
+            else if (title.text.toString().isNotEmpty() && body.text.toString().isNotEmpty()) {
                 val note = NoteEntity(
-                    uuid.toString(), titleEditText.text.toString(),
-                    descriptionEditText.text.toString(),
+                    uuid.toString(), title.text.toString(),
+                    body.text.toString(),
                     datePicker.dayOfMonth, datePicker.month, datePicker.year
                 )
                 data = Bundle()
                 data?.putParcelable(NoteEntity::class.simpleName, note)
-                view?.parentFragmentManager?.setFragmentResult(
+                manager.setFragmentResult(
                     NoteEditFragment::class.simpleName!!,
                     data!!
                 )
-                view?.parentFragmentManager?.popBackStackImmediate()
+                manager.popBackStackImmediate()
             } else {
-                view?.fieldsIsNotFilledMassageToast()
+                _fieldsIsNotFilledMassageLiveData.postValue(true)
             }
         }
     }
@@ -77,18 +79,16 @@ class NoteEditFragmentPresenter : NoteEditFragmentContract.NoteEditFragmentPrese
         return false
     }
 
-    private fun getIdFromRouter(): String? {
-        return (view?.requireActivity()?.application as Application).router.getId()
-    }
+
 
     fun fillTheViews() {
         if (checkOnEditionMode()) {
-            view?.fillTheFields(
-                tempNote?.title,
-                tempNote?.detail,
-                tempNote?.originYear,
-                tempNote?.originMonth,
-                tempNote?.originDay
+         _viewContentLiveData.postValue(
+             arrayOf(tempNote!!.title,
+                 tempNote!!.detail,
+                 tempNote!!.originYear.toString(),
+                 tempNote!!.originMonth.toString(),
+                 tempNote!!.originDay.toString())
             )
         }
     }

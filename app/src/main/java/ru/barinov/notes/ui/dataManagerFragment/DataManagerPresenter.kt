@@ -1,36 +1,32 @@
 package ru.barinov.notes.ui.dataManagerFragment
 
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
 import ru.barinov.notes.domain.CloudRepository
 import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.domain.room.DataBase
 
 
-class DataManagerPresenter: DataManagerContract.DataManagerFragmentPresenterInterface {
-    private  var view: DataManagerContract.ViewInterface? = null
-    private lateinit var  repository: NotesRepository
-    private lateinit var  localDB: DataBase
-    private lateinit var  cloudDataBase: CloudRepository
+class DataManagerPresenter(
+    repository: NotesRepository,
+    localDB: DataBase,
+    cloudDataBase: CloudRepository,
+    auth: FirebaseAuth
+) :
+    DataManagerContract.DataManagerFragmentPresenterInterface {
+    private val repository: NotesRepository = repository
+    private val localDB: DataBase = localDB
+    private val cloudDataBase: CloudRepository = cloudDataBase
+    private val auth = auth
 
+    private val _liveData = MutableLiveData<Boolean>()
+    override val ld: LiveData<Boolean> = _liveData
 
-    override fun onAttach(
-        view: DataManagerContract.ViewInterface,
-        repository: NotesRepository,
-        localDB: DataBase,
-        cloudDataBase: CloudRepository
-    ) {
-        this.localDB = localDB
-        this.cloudDataBase = cloudDataBase
-        this.view= view
-        this.repository = repository
-    }
-
-    override fun onDetach() {
-        view= null
-    }
-
-    override fun deleteAllNotes(auth: FirebaseAuth) {
+    override fun deleteAllNotes() {
         repository.deleteAll()
         Thread {
             localDB.clearAllTables()
@@ -38,6 +34,6 @@ class DataManagerPresenter: DataManagerContract.DataManagerFragmentPresenterInte
         if (auth.currentUser != null) {
             //ToDo}
         }
-            view?.onDeletedMessage()
+        _liveData.postValue(true)
     }
 }

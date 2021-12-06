@@ -10,14 +10,19 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import ru.barinov.R
 import ru.barinov.databinding.DataManagerLayoutBinding
+import ru.barinov.notes.domain.CloudRepository
+import ru.barinov.notes.domain.curentDataBase.NotesRepository
+import ru.barinov.notes.domain.room.DataBase
 import ru.barinov.notes.ui.Application
 import ru.barinov.notes.ui.application
 import ru.barinov.notes.ui.notesActivity.Activity
 
 
-class DataManager: Fragment(), DataManagerContract.ViewInterface {
+class DataManager: Fragment() {
     private lateinit var binding: DataManagerLayoutBinding
     private lateinit var deleteImageButton: ImageButton
     private lateinit var switchMaterial: SwitchMaterial
@@ -33,33 +38,45 @@ class DataManager: Fragment(), DataManagerContract.ViewInterface {
         savedInstanceState: Bundle?
     ): View {
         binding= DataManagerLayoutBinding.inflate(inflater)
-        presenter= DataManagerPresenter()
+        presenter= DataManagerPresenter(getRepository(), getLocalDB(), getCloudDB(), requireActivity().application().authentication.auth)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (requireActivity() as Activity).bottomNavigationItemView.setBackgroundColor(resources.getColor(R.color.cherry))
-        presenter.onAttach(this, requireActivity().application().repository,
-            requireActivity().application().localDataBase,
-            requireActivity().application().cloudDataBase)
         pref= requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
         editor= pref.edit()
         deleteImageButton= binding.deleteStorageButton
         initDeleteButton()
         switchMaterial= binding.dataManagerSwitch
         setOnSwitchListener()
+        presenter.ld.observe(requireActivity()) {
+            onDeletedMessage()
+        }
+
+        }
+
+    private fun getRepository():NotesRepository {
+        return requireActivity().application().repository
+    }
+
+    private fun getLocalDB(): DataBase {
+        return requireActivity().application().localDataBase
+    }
+    private fun getCloudDB(): CloudRepository {
+        return requireActivity().application().cloudDataBase
     }
 
 
     private fun initDeleteButton() {
         //Todo переписаьть под диалог с выбором где удалить заметки
         deleteImageButton.setOnClickListener {
-           presenter.deleteAllNotes(requireActivity().application().authentication.auth)
+           presenter.deleteAllNotes()
         }
     }
 
-    override fun onDeletedMessage() {
+    private fun onDeletedMessage() {
         Toast.makeText(activity, "Notes Deleted", Toast.LENGTH_SHORT).show()
     }
 
