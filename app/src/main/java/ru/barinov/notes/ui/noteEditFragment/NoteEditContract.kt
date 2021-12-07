@@ -6,7 +6,7 @@ import android.widget.EditText
 import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.ui.noteViewFragment.NoteViewContract
 
-class NoteEditFragmentContract {
+class NoteEditContract {
 
     interface NoteEditFragmentPresenterInterface {
         fun safeNote()

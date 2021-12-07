@@ -18,7 +18,7 @@ import ru.barinov.notes.domain.noteEntityAndService.NotesAdapter
 import ru.barinov.notes.domain.room.DataBase
 import ru.barinov.notes.ui.AgreementDialogFragment
 import ru.barinov.notes.ui.application
-import ru.barinov.notes.ui.noteEditFragment.NoteEditFragment
+import ru.barinov.notes.ui.noteEditFragment.NoteEdit
 import ru.barinov.notes.ui.notesActivity.Activity
 
 class NoteList : Fragment(){
@@ -27,7 +27,7 @@ class NoteList : Fragment(){
     private lateinit var binding: NoteListLayoutBinding
     private lateinit var toolbar: Toolbar
     private lateinit var searchItem: MenuItem
-    private lateinit var presenter: NoteListPresenter
+    private lateinit var presenter: NoteListViewModel
     private val DELETE = "OK"
 
 
@@ -38,7 +38,7 @@ class NoteList : Fragment(){
     ): View {
         setHasOptionsMenu(true)
         binding = NoteListLayoutBinding.inflate(inflater, container, false)
-        presenter = NoteListPresenter(getRepository(), adapter, requireActivity().application().cache, getLocalDB(), requireActivity().application().authentication,
+        presenter = NoteListViewModel(getRepository(), adapter, requireActivity().application().cache, getLocalDB(), requireActivity().application().authentication,
         getCloudDB(), (requireActivity() as Callable), requireActivity().application().router)
         return binding.root
     }
@@ -47,7 +47,7 @@ class NoteList : Fragment(){
         (requireActivity() as Activity).bottomNavigationItemView.setBackgroundColor(resources.getColor(R.color.cherry))
         initViews()
         parentFragmentManager.setFragmentResultListener(
-            NoteEditFragment::class.simpleName!!,
+            NoteEdit::class.simpleName!!,
             requireActivity(),
             FragmentResultListener { requestKey, result ->
                 presenter.getResultsFromNoteEditFragment(result)

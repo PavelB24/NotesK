@@ -11,7 +11,7 @@ import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.domain.room.DataBase
 
 
-class DataManagerPresenter(
+class DataManagerViewModel(
     repository: NotesRepository,
     localDB: DataBase,
     cloudDataBase: CloudRepository,

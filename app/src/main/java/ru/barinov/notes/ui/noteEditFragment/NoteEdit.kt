@@ -14,13 +14,13 @@ import ru.barinov.databinding.NoteEditLayoutBinding
 import ru.barinov.notes.ui.Application
 import ru.barinov.notes.ui.application
 
-class NoteEditFragment() : Fragment() {
+class NoteEdit() : Fragment() {
     private lateinit var applyButton: Button
     private lateinit var titleEditText: EditText
     private lateinit var descriptionEditText: EditText
     private lateinit var datePicker: DatePicker
     private lateinit var binding: NoteEditLayoutBinding
-    private lateinit var presenter: NoteEditFragmentPresenter
+    private lateinit var presenter: NoteEditViewModel
 
 
     override fun onCreateView(
@@ -35,7 +35,7 @@ class NoteEditFragment() : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initViews()
         initButton()
-        presenter = NoteEditFragmentPresenter(applyButton, titleEditText, descriptionEditText,
+        presenter = NoteEditViewModel(applyButton, titleEditText, descriptionEditText,
             datePicker, getIdFromRouter(), parentFragmentManager, requireActivity().application().repository )
         presenter.safeNote()
         presenter.fillTheViews()

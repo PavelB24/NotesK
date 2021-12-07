@@ -18,7 +18,7 @@ import ru.barinov.notes.domain.room.DataBase
 import ru.barinov.notes.domain.telegramm.TelegrammBot
 import ru.barinov.notes.ui.AgreementDialogFragment
 
-class NoteListPresenter(
+class NoteListViewModel(
     private val repository: NotesRepository,
     private val adapter: NotesAdapter,
     private val cache: Iterator,
@@ -71,28 +71,28 @@ class NoteListPresenter(
         adapter.data = repository.getNotes()
         adapter.setListener(object : OnNoteClickListener {
             override fun onClickEdit(note: NoteEntity?) {
-                this@NoteListPresenter.onNoteClick(note!!)
+                this@NoteListViewModel.onNoteClick(note!!)
             }
 
             override fun onClickDelete(note: NoteEntity) {
-                this@NoteListPresenter.onClickDelete(note)
+                this@NoteListViewModel.onClickDelete(note)
             }
 
             override fun onNoteClick(note: NoteEntity) {
-                this@NoteListPresenter.onNoteClick(note)
+                this@NoteListViewModel.onNoteClick(note)
             }
 
             override fun onNoteLongClick(note: NoteEntity, view: View) {
-                this@NoteListPresenter.onNoteLongClick(note, view)
+                this@NoteListViewModel.onNoteLongClick(note, view)
 
             }
 
             override fun onNoteChecked(note: NoteEntity) {
-                this@NoteListPresenter.onNoteChecked(note)
+                this@NoteListViewModel.onNoteChecked(note)
             }
 
             override fun onNoteUnChecked(note: NoteEntity) {
-                this@NoteListPresenter.onNoteUnChecked(note)
+                this@NoteListViewModel.onNoteUnChecked(note)
             }
         })
     }

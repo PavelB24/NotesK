@@ -4,7 +4,7 @@ import android.content.res.Configuration
 import androidx.fragment.app.FragmentManager
 import ru.barinov.R
 import ru.barinov.notes.ui.dataManagerFragment.DataManager
-import ru.barinov.notes.ui.noteEditFragment.NoteEditFragment
+import ru.barinov.notes.ui.noteEditFragment.NoteEdit
 import ru.barinov.notes.ui.noteListFragment.NoteList
 import ru.barinov.notes.ui.noteViewFragment.NoteView
 import ru.barinov.notes.ui.profileFragment.Profile
@@ -41,11 +41,11 @@ class Router {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             fragmentManager.popBackStackImmediate()
             fragmentManager.beginTransaction()
-                .replace(R.id.container_for_fragment_land_2, NoteEditFragment())
+                .replace(R.id.container_for_fragment_land_2, NoteEdit())
                 .addToBackStack(null).commit()
         } else {
             fragmentManager.beginTransaction()
-                .replace(R.id.container_for_fragment, NoteEditFragment())
+                .replace(R.id.container_for_fragment, NoteEdit())
                 .addToBackStack(null).commit()
         }
     }

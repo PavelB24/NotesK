@@ -7,14 +7,12 @@ import android.widget.EditText
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import ru.barinov.notes.domain.Router
 import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
-import ru.barinov.notes.ui.Application
 import java.util.*
 
 
-class NoteEditFragmentPresenter(
+class NoteEditViewModel(
     private val applyButton: Button,
     private val title: EditText,
     private val body: EditText,
@@ -22,7 +20,7 @@ class NoteEditFragmentPresenter(
     id: String?,
     private val manager: FragmentManager,
     repository: NotesRepository
-) : NoteEditFragmentContract.NoteEditFragmentPresenterInterface {
+) : NoteEditContract.NoteEditFragmentPresenterInterface {
     private var tempNote: NoteEntity? = repository.getById(id)
     private lateinit var uuid: UUID
     private var data: Bundle? = null
@@ -48,7 +46,7 @@ class NoteEditFragmentPresenter(
                 data = Bundle()
                 data?.putParcelable(NoteEntity::class.simpleName, note)
                 manager.setFragmentResult(
-                    NoteEditFragment::class.simpleName!!,
+                    NoteEdit::class.simpleName!!,
                     data!!
                 )
                 manager.popBackStackImmediate()
@@ -62,7 +60,7 @@ class NoteEditFragmentPresenter(
                 data = Bundle()
                 data?.putParcelable(NoteEntity::class.simpleName, note)
                 manager.setFragmentResult(
-                    NoteEditFragment::class.simpleName!!,
+                    NoteEdit::class.simpleName!!,
                     data!!
                 )
                 manager.popBackStackImmediate()

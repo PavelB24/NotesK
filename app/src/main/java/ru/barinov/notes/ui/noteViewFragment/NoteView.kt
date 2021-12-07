@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import ru.barinov.R
 import ru.barinov.databinding.NoteViewFramentLayoutBinding
-import ru.barinov.notes.ui.Application
 import ru.barinov.notes.ui.application
 import ru.barinov.notes.ui.notesActivity.Activity
 
@@ -20,7 +19,7 @@ class NoteView : Fragment(), NoteViewContract.ViewInterface {
     private lateinit var title: TextView
     private lateinit var body: TextView
     private lateinit var date: TextView
-    private var presenter = NoteViewPresenter()
+    private var presenter = NoteViewViewModel()
     private lateinit var backButton: Button
 
     override fun onCreateView(

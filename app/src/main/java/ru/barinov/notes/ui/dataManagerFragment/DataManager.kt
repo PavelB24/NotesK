@@ -10,14 +10,11 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.material.switchmaterial.SwitchMaterial
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import ru.barinov.R
 import ru.barinov.databinding.DataManagerLayoutBinding
 import ru.barinov.notes.domain.CloudRepository
 import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.domain.room.DataBase
-import ru.barinov.notes.ui.Application
 import ru.barinov.notes.ui.application
 import ru.barinov.notes.ui.notesActivity.Activity
 
@@ -26,7 +23,7 @@ class DataManager: Fragment() {
     private lateinit var binding: DataManagerLayoutBinding
     private lateinit var deleteImageButton: ImageButton
     private lateinit var switchMaterial: SwitchMaterial
-    private lateinit var presenter: DataManagerPresenter
+    private lateinit var presenter: DataManagerViewModel
     private lateinit  var  pref: SharedPreferences
     private lateinit var  editor: SharedPreferences.Editor
     private val switchStateKey = "SwitchState"
@@ -38,7 +35,7 @@ class DataManager: Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding= DataManagerLayoutBinding.inflate(inflater)
-        presenter= DataManagerPresenter(getRepository(), getLocalDB(), getCloudDB(), requireActivity().application().authentication.auth)
+        presenter= DataManagerViewModel(getRepository(), getLocalDB(), getCloudDB(), requireActivity().application().authentication.auth)
         return binding.root
     }
 
