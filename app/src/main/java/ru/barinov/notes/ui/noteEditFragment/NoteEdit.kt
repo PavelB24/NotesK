@@ -1,5 +1,7 @@
 package ru.barinov.notes.ui.noteEditFragment
 
+import android.content.Context
+import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +23,8 @@ class NoteEdit() : Fragment() {
     private lateinit var datePicker: DatePicker
     private lateinit var binding: NoteEditLayoutBinding
     private lateinit var presenter: NoteEditViewModel
+    //todo
+    private val location= (requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager)
 
 
     override fun onCreateView(

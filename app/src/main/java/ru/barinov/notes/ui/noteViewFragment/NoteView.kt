@@ -35,7 +35,6 @@ class NoteView : Fragment(), NoteViewContract.ViewInterface {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        presenter.onAttach(this, requireActivity().application().repository, getIdFromRouter()!!)
         requireActivity().application().router.resetId()
         initViews()
         presenter.getNote()
@@ -73,7 +72,6 @@ class NoteView : Fragment(), NoteViewContract.ViewInterface {
         if(requireActivity().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
             (requireActivity() as Activity).bottomNavigationItemView.setBackgroundColor(resources.getColor(R.color.cherry))
         }
-        presenter.onDetach()
         super.onDestroy()
     }
     private fun getIdFromRouter(): String?{

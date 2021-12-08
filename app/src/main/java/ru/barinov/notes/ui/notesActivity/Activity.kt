@@ -2,6 +2,7 @@ package ru.barinov.notes.ui.notesActivity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentResultListener
 
@@ -17,30 +18,46 @@ import ru.barinov.notes.domain.room.DataBase
 import ru.barinov.notes.ui.Application
 import ru.barinov.notes.ui.application
 import ru.barinov.notes.ui.dataManagerFragment.DataManager
+import java.util.jar.Manifest
 
 
 class Activity : AppCompatActivity(), Callable {
-    private var presenter = ActivityViewModel(getRepository(), getLocalDB(), getAuthentication(), getCloudDB())
+    private lateinit var viewModel: ActivityViewModel
     private lateinit var binding: MainLayoutBinding
     lateinit var bottomNavigationItemView: BottomNavigationView
+    private val coarseLocation: String = android.Manifest.permission.ACCESS_COARSE_LOCATION
+    private val fineLocation: String = android.Manifest.permission.ACCESS_FINE_LOCATION
+    private val LOCATION_PERMISSION_REQUEST_CODE = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = MainLayoutBinding.inflate(layoutInflater)
+        viewModel =
+            ActivityViewModel(getRepository(), getLocalDB(), getAuthentication(), getCloudDB())
         setContentView(binding.root)
+        askPermission()
         setNavigation()
+
         //todo переписать под 2 варианта хранения
-         var res: Bundle? = null
+        var res: Bundle? = null
         supportFragmentManager.setFragmentResultListener(
             DataManager::class.simpleName!!,
             this,
             FragmentResultListener { requestKey, result ->
-                   res= result
+                res = result
 
             })
-        presenter.readNotes()
-        if(res != null){
-        presenter.readNotesFromCloud(res)}
+        viewModel.readNotes()
+        if (res != null) {
+            viewModel.readNotesFromCloud(res)
+        }
+    }
+
+    private fun askPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, coarseLocation) ||
+            ActivityCompat.shouldShowRequestPermissionRationale(this, fineLocation)){
+            ActivityCompat.requestPermissions(this, arrayOf(coarseLocation, fineLocation), LOCATION_PERMISSION_REQUEST_CODE)
+        }
     }
 
 
@@ -71,8 +88,8 @@ class Activity : AppCompatActivity(), Callable {
     }
 
     private fun setStartFragment() {
-        presenter.chooseStartFragment()
-        presenter.onChooseStartFragment.observe(this){
+        viewModel.chooseStartFragment()
+        viewModel.onChooseStartFragment.observe(this) {
             bottomNavigationItemView.selectedItemId = it
         }
 
@@ -107,14 +124,13 @@ class Activity : AppCompatActivity(), Callable {
     }
 
 
-
     override fun callNoteViewFragment() {
         getRouter().openNoteViewFragment(getOrientation(), supportFragmentManager)
     }
 
     override fun onDestroy() {
         application().repository.deleteAll()
-        presenter.logOut()
+        viewModel.logOut()
         super.onDestroy()
     }
 
@@ -125,6 +141,7 @@ class Activity : AppCompatActivity(), Callable {
     private fun getLocalDB(): DataBase {
         return application().localDataBase
     }
+
     private fun getCloudDB(): CloudRepository {
         return application().cloudDataBase
     }
@@ -136,7 +153,6 @@ class Activity : AppCompatActivity(), Callable {
     private fun getRouter(): Router {
         return application().router
     }
-
 
 
 }
