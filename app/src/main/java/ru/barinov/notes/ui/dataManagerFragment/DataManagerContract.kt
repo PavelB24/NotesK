@@ -1,5 +1,6 @@
 package ru.barinov.notes.ui.dataManagerFragment
 
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -12,7 +13,8 @@ import ru.barinov.notes.ui.Application
 class DataManagerContract {
     interface DataManagerFragmentPresenterInterface{
         fun deleteAllNotes()
-        val ld: LiveData<Boolean>
+        val onRepositoryDeletion: LiveData<DialogFragment>
+        val repositoryIsCleanedMessage: LiveData<Boolean>
     }
 
 }

@@ -15,6 +15,7 @@ import ru.barinov.databinding.DataManagerLayoutBinding
 import ru.barinov.notes.domain.CloudRepository
 import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.domain.room.DataBase
+import ru.barinov.notes.ui.AgreementDialogFragment
 import ru.barinov.notes.ui.application
 import ru.barinov.notes.ui.notesActivity.Activity
 
@@ -27,6 +28,7 @@ class DataManager: Fragment() {
     private lateinit  var  pref: SharedPreferences
     private lateinit var  editor: SharedPreferences.Editor
     private val switchStateKey = "SwitchState"
+    private val DELETE = "OK"
 
 
     override fun onCreateView(
@@ -48,11 +50,23 @@ class DataManager: Fragment() {
         initDeleteButton()
         switchMaterial= binding.dataManagerSwitch
         setOnSwitchListener()
-        presenter.ld.observe(requireActivity()) {
-            onDeletedMessage()
+        getDialogResults()
         }
 
+    private fun getDialogResults() {
+        presenter.onRepositoryDeletion.observe(requireActivity()) { it ->
+            it.show(parentFragmentManager, DELETE)
+            parentFragmentManager.setFragmentResultListener(
+                AgreementDialogFragment::class.simpleName!!,
+                requireActivity(), { requestKey, result ->
+                    presenter.onRepoDeletion(result, DELETE)
+                })
         }
+        presenter.repositoryIsCleanedMessage.observe(requireActivity()){
+            onDeletedMessage()
+        }
+    }
+
 
     private fun getRepository():NotesRepository {
         return requireActivity().application().repository
@@ -124,6 +138,8 @@ class DataManager: Fragment() {
     private fun savePref(){
         editor.putBoolean(switchStateKey, switchMaterial.isChecked ).apply()
     }
+
+
 
 }
 

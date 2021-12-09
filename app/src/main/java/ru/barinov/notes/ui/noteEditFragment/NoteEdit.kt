@@ -24,7 +24,7 @@ class NoteEdit() : Fragment() {
     private lateinit var binding: NoteEditLayoutBinding
     private lateinit var presenter: NoteEditViewModel
     //todo
-    private val location= (requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager)
+    private lateinit var location: LocationManager
 
 
     override fun onCreateView(
@@ -37,6 +37,7 @@ class NoteEdit() : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        location= (requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager)
         initViews()
         initButton()
         presenter = NoteEditViewModel(applyButton, titleEditText, descriptionEditText,
