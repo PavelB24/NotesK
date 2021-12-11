@@ -1,5 +1,6 @@
 package ru.barinov.notes.ui.noteEditFragment
 
+import android.location.LocationManager
 import android.os.Bundle
 import android.widget.Button
 import android.widget.DatePicker
@@ -20,7 +21,8 @@ class NoteEditViewModel(
     private val datePicker: DatePicker,
     id: String?,
     private val manager: FragmentManager,
-    repository: NotesRepository
+    repository: NotesRepository,
+    private val locationManager: LocationManager
 ) : NoteEditContract.NoteEditFragmentPresenterInterface {
     private var tempNote: NoteEntity? = repository.getById(id)
     private lateinit var uuid: UUID

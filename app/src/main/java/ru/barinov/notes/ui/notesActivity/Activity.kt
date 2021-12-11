@@ -1,6 +1,7 @@
 package ru.barinov.notes.ui.notesActivity
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentManager
@@ -35,22 +36,23 @@ class Activity : AppCompatActivity(), Callable {
         viewModel =
             ActivityViewModel(getRepository(), getLocalDB(), getAuthentication(), getCloudDB())
         setContentView(binding.root)
+        downloadNotesFromFirebase()
+        cloudSynchronizationListener()
         askPermission()
         setNavigation()
 
-        //todo переписать под 2 варианта хранения
-        var res: Bundle? = null
-        supportFragmentManager.setFragmentResultListener(
-            DataManager::class.simpleName!!,
-            this,
-            FragmentResultListener { requestKey, result ->
-                res = result
+    }
 
-            })
-        viewModel.readNotes()
-        if (res != null) {
-            viewModel.readNotesFromCloud(res)
+    private fun cloudSynchronizationListener() {
+        viewModel.onCloudInitCompleted.observe(this){
+            supportFragmentManager.setFragmentResult(this.javaClass.simpleName, Bundle().also { it.putBoolean(this.javaClass.simpleName, true) })
         }
+    }
+
+
+    private fun downloadNotesFromFirebase() {
+            Log.d("@@@", "LISTENER2: ")
+            viewModel.readNotesFromCloud()
     }
 
     private fun askPermission() {
@@ -61,13 +63,6 @@ class Activity : AppCompatActivity(), Callable {
     }
 
 
-    override fun onStart() {
-        val currentUser = (application as Application).authentication.auth.currentUser
-        if (currentUser != null) {
-            //TODO
-        }
-        super.onStart()
-    }
 
     private fun setNavigation() {
         bottomNavigationItemView = binding.navigationBar

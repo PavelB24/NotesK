@@ -52,6 +52,11 @@ class NoteList : Fragment(){
             FragmentResultListener { requestKey, result ->
                 presenter.getResultsFromNoteEditFragment(result)
                 })
+          parentFragmentManager.setFragmentResultListener(
+                requireActivity().javaClass.simpleName,
+                requireActivity(), { requestKey, result ->
+                    presenter.refreshAdapter()
+                })
         createDialog()
         searchWasUnsuccessfulMessage()
         onEditionModeToastMessage()

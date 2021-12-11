@@ -1,6 +1,7 @@
 package ru.barinov.notes.ui.notesActivity
 
 import android.os.Bundle
+import android.util.Log
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -32,6 +33,9 @@ class ActivityViewModel(
     private val  _onChooseStartFragment = MutableLiveData<Int>()
     val onChooseStartFragment: LiveData<Int> = _onChooseStartFragment
 
+    private val  _onCloudInitCompleted = MutableLiveData<Boolean>()
+    val onCloudInitCompleted: LiveData<Boolean> = _onCloudInitCompleted
+
 
     @Throws(IOException::class)
     override fun safeNotes() {
@@ -53,13 +57,23 @@ class ActivityViewModel(
     override fun readNotes() {
         if (repository.allNotes.isEmpty()) {
             toInitNotesInRepository()
-
         }
     }
 
-    fun readNotesFromCloud(result: Bundle?){
-        if (result!!.getBoolean(DataManager::class.simpleName!!)) {
-            toInitNotesFromCloud()
+    fun readNotesFromCloud(){
+        if (authentication.auth.currentUser != null) {
+            Thread {
+                cloudDataBase.cloud.collection(authentication.auth.currentUser!!.uid)
+                    .get().addOnSuccessListener { result ->
+                        for (document in result) {
+                            val note = document.toObject(NoteEntity::class.java)
+                            if (!repository.findById(note.id)) {
+                                repository.addNote(note)
+                            }
+                        }
+                        _onCloudInitCompleted.postValue(true)
+                    }
+            }.start()
         }
     }
 
@@ -88,21 +102,6 @@ class ActivityViewModel(
     }
 
 
-    override fun toInitNotesFromCloud() {
-        if (authentication.auth.currentUser != null) {
-            Thread {
-                cloudDataBase.cloud.collection(authentication.auth.currentUser?.uid.toString())
-                    .get().addOnSuccessListener { result ->
-                        for (document in result) {
-                            val note = document.toObject(NoteEntity::class.java)
-                            if (!repository.findById(note.id)) {
-                                repository.addNote(note)
-                            }
-                        }
-                    }
-            }.start()
-        }
-    }
 
 
 

@@ -5,34 +5,33 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view"
+        style="@style/item_notes_card_view_style"
+        android:layout_height="wrap_content"
         app:cardBackgroundColor="#26BABABA"
         app:cardCornerRadius="@dimen/item_notes_corner_radius"
-        app:cardPreventCornerOverlap="true"
-        app:cardUseCompatPadding="true"
         app:cardElevation="0dp"
-        style="@style/item_notes_card_view_style">
+        app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="horizontal"
             android:padding="@dimen/standart_padding">
 
             <CheckBox
                 android:id="@+id/notes_checkbox"
                 android:layout_width="wrap_content"
-                android:layout_height="120dp"
-                android:ellipsize="middle"
+                android:layout_height="match_parent"
                 android:background="?selectableItemBackground"
+                android:ellipsize="middle"
                 android:gravity="center"
-                android:theme="@style/MyCheckBox"
-                />
+                android:theme="@style/MyCheckBox" />
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:background="?selectableItemBackground"
-                android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:padding="@dimen/standart_padding">
 
@@ -40,12 +39,23 @@
                 <TextView
                     android:id="@+id/note_title_textview"
                     style="@style/item_notes_title_textview"
-                    android:textAlignment="viewStart"/>
+                    android:textAlignment="viewStart" />
 
                 <TextView
                     android:id="@+id/note_description_textview"
                     style="@style/item_notes_description_textview"
-                    android:textSize="@dimen/item_note_description"/>
+                    android:textSize="@dimen/item_note_description" />
+
+                <TextView
+                    android:id="@+id/note_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/black"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+
             </LinearLayout>
 
 

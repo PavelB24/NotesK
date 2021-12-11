@@ -25,9 +25,7 @@ class DataManager: Fragment() {
     private lateinit var deleteImageButton: ImageButton
     private lateinit var switchMaterial: SwitchMaterial
     private lateinit var presenter: DataManagerViewModel
-    private lateinit  var  pref: SharedPreferences
     private lateinit var  editor: SharedPreferences.Editor
-    private val switchStateKey = "SwitchState"
     private val DELETE = "OK"
 
 
@@ -44,8 +42,7 @@ class DataManager: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (requireActivity() as Activity).bottomNavigationItemView.setBackgroundColor(resources.getColor(R.color.cherry))
-        pref= requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        editor= pref.edit()
+        editor= getSharedPreferences().edit()
         deleteImageButton= binding.deleteStorageButton
         initDeleteButton()
         switchMaterial= binding.dataManagerSwitch
@@ -105,8 +102,8 @@ class DataManager: Fragment() {
         Toast.makeText(context, "Please, log in to use cloud storage", Toast.LENGTH_SHORT).show()
     }
     private fun setOnSwitchListener() {
-        switchMaterial.isChecked= pref.getBoolean(switchStateKey, false)
-        if (pref.getBoolean(switchStateKey, false)){
+        switchMaterial.isChecked= getSharedPreferences().getBoolean(DataManager.switchStateKey, false)
+        if (getSharedPreferences().getBoolean(DataManager.switchStateKey, false)){
             binding.dataManagerSwitchTextView.setText(R.string.way_of_storage_cloud)
         }
         if(requireActivity().application().authentication.auth.currentUser== null){
@@ -116,27 +113,31 @@ class DataManager: Fragment() {
             if (switchMaterial.isChecked) {
                 if (requireActivity().application().authentication.auth.currentUser != null) {
                     cloudStorageText()
-                    parentFragmentManager.setFragmentResult(DataManager::class.simpleName!!,
-                        Bundle().also { it.putBoolean(DataManager::class.simpleName!!, true) })
+                    savePref()
                 }
                 else {
                     switchMaterial.isChecked= false
-                    parentFragmentManager.setFragmentResult(DataManager::class.simpleName!!,
-                        Bundle().also { it.putBoolean(DataManager::class.simpleName!!, false) })
+                    savePref()
                     showCloudIsNotAvailableMassage()
                 }
             }
             else {
                localStorageText()
-                parentFragmentManager.setFragmentResult(DataManager::class.simpleName!!,
-                    Bundle().also { it.putBoolean(DataManager::class.simpleName!!, false) })
-
+                savePref()
             }
-            savePref()
+
         }
     }
     private fun savePref(){
-        editor.putBoolean(switchStateKey, switchMaterial.isChecked ).apply()
+        editor.putBoolean(DataManager.switchStateKey, switchMaterial.isChecked ).apply()
+    }
+
+    private fun getSharedPreferences(): SharedPreferences{
+       return requireActivity().application().pref
+    }
+
+    companion object{
+        const val switchStateKey = "SwitchState"
     }
 
 

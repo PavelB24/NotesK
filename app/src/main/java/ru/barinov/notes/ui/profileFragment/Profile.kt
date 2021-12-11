@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +14,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import ru.barinov.R
 import ru.barinov.databinding.ProfileEnterLayoutBinding
+import ru.barinov.notes.domain.CloudRepository
+import ru.barinov.notes.domain.curentDataBase.NotesRepository
+import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
 import ru.barinov.notes.ui.Application
+import ru.barinov.notes.ui.application
 import ru.barinov.notes.ui.dataManagerFragment.DataManager
 import ru.barinov.notes.ui.notesActivity.Activity
 
@@ -26,6 +31,8 @@ class Profile : Fragment() {
     private lateinit var passwordEditText: EditText
     private lateinit var pref: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
+    private lateinit var repository: NotesRepository
+    private lateinit var cloudDataBase: CloudRepository
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,6 +57,8 @@ class Profile : Fragment() {
         passwordEditText = binding.profilePasswordEdittext
         registrationButton = binding.profileCreateNewProfileButton
         registrationButton.setOnClickListener { startRegistrationFragment() }
+        repository= requireActivity().application().repository
+        cloudDataBase = requireActivity().application().cloudDataBase
         onRestoreFields()
         onButtonPressed()
         super.onViewCreated(view, savedInstanceState)
@@ -75,11 +84,10 @@ class Profile : Fragment() {
                 )
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
-                        (requireActivity().application as Application).authentication.isOnline =
-                            true
+                        synchronizeRepos()
                         singIn()
                         Toast.makeText(
-                            context, R.string.on_success_auth,
+                            context, R.string.on_success_auth_text,
                             Toast.LENGTH_SHORT
                         ).show()
                     } else {
@@ -92,6 +100,24 @@ class Profile : Fragment() {
         }
     }
 
+    private fun synchronizeRepos() {
+        if(requireActivity().application().authentication.auth.currentUser!=null) {
+            val authentication = requireActivity().application().authentication
+            Thread {
+                cloudDataBase.cloud.collection(
+                    authentication.auth.currentUser?.uid.toString()
+                ).get().addOnSuccessListener { result ->
+                    Log.d("@@@", "синхронизирует")
+                    for (document in result) {
+                        val note = document.toObject(NoteEntity::class.java)
+                        if (!repository.findById(note.id)) {
+                            repository.addNote(note)
+                        }
+                    }
+                }
+            }.start()
+        }
+    }
 
 
     private fun saveFields() {

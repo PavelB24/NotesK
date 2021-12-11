@@ -1,6 +1,7 @@
 package ru.barinov.notes.ui.noteEditFragment
 
 import android.content.Context
+import android.content.Context.LOCATION_SERVICE
 import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -41,7 +42,8 @@ class NoteEdit() : Fragment() {
         initViews()
         initButton()
         presenter = NoteEditViewModel(applyButton, titleEditText, descriptionEditText,
-            datePicker, getIdFromRouter(), parentFragmentManager, requireActivity().application().repository )
+            datePicker, getIdFromRouter(), parentFragmentManager, requireActivity().application().repository, (requireActivity().getSystemService(
+                LOCATION_SERVICE)) as LocationManager)
         presenter.safeNote()
         presenter.fillTheViews()
         presenter.fieldsIsNotFilledMassageLiveData.observe(requireActivity()){

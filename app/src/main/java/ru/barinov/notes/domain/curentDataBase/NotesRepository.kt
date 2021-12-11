@@ -75,6 +75,8 @@ class NotesRepository : RepositoryInterface, Parcelable {
 
     }
 
+
+
     companion object CREATOR : Parcelable.Creator<NotesRepository> {
         override fun createFromParcel(parcel: Parcel): NotesRepository {
             return NotesRepository()

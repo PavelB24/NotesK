@@ -14,9 +14,11 @@ data class NoteEntity(
     var detail: String,
     var originDay: Int,
     var originMonth: Int,
-    var originYear: Int
+    var originYear: Int,
+    val latitude: Double,
+    val longitude: Double
 ) : Parcelable {
-    constructor() : this("", "", "", -1, -1, -1 )
+    constructor() : this("", "", "", -1, -1, -1, 0.0, 0.0 )
     val dateAsString: String
         get() = "$originDay.$originMonth.$originYear"
 
@@ -26,7 +28,9 @@ data class NoteEntity(
         parcel.readString()!!,
         parcel.readInt(),
         parcel.readInt(),
-        parcel.readInt()
+        parcel.readInt(),
+        parcel.readDouble(),
+        parcel.readDouble()
     )
 
 

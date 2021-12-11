@@ -8,7 +8,6 @@ class ActivityContract {
 
 
     interface NoteActivityPresenterInterface{
-        fun toInitNotesFromCloud()
         fun safeNotes()
         fun readNotes()
         fun onChoseNavigationItem()

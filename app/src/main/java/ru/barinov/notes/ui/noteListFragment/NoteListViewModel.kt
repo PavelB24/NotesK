@@ -67,6 +67,10 @@ class NoteListViewModel(
         }
     }
 
+    fun refreshAdapter(){
+        adapter.data= repository.getNotes()
+    }
+
     override fun setAdapter() {
         adapter.data = repository.getNotes()
         adapter.setListener(object : OnNoteClickListener {
