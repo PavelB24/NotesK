@@ -9,7 +9,7 @@ class NoteListContract {
     interface NoteListFragmentPresenterInterface{
         fun onSearchStarted(search: android.widget.SearchView)
         fun setAdapter()
-        fun getResultsFromNoteEditFragment(result: Bundle)
+        fun getResultsFromNoteEditFragment(result: Bundle, switchState: Boolean)
         fun createNewNote() : Boolean
         fun deleteChosenNotes()
         fun addToCloud(note: NoteEntity)

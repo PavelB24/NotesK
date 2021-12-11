@@ -1,11 +1,16 @@
 package ru.barinov.notes.ui.noteEditFragment
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.widget.Button
 import android.widget.DatePicker
 import android.widget.EditText
+import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,6 +19,7 @@ import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
 import java.util.*
 
 
+@SuppressLint("MissingPermission")
 class NoteEditViewModel(
     private val applyButton: Button,
     private val title: EditText,
@@ -22,11 +28,14 @@ class NoteEditViewModel(
     id: String?,
     private val manager: FragmentManager,
     repository: NotesRepository,
-    private val locationManager: LocationManager
+    private val locationManager: LocationManager,
+    private val permission: Boolean
 ) : NoteEditContract.NoteEditFragmentPresenterInterface {
     private var tempNote: NoteEntity? = repository.getById(id)
     private lateinit var uuid: UUID
     private var data: Bundle? = null
+
+
 
     private val _fieldsIsNotFilledMassageLiveData= MutableLiveData<Boolean>()
     val fieldsIsNotFilledMassageLiveData: LiveData<Boolean> = _fieldsIsNotFilledMassageLiveData
@@ -37,6 +46,13 @@ class NoteEditViewModel(
 
     //Переписать под получение строк и интов, а не вьюшек
     override fun safeNote() {
+        var latitude: Double =0.0
+        var longitude: Double = 0.0
+        if(permission){
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 1000f){it->
+                latitude = it.latitude
+                longitude = it.longitude
+            }}
         applyButton.setOnClickListener {
             uuid = UUID.randomUUID()
             //Редактирование
@@ -44,7 +60,7 @@ class NoteEditViewModel(
                 val note = NoteEntity(
                     tempNote!!.id, title.text.toString(),
                     body.text.toString(),
-                    datePicker.dayOfMonth, datePicker.month, datePicker.year
+                    datePicker.dayOfMonth, datePicker.month, datePicker.year, tempNote!!.latitude, tempNote!!.longitude
                 )
                 data = Bundle()
                 data?.putParcelable(NoteEntity::class.simpleName, note)
@@ -58,7 +74,7 @@ class NoteEditViewModel(
                 val note = NoteEntity(
                     uuid.toString(), title.text.toString(),
                     body.text.toString(),
-                    datePicker.dayOfMonth, datePicker.month, datePicker.year
+                    datePicker.dayOfMonth, datePicker.month, datePicker.year, latitude, longitude
                 )
                 data = Bundle()
                 data?.putParcelable(NoteEntity::class.simpleName, note)

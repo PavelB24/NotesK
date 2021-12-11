@@ -102,7 +102,7 @@ class NoteListViewModel(
     }
 
 
-    override fun getResultsFromNoteEditFragment(result: Bundle) {
+    override fun getResultsFromNoteEditFragment(result: Bundle, switchState: Boolean) {
         if (!(result.isEmpty)) {
             val note: NoteEntity = result.getParcelable(NoteEntity::class.simpleName)!!
             if (!repository.findById(note.id)) {
@@ -113,8 +113,7 @@ class NoteListViewModel(
                 }.start()
                 repository.addNote(note)
                 Log.d("@@@", "1-1")
-                if (authentication.auth.currentUser != null
-                ) {
+                if (authentication.auth.currentUser != null && switchState) {
                     addToCloud(note)
                 }
                 val textToTelegram = (note.dateAsString + "\n" + note.title + "\n" + note.detail)
@@ -130,7 +129,7 @@ class NoteListViewModel(
                     localDataBase.noteDao().update(note)
                 }.start()
                 Log.d("@@@", "2-1")
-                if (authentication.auth.currentUser != null) {
+                if (authentication.auth.currentUser != null && switchState) {
                     updInCloud(note)
                 }
             }

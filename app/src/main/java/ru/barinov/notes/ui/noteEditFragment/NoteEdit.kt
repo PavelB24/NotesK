@@ -1,7 +1,9 @@
 package ru.barinov.notes.ui.noteEditFragment
 
+import android.Manifest
 import android.content.Context
 import android.content.Context.LOCATION_SERVICE
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +13,7 @@ import android.widget.Button
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import ru.barinov.R
 import ru.barinov.databinding.NoteEditLayoutBinding
@@ -38,12 +41,13 @@ class NoteEdit() : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        location= (requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager)
+        location= (requireActivity().getSystemService(LOCATION_SERVICE) as LocationManager)
         initViews()
         initButton()
+        val permission = ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PERMISSION_GRANTED
         presenter = NoteEditViewModel(applyButton, titleEditText, descriptionEditText,
             datePicker, getIdFromRouter(), parentFragmentManager, requireActivity().application().repository, (requireActivity().getSystemService(
-                LOCATION_SERVICE)) as LocationManager)
+                LOCATION_SERVICE)) as LocationManager, permission)
         presenter.safeNote()
         presenter.fillTheViews()
         presenter.fieldsIsNotFilledMassageLiveData.observe(requireActivity()){

@@ -18,6 +18,7 @@ import ru.barinov.notes.domain.noteEntityAndService.NotesAdapter
 import ru.barinov.notes.domain.room.DataBase
 import ru.barinov.notes.ui.AgreementDialogFragment
 import ru.barinov.notes.ui.application
+import ru.barinov.notes.ui.dataManagerFragment.DataManager
 import ru.barinov.notes.ui.noteEditFragment.NoteEdit
 import ru.barinov.notes.ui.notesActivity.Activity
 
@@ -50,7 +51,7 @@ class NoteList : Fragment(){
             NoteEdit::class.simpleName!!,
             requireActivity(),
             FragmentResultListener { requestKey, result ->
-                presenter.getResultsFromNoteEditFragment(result)
+                presenter.getResultsFromNoteEditFragment(result, requireActivity().application().pref.getBoolean(DataManager.switchStateKey, false))
                 })
           parentFragmentManager.setFragmentResultListener(
                 requireActivity().javaClass.simpleName,
