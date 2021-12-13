@@ -3,6 +3,7 @@ package ru.barinov.notes.ui;
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.location.LocationManager
 import androidx.room.Room
 import com.google.firebase.FirebaseApp
 import ru.barinov.notes.domain.*
@@ -20,6 +21,7 @@ class Application : Application() {
     lateinit var authentication: Authentication
     lateinit var localDataBase: DataBase
     lateinit var cloudDataBase: CloudRepository
+    lateinit var locationFinder: LocationFinder
 
 
 
@@ -27,6 +29,7 @@ class Application : Application() {
         FirebaseApp.initializeApp(this);
         cloudDataBase = CloudRepository()
         authentication = Authentication()
+        locationFinder= LocationFinder(getSystemService(LOCATION_SERVICE) as LocationManager, applicationContext)
         pref = applicationContext.getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE)
         localDataBase = Room.databaseBuilder(
             this,

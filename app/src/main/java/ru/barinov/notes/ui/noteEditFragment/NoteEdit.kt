@@ -1,10 +1,7 @@
 package ru.barinov.notes.ui.noteEditFragment
 
 import android.Manifest
-import android.content.Context
-import android.content.Context.LOCATION_SERVICE
 import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,8 +24,6 @@ class NoteEdit() : Fragment() {
     private lateinit var datePicker: DatePicker
     private lateinit var binding: NoteEditLayoutBinding
     private lateinit var presenter: NoteEditViewModel
-    //todo
-    private lateinit var location: LocationManager
 
 
     override fun onCreateView(
@@ -41,14 +36,12 @@ class NoteEdit() : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        location= (requireActivity().getSystemService(LOCATION_SERVICE) as LocationManager)
         initViews()
         initButton()
         val permission = ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PERMISSION_GRANTED
-        presenter = NoteEditViewModel(applyButton, titleEditText, descriptionEditText,
-            datePicker, getIdFromRouter(), parentFragmentManager, requireActivity().application().repository, (requireActivity().getSystemService(
-                LOCATION_SERVICE)) as LocationManager, permission)
-        presenter.safeNote()
+        presenter = NoteEditViewModel( titleEditText, descriptionEditText,
+            datePicker, getIdFromRouter(),  requireActivity().application().repository, requireActivity().application().locationFinder, permission)
+        presenter.startListenLocation()
         presenter.fillTheViews()
         presenter.fieldsIsNotFilledMassageLiveData.observe(requireActivity()){
             Toast.makeText(activity, R.string.warning_toast, Toast.LENGTH_SHORT).show()
@@ -57,7 +50,12 @@ class NoteEdit() : Fragment() {
             titleEditText.setText(it[0])
             descriptionEditText.setText(it[1])
             datePicker.updateDate(it[2].toInt(), it[3].toInt(),  it[4].toInt())
-
+        }
+        presenter.dataForFragmentResult.observe(requireActivity()){
+            parentFragmentManager.setFragmentResult(
+                NoteEdit::class.simpleName!!,
+                it!!)
+            parentFragmentManager.popBackStackImmediate()
         }
         super.onViewCreated(view, savedInstanceState)
     }
@@ -71,6 +69,9 @@ class NoteEdit() : Fragment() {
 
     private fun initButton() {
         applyButton = binding.applyButton as Button
+        applyButton.setOnClickListener {
+            presenter.initSafeNote()
+        }
     }
 
     override fun onPause() {

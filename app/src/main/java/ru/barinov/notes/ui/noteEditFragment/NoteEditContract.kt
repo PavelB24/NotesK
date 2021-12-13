@@ -9,7 +9,7 @@ import ru.barinov.notes.ui.noteViewFragment.NoteViewContract
 class NoteEditContract {
 
     interface NoteEditFragmentPresenterInterface {
-        fun safeNote()
+        fun initSafeNote()
 
         fun checkOnEditionMode(): Boolean
     }

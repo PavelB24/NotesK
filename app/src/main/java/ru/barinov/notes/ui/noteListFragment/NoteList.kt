@@ -16,7 +16,7 @@ import ru.barinov.notes.domain.CloudRepository
 import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.domain.noteEntityAndService.NotesAdapter
 import ru.barinov.notes.domain.room.DataBase
-import ru.barinov.notes.ui.AgreementDialogFragment
+import ru.barinov.notes.ui.dialogs.AgreementDialogFragment
 import ru.barinov.notes.ui.application
 import ru.barinov.notes.ui.dataManagerFragment.DataManager
 import ru.barinov.notes.ui.noteEditFragment.NoteEdit

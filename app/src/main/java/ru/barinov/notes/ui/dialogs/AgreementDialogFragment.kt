@@ -1,4 +1,4 @@
-package ru.barinov.notes.ui
+package ru.barinov.notes.ui.dialogs
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
@@ -7,7 +7,7 @@ import androidx.fragment.app.DialogFragment
 import ru.barinov.R
 
 class AgreementDialogFragment: DialogFragment() {
-    var AGREEMENT_KEY = "OK"
+    val AGREEMENT_KEY = "OK"
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder: AlertDialog.Builder = AlertDialog.Builder(activity)

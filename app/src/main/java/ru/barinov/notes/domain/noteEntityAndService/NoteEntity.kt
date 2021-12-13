@@ -15,8 +15,8 @@ data class NoteEntity(
     var originDay: Int,
     var originMonth: Int,
     var originYear: Int,
-    val latitude: Double,
-    val longitude: Double
+    var latitude: Double,
+    var longitude: Double
 ) : Parcelable {
     constructor() : this("", "", "", -1, -1, -1, 0.0, 0.0 )
     val dateAsString: String

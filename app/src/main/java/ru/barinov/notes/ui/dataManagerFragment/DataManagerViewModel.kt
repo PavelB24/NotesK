@@ -2,16 +2,15 @@ package ru.barinov.notes.ui.dataManagerFragment
 
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.liveData
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.ktx.Firebase
 import ru.barinov.notes.domain.CloudRepository
 import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.domain.room.DataBase
-import ru.barinov.notes.ui.AgreementDialogFragment
+import ru.barinov.notes.ui.dialogs.AgreementDialogFragment
 
 
 class DataManagerViewModel(
@@ -29,8 +28,8 @@ class DataManagerViewModel(
     private val _onRepositoryDeletion = MutableLiveData<DialogFragment>()
     override val onRepositoryDeletion: LiveData<DialogFragment> = _onRepositoryDeletion
 
-    private val _repositoryIsCleanedMessage = MutableLiveData<Boolean>()
-    override val repositoryIsCleanedMessage: LiveData<Boolean> = _repositoryIsCleanedMessage
+    private val _repositoryIsCleanedMessage = MutableLiveData<Unit>()
+    override val repositoryIsCleanedMessage: LiveData<Unit> = _repositoryIsCleanedMessage
 
 
     override fun deleteAllNotes() {
@@ -39,16 +38,20 @@ class DataManagerViewModel(
     }
 
     fun onRepoDeletion(result: Bundle, key: String) {
-
         if (result.getBoolean(key)) {
-            repository.deleteAll()
-            Thread {
-                localDB.clearAllTables()
-            }.start()
-            if (auth.currentUser != null) {
-                //ToDo}
-            }
-            _repositoryIsCleanedMessage.postValue(true)
+            Thread { localDB.clearAllTables() }.start()
         }
+        if (auth.currentUser != null) {
+            Log.d("@@@", "onRepoDeletion: ")
+            val deletionList = repository.getNotes()
+            Thread {
+                deletionList.forEach {
+                    cloudDataBase.cloud.collection(auth.currentUser!!.uid)
+                        .document(it.id).delete()
+                }
+            }.start()
+        }
+        repository.deleteAll()
+        _repositoryIsCleanedMessage.postValue(Unit)
     }
 }

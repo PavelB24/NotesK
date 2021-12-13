@@ -1,6 +1,5 @@
 package ru.barinov.notes.ui.dataManagerFragment
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,7 +14,7 @@ import ru.barinov.databinding.DataManagerLayoutBinding
 import ru.barinov.notes.domain.CloudRepository
 import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.domain.room.DataBase
-import ru.barinov.notes.ui.AgreementDialogFragment
+import ru.barinov.notes.ui.dialogs.AgreementDialogFragment
 import ru.barinov.notes.ui.application
 import ru.barinov.notes.ui.notesActivity.Activity
 
@@ -78,7 +77,6 @@ class DataManager: Fragment() {
 
 
     private fun initDeleteButton() {
-        //Todo переписаьть под диалог с выбором где удалить заметки
         deleteImageButton.setOnClickListener {
            presenter.deleteAllNotes()
         }

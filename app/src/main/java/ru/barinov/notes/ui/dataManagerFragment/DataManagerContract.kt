@@ -14,7 +14,7 @@ class DataManagerContract {
     interface DataManagerFragmentPresenterInterface{
         fun deleteAllNotes()
         val onRepositoryDeletion: LiveData<DialogFragment>
-        val repositoryIsCleanedMessage: LiveData<Boolean>
+        val repositoryIsCleanedMessage: LiveData<Unit>
     }
 
 }

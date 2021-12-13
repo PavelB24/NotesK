@@ -33,8 +33,8 @@ class ActivityViewModel(
     private val  _onChooseStartFragment = MutableLiveData<Int>()
     val onChooseStartFragment: LiveData<Int> = _onChooseStartFragment
 
-    private val  _onCloudInitCompleted = MutableLiveData<Boolean>()
-    val onCloudInitCompleted: LiveData<Boolean> = _onCloudInitCompleted
+    private val  _onCloudInitCompleted = MutableLiveData<Unit>()
+    val onCloudInitCompleted: LiveData<Unit> = _onCloudInitCompleted
 
 
     @Throws(IOException::class)
@@ -71,7 +71,7 @@ class ActivityViewModel(
                                 repository.addNote(note)
                             }
                         }
-                        _onCloudInitCompleted.postValue(true)
+                        _onCloudInitCompleted.postValue(Unit)
                     }
             }.start()
         }

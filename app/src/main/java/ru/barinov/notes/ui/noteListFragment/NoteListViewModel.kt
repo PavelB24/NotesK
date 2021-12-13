@@ -16,7 +16,7 @@ import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
 import ru.barinov.notes.domain.noteEntityAndService.NotesAdapter
 import ru.barinov.notes.domain.room.DataBase
 import ru.barinov.notes.domain.telegramm.TelegrammBot
-import ru.barinov.notes.ui.AgreementDialogFragment
+import ru.barinov.notes.ui.dialogs.AgreementDialogFragment
 
 class NoteListViewModel(
     private val repository: NotesRepository,
@@ -36,11 +36,11 @@ class NoteListViewModel(
     private val _onNoteDeletion = MutableLiveData<DialogFragment>()
     val onNoteDeletion: LiveData<DialogFragment> = _onNoteDeletion
 
-    private val  _editionModeMessage = MutableLiveData<Boolean>()
-    val editionModeMessage: LiveData<Boolean> = _editionModeMessage
+    private val  _editionModeMessage = MutableLiveData<Unit>()
+    val editionModeMessage: LiveData<Unit> = _editionModeMessage
 
-    private val  _onUnsuccessfulSearch = MutableLiveData<Boolean>()
-    val onUnsuccessfulSearch: LiveData<Boolean> = _onUnsuccessfulSearch
+    private val  _onUnsuccessfulSearch = MutableLiveData<Unit>()
+    val onUnsuccessfulSearch: LiveData<Unit> = _onUnsuccessfulSearch
 
 
     override fun onSearchStarted(search: android.widget.SearchView) {
@@ -51,7 +51,7 @@ class NoteListViewModel(
                 if (!(cache.isSearchCacheEmpty())) {
                     adapter.data = cache.getSearchedNotes()
                 } else {
-                    _onUnsuccessfulSearch.postValue(true)
+                    _onUnsuccessfulSearch.postValue(Unit)
                 }
                 return false
             }
@@ -72,7 +72,7 @@ class NoteListViewModel(
     }
 
     override fun setAdapter() {
-        adapter.data = repository.getNotes()
+        refreshAdapter()
         adapter.setListener(object : OnNoteClickListener {
             override fun onClickEdit(note: NoteEntity?) {
                 this@NoteListViewModel.onNoteClick(note!!)
@@ -185,14 +185,13 @@ class NoteListViewModel(
 
     override fun onClickEdit(note: NoteEntity?) {
         //todo liveData
-        _editionModeMessage.postValue(true)
+        _editionModeMessage.postValue(Unit)
         router.setId(note!!.id)
         activity.callEditionFragment()
     }
 
     override fun onClickDelete(note: NoteEntity) {
         val confirmation = AgreementDialogFragment()
-        //todo LD with DialogFragment
         tempNote = note
         _onNoteDeletion.postValue(confirmation)
     }

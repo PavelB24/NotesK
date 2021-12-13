@@ -56,9 +56,8 @@ class Activity : AppCompatActivity(), Callable {
     }
 
     private fun askPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, coarseLocation) ||
-            ActivityCompat.shouldShowRequestPermissionRationale(this, fineLocation)){
-            ActivityCompat.requestPermissions(this, arrayOf(coarseLocation, fineLocation), LOCATION_PERMISSION_REQUEST_CODE)
+        if (this.shouldShowRequestPermissionRationale( fineLocation)){
+            this.requestPermissions( arrayOf(fineLocation), LOCATION_PERMISSION_REQUEST_CODE)
         }
     }
 
@@ -123,11 +122,8 @@ class Activity : AppCompatActivity(), Callable {
         getRouter().openNoteViewFragment(getOrientation(), supportFragmentManager)
     }
 
-    override fun onDestroy() {
-        application().repository.deleteAll()
-        viewModel.logOut()
-        super.onDestroy()
-    }
+
+
 
     private fun getRepository(): NotesRepository {
         return application().repository
