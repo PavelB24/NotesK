@@ -29,8 +29,6 @@ class NoteViewViewModel(
     private val _openedNote = MutableLiveData<Array<String>>()
     val openedNote: LiveData<Array<String>> = _openedNote
 
-    private val _onMapDialogCreated = MutableLiveData<DialogFragment>()
-     val onMapDialogCreated: LiveData<DialogFragment> = _onMapDialogCreated
 
     private val _latLong = MutableLiveData<Array<Double>>()
     val latLong: LiveData<Array<Double>> = _latLong
@@ -48,7 +46,7 @@ class NoteViewViewModel(
         }
         Thread{
         val address = locationFinder.geocoder.getFromLocation(note.latitude, note.longitude, 1).firstOrNull()
-            val locationString= address!!.countryName + ", " + address.locality
+            val locationString= address?.countryName + ", " + address?.locality
               _openedNote.postValue(arrayOf(note.title, note.detail, note.dateAsString, locationString))
             _latLong.postValue(arrayOf(note.latitude, note.longitude))
             resetIdInRouter()
@@ -56,10 +54,7 @@ class NoteViewViewModel(
 
     }
 
-    fun createDialog(){
-        val mapFragment = MapsFragment()
-        _onMapDialogCreated.postValue(mapFragment)
-    }
+
 
     fun resetIdInRouter(){
         router.resetId()

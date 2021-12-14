@@ -1,20 +1,17 @@
 package ru.barinov.notes.ui.noteEditFragment
 
-import android.Manifest
+
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
-import android.location.Location
+
 import android.location.LocationListener
 import android.location.LocationManager
+
 import android.os.Bundle
-import android.widget.Button
+import android.util.Log
+
 import android.widget.DatePicker
 import android.widget.EditText
-import androidx.annotation.RequiresPermission
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.location.LocationListenerCompat
-import androidx.fragment.app.FragmentManager
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ru.barinov.notes.domain.LocationFinder
@@ -49,11 +46,9 @@ class NoteEditViewModel(
     private val _dataForFragmentResult = MutableLiveData<Bundle>()
     val dataForFragmentResult: LiveData<Bundle> = _dataForFragmentResult
 
-    val locationListener = object : LocationListener {
-        override fun onLocationChanged(location: Location) {
-            latitude = location.latitude
-            longitude = location.longitude
-        }
+    val locationListener = LocationListener { location ->
+        latitude = location.latitude
+        longitude = location.longitude
     }
 
 
@@ -71,7 +66,6 @@ class NoteEditViewModel(
 
     //Переписать под получение строк и интов, а не вьюшек
     override fun initSafeNote() {
-        //todo вынести кнопку во вьюху + передавать сюда не вьюшки, а строки
         uuid = UUID.randomUUID()
         //Редактирование
         if (checkOnEditionMode() && (title.text.toString().isNotEmpty() && body.text.toString()
@@ -93,6 +87,7 @@ class NoteEditViewModel(
 
         }//Создаём новую заметку
         else if (title.text.toString().isNotEmpty() && body.text.toString().isNotEmpty()) {
+            checkLatLong()
             val note = NoteEntity(
                 uuid.toString(), title.text.toString(),
                 body.text.toString(),
@@ -104,7 +99,16 @@ class NoteEditViewModel(
         } else {
             _fieldsIsNotFilledMassageLiveData.postValue(Unit)
         }
+        Log.d("@@@2", "$longitude $latitude")
         locationFinder.locationManager.removeUpdates(locationListener)
+    }
+
+    private fun checkLatLong() {
+        if (latitude == 0.0 || longitude == 0.0) {
+            val lastKnownLocation= locationFinder.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            latitude= lastKnownLocation!!.latitude
+            longitude= lastKnownLocation.longitude
+        }
     }
 
 

@@ -149,8 +149,6 @@ class NoteListViewModel(
                 authentication.auth.currentUser?.uid.toString()
             )
                 .document(note.id)
-                .set(note).addOnSuccessListener { Log.d("@@@", "Added to cloud") }
-                .addOnFailureListener { Log.d("@@@", "Not added to cloud") }
         }.start()
     }
 
@@ -178,13 +176,11 @@ class NoteListViewModel(
                 authentication.auth.currentUser?.uid.toString()
             )
                 .document(note.id)
-                .set(note).addOnSuccessListener { Log.d("@@@", "Added to cloud") }
-                .addOnFailureListener { Log.d("@@@", "Not added to cloud") }
+                .set(note)
         }.start()
     }
 
     override fun onClickEdit(note: NoteEntity?) {
-        //todo liveData
         _editionModeMessage.postValue(Unit)
         router.setId(note!!.id)
         activity.callEditionFragment()

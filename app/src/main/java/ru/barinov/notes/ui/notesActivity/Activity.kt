@@ -30,6 +30,8 @@ class Activity : AppCompatActivity(), Callable {
     private val fineLocation: String = android.Manifest.permission.ACCESS_FINE_LOCATION
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
 
+    //TODO переписать эдиттексты и текствью под матиреал, тулбар переписать под боттомтулбар с плавающей кнопкой
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = MainLayoutBinding.inflate(layoutInflater)
@@ -56,9 +58,8 @@ class Activity : AppCompatActivity(), Callable {
     }
 
     private fun askPermission() {
-        if (this.shouldShowRequestPermissionRationale( fineLocation)){
             this.requestPermissions( arrayOf(fineLocation), LOCATION_PERMISSION_REQUEST_CODE)
-        }
+
     }
 
 

@@ -37,18 +37,20 @@ class NoteEdit() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initViews()
-        initButton()
         val permission = ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PERMISSION_GRANTED
         presenter = NoteEditViewModel( titleEditText, descriptionEditText,
             datePicker, getIdFromRouter(),  requireActivity().application().repository, requireActivity().application().locationFinder, permission)
         presenter.startListenLocation()
         presenter.fillTheViews()
+
+        initButton()
         presenter.fieldsIsNotFilledMassageLiveData.observe(requireActivity()){
             Toast.makeText(activity, R.string.warning_toast, Toast.LENGTH_SHORT).show()
         }
         presenter.viewContentLiveData.observe(requireActivity()){it->
             titleEditText.setText(it[0])
             descriptionEditText.setText(it[1])
+            datePicker.updateDate(it[2].toInt(), it[3].toInt(),  it[4].toInt())
             datePicker.updateDate(it[2].toInt(), it[3].toInt(),  it[4].toInt())
         }
         presenter.dataForFragmentResult.observe(requireActivity()){
