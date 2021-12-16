@@ -33,6 +33,9 @@ class ActivityViewModel(
     private val  _onChooseStartFragment = MutableLiveData<Int>()
     val onChooseStartFragment: LiveData<Int> = _onChooseStartFragment
 
+    private val  _onLocalBaseInitialised = MutableLiveData<Unit>()
+    val onLocalBaseInitialised: LiveData<Unit> = _onLocalBaseInitialised
+
     private val  _onCloudInitCompleted = MutableLiveData<Unit>()
     val onCloudInitCompleted: LiveData<Unit> = _onCloudInitCompleted
 
@@ -82,7 +85,9 @@ class ActivityViewModel(
     }
 
     override fun toInitNotesInRepository() {
+        Log.d("@@@2", "toInitNotesInRepository: ")
         repository.addAll(localDataBase.noteDao().getAllNotes())
+        _onLocalBaseInitialised.postValue(Unit)
 
 
         //Старый метод, шпаргалка по Moshi

@@ -26,7 +26,6 @@ class Activity : AppCompatActivity(), Callable {
     private lateinit var viewModel: ActivityViewModel
     private lateinit var binding: MainLayoutBinding
     lateinit var bottomNavigationItemView: BottomNavigationView
-    private val coarseLocation: String = android.Manifest.permission.ACCESS_COARSE_LOCATION
     private val fineLocation: String = android.Manifest.permission.ACCESS_FINE_LOCATION
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
 
@@ -38,11 +37,19 @@ class Activity : AppCompatActivity(), Callable {
         viewModel =
             ActivityViewModel(getRepository(), getLocalDB(), getAuthentication(), getCloudDB())
         setContentView(binding.root)
+        openLocalRepositoryNotes()
         downloadNotesFromFirebase()
         cloudSynchronizationListener()
         askPermission()
         setNavigation()
 
+    }
+
+    private fun openLocalRepositoryNotes() {
+        viewModel.readNotes()
+        viewModel.onLocalBaseInitialised.observe(this){
+            downloadNotesFromFirebase()
+        }
     }
 
     private fun cloudSynchronizationListener() {
