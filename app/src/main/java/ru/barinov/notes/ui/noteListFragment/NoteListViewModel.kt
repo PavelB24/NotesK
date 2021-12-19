@@ -1,5 +1,6 @@
 package ru.barinov.notes.ui.noteListFragment
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -8,6 +9,8 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.dialog.MaterialDialogs
 import ru.barinov.R
 import ru.barinov.notes.domain.*
 import ru.barinov.notes.domain.curentDataBase.Iterator
@@ -26,7 +29,8 @@ class NoteListViewModel(
     private val authentication: Authentication,
     private val cloudDataBase: CloudRepository,
     private val activity: Callable,
-    private val router: Router
+    private val router: Router,
+    private val context: Context
 ) :
     NoteListContract.NoteListFragmentPresenterInterface, OnNoteClickListener {
 
@@ -41,6 +45,9 @@ class NoteListViewModel(
 
     private val  _onUnsuccessfulSearch = MutableLiveData<Unit>()
     val onUnsuccessfulSearch: LiveData<Unit> = _onUnsuccessfulSearch
+
+    private val  _createReminderDialog = MutableLiveData<String>()
+    val createReminderDialog: LiveData<String> = _createReminderDialog
 
 
     override fun onSearchStarted(search: android.widget.SearchView) {
@@ -116,7 +123,7 @@ class NoteListViewModel(
                 if (authentication.auth.currentUser != null && switchState) {
                     addToCloud(note)
                 }
-                val textToTelegram = (note.dateAsString + "\n" + note.title + "\n" + note.detail)
+                val textToTelegram = (note.creationDate + "\n" + note.title + "\n" + note.detail)
                 Thread {
                     telegram.getService().sendMassage(telegram.getChanelName(), textToTelegram)
                         .execute().body()
@@ -208,6 +215,7 @@ class NoteListViewModel(
     }
 
     override fun onNoteLongClick(note: NoteEntity, view: View) {
+        //todo Remaster to When func
         val popupMenu = PopupMenu(view.context, view)
         popupMenu.inflate(R.menu.note_menu)
         popupMenu.setOnMenuItemClickListener { menuItem ->
@@ -216,10 +224,17 @@ class NoteListViewModel(
             } else if (menuItem.itemId == R.id.edit_note_item) {
                 onClickEdit(note)
             }
+            else if(menuItem.itemId== R.id.reminder_item){
+                buildNotesReminder(note.id)
+            }
             false
         }
         popupMenu.show()
 
+    }
+
+    private fun buildNotesReminder(id: String) {
+        _createReminderDialog.postValue(id)
     }
 
     override fun onNoteChecked(note: NoteEntity) {

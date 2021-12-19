@@ -50,6 +50,7 @@ class NotesAdapter: RecyclerView.Adapter<NoteViewHolder>() {
     private fun setTextInHolderItems(holder: NoteViewHolder, note: NoteEntity) {
         holder.titleTextView.text = note.title
         holder.descriptionTextView.text = note.detail
+        holder.creationDateTextView.text=note.creationDate
     }
 
     override fun getItemCount(): Int {

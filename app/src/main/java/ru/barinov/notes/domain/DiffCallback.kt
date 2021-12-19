@@ -24,8 +24,8 @@ class DiffCallback(oldList: List<NoteEntity>, newList: List<NoteEntity>) : DiffU
         val newNote = newList[newItemPosition]
         val oldNote = oldList[oldItemPosition]
         return newNote.title.equals(oldNote.title) && newNote.detail
-            .equals(oldNote.detail) && newNote.dateAsString
-            .equals(oldNote.dateAsString)
+            .equals(oldNote.detail) && newNote.creationDate
+            .equals(oldNote.creationDate)
     }
 }
 

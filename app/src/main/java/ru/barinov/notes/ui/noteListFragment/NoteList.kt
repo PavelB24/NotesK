@@ -19,12 +19,13 @@ import ru.barinov.notes.domain.room.DataBase
 import ru.barinov.notes.ui.dialogs.AgreementDialogFragment
 import ru.barinov.notes.ui.application
 import ru.barinov.notes.ui.dataManagerFragment.DataManager
+import ru.barinov.notes.ui.dialogs.ReminderDialogFragment
 import ru.barinov.notes.ui.noteEditFragment.NoteEdit
 import ru.barinov.notes.ui.notesActivity.Activity
 
-class NoteList : Fragment(){
+class NoteList : Fragment() {
     private lateinit var recyclerView: RecyclerView
-    private val adapter= NotesAdapter()
+    private val adapter = NotesAdapter()
     private lateinit var binding: NoteListLayoutBinding
     private lateinit var toolbar: Toolbar
     private lateinit var searchItem: MenuItem
@@ -39,30 +40,58 @@ class NoteList : Fragment(){
     ): View {
         setHasOptionsMenu(true)
         binding = NoteListLayoutBinding.inflate(inflater, container, false)
-        presenter = NoteListViewModel(getRepository(), adapter, requireActivity().application().cache, getLocalDB(), requireActivity().application().authentication,
-        getCloudDB(), (requireActivity() as Callable), requireActivity().application().router)
+        presenter = NoteListViewModel(
+            getRepository(),
+            adapter,
+            requireActivity().application().cache,
+            getLocalDB(),
+            requireActivity().application().authentication,
+            getCloudDB(),
+            (requireActivity() as Callable),
+            requireActivity().application().router,
+            requireContext()
+        )
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        (requireActivity() as Activity).bottomNavigationItemView.setBackgroundColor(resources.getColor(R.color.cherry))
+        (requireActivity() as Activity).bottomNavigationItemView.setBackgroundColor(
+            resources.getColor(
+                R.color.cherry
+            )
+        )
         initViews()
         parentFragmentManager.setFragmentResultListener(
             NoteEdit::class.simpleName!!,
             requireActivity(),
             FragmentResultListener { requestKey, result ->
-                presenter.getResultsFromNoteEditFragment(result, requireActivity().application().pref.getBoolean(DataManager.switchStateKey, false))
-                })
-          parentFragmentManager.setFragmentResultListener(
-                requireActivity().javaClass.simpleName,
-                requireActivity(), { requestKey, result ->
-                    presenter.refreshAdapter()
-                })
+                presenter.getResultsFromNoteEditFragment(
+                    result,
+                    requireActivity().application().pref.getBoolean(
+                        DataManager.switchStateKey,
+                        false
+                    )
+                )
+            })
+        parentFragmentManager.setFragmentResultListener(
+            requireActivity().javaClass.simpleName,
+            requireActivity(), { requestKey, result ->
+                presenter.refreshAdapter()
+            })
         createDialog()
         searchWasUnsuccessfulMessage()
         onEditionModeToastMessage()
+        registeredForReminderDialogCreation()
         super.onViewCreated(view, savedInstanceState)
 
+    }
+
+    private fun registeredForReminderDialogCreation() {
+        presenter.createReminderDialog.observe(requireActivity()) {
+            requireActivity().application().router.setId(it)
+            val reminderDialog = ReminderDialogFragment()
+            reminderDialog.show(childFragmentManager, "Reminder")
+        }
     }
 
     private fun createDialog() {
@@ -111,7 +140,6 @@ class NoteList : Fragment(){
     }
 
 
-
     private fun setRecyclerView() {
         presenter.setAdapter()
         recyclerView = binding.recyclerview
@@ -120,19 +148,23 @@ class NoteList : Fragment(){
     }
 
 
-
     private fun searchWasUnsuccessfulMessage() {
-        presenter.onUnsuccessfulSearch.observe(requireActivity()){
-            Toast.makeText(view?.context, R.string.unsuccessful_search_toast_text, Toast.LENGTH_SHORT)
+        presenter.onUnsuccessfulSearch.observe(requireActivity()) {
+            Toast.makeText(
+                view?.context,
+                R.string.unsuccessful_search_toast_text,
+                Toast.LENGTH_SHORT
+            )
                 .show()
         }
     }
 
     private fun onEditionModeToastMessage() {
-        presenter.editionModeMessage.observe(requireActivity()){
-        Toast.makeText(activity, R.string.edition_mode_toast_text, Toast.LENGTH_SHORT).show()
+        presenter.editionModeMessage.observe(requireActivity()) {
+            Toast.makeText(activity, R.string.edition_mode_toast_text, Toast.LENGTH_SHORT).show()
         }
     }
+
     private fun getRepository(): NotesRepository {
         return requireActivity().application().repository
     }
@@ -140,6 +172,7 @@ class NoteList : Fragment(){
     private fun getLocalDB(): DataBase {
         return requireActivity().application().localDataBase
     }
+
     private fun getCloudDB(): CloudRepository {
         return requireActivity().application().cloudDataBase
     }

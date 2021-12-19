@@ -43,6 +43,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.android.support:percent:28.0.0")
+    // https://mvnrepository.com/artifact/androidx.work/work-runtime
+    implementation("androidx.work:work-runtime:2.7.1")
     implementation 'com.google.firebase:firebase-firestore:24.0.0'
     implementation 'com.google.firebase:firebase-analytics-ktx'
     // https://mvnrepository.com/artifact/androidx.room/room-runtime
@@ -51,12 +53,16 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage-ktx:20.0.0'
     implementation 'com.google.firebase:firebase-firestore-ktx:24.0.0'
     implementation 'com.google.android.gms:play-services-maps:18.0.1'
+    implementation 'androidx.work:work-runtime-ktx:2.7.1'
+    implementation 'com.github.ifr0z:timepickercompact:1.0'
     kapt ("androidx.room:room-compiler:2.3.0")
     runtimeOnly("androidx.room:room-ktx:2.3.0")
     implementation("android.arch.persistence.room:common:1.1.1")
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+// https://mvnrepository.com/artifact/androidx.work/work-runtime
+    implementation("androidx.work:work-runtime:2.7.1")
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
     implementation 'androidx.navigation:navigation-fragment:2.3.5'

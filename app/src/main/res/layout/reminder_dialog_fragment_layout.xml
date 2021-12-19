@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <DatePicker
+        android:id="@+id/date_picker"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        style="@style/DatePickerTheme"
+        android:layout_height="wrap_content"/>
+    <ru.ifr0z.timepickercompact.TimePickerCompact
+        android:id="@+id/time_picker"
+        app:layout_constraintTop_toBottomOf="@id/date_picker"
+        android:layout_width="match_parent"
+        android:timePickerMode="spinner"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        app:layout_constraintTop_toBottomOf="@id/time_picker"
+        android:id="@+id/reminder_linear_horizontal_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/reminder_dialog_negative_button"
+            android:layout_weight="1"
+            android:padding="16dp"
+            android:layout_margin="16dp"
+            android:layout_width="0dp"
+            android:text="Cancel"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/reminder_dialog_positive_button"
+            android:layout_weight="1"
+            android:padding="16dp"
+            android:text="Set"
+            android:layout_margin="16dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

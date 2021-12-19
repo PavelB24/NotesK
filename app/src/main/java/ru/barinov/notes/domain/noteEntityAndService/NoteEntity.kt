@@ -12,25 +12,21 @@ data class NoteEntity(
     var id: String,
     var title: String,
     var detail: String,
-    var originDay: Int,
-    var originMonth: Int,
-    var originYear: Int,
     var latitude: Double,
-    var longitude: Double
+    var longitude: Double,
+    var creationDate: String,
 ) : Parcelable {
-    constructor() : this("", "", "", -1, -1, -1, 0.0, 0.0 )
-    val dateAsString: String
-        get() = "$originDay.$originMonth.$originYear"
+    constructor() : this("", "", "",- 0.0, 0.0, " " )
+
+
 
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
-        parcel.readInt(),
-        parcel.readInt(),
-        parcel.readInt(),
         parcel.readDouble(),
-        parcel.readDouble()
+        parcel.readDouble(),
+        parcel.readString()!!
     )
 
 
@@ -42,9 +38,10 @@ data class NoteEntity(
         parcel.writeString(id)
         parcel.writeString(title)
         parcel.writeString(detail)
-        parcel.writeInt(originDay)
-        parcel.writeInt(originMonth)
-        parcel.writeInt(originYear)
+        parcel.writeDouble(latitude)
+        parcel.writeDouble(longitude)
+        parcel.writeString(creationDate)
+
     }
 
     companion object CREATOR : Creator<NoteEntity> {

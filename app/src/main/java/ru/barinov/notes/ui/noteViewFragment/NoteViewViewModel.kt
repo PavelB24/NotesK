@@ -47,7 +47,7 @@ class NoteViewViewModel(
         Thread{
         val address = locationFinder.geocoder.getFromLocation(note.latitude, note.longitude, 1).firstOrNull()
             val locationString= address?.countryName + ", " + address?.locality
-              _openedNote.postValue(arrayOf(note.title, note.detail, note.dateAsString, locationString))
+              _openedNote.postValue(arrayOf(note.title, note.detail, note.creationDate, locationString))
             _latLong.postValue(arrayOf(note.latitude, note.longitude))
             resetIdInRouter()
         }.start()
@@ -56,7 +56,7 @@ class NoteViewViewModel(
 
 
 
-    fun resetIdInRouter(){
+    private fun resetIdInRouter(){
         router.resetId()
     }
 

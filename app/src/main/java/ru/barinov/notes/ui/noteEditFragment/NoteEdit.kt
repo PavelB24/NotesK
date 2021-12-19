@@ -2,15 +2,15 @@ package ru.barinov.notes.ui.noteEditFragment
 
 import android.Manifest
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.DatePicker
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
+import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import ru.barinov.R
 import ru.barinov.databinding.NoteEditLayoutBinding
@@ -21,9 +21,9 @@ class NoteEdit() : Fragment() {
     private lateinit var applyButton: Button
     private lateinit var titleEditText: EditText
     private lateinit var descriptionEditText: EditText
-    private lateinit var datePicker: DatePicker
     private lateinit var binding: NoteEditLayoutBinding
     private lateinit var presenter: NoteEditViewModel
+
 
 
     override fun onCreateView(
@@ -39,7 +39,7 @@ class NoteEdit() : Fragment() {
         initViews()
         val permission = ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PERMISSION_GRANTED
         presenter = NoteEditViewModel( titleEditText, descriptionEditText,
-            datePicker, getIdFromRouter(),  requireActivity().application().repository, requireActivity().application().locationFinder, permission)
+            getIdFromRouter(),  requireActivity().application().repository, requireActivity().application().locationFinder, permission)
         presenter.startListenLocation()
         presenter.fillTheViews()
 
@@ -50,8 +50,6 @@ class NoteEdit() : Fragment() {
         presenter.viewContentLiveData.observe(requireActivity()){it->
             titleEditText.setText(it[0])
             descriptionEditText.setText(it[1])
-            datePicker.updateDate(it[2].toInt(), it[3].toInt(),  it[4].toInt())
-            datePicker.updateDate(it[2].toInt(), it[3].toInt(),  it[4].toInt())
         }
         presenter.dataForFragmentResult.observe(requireActivity()){
             parentFragmentManager.setFragmentResult(
@@ -64,9 +62,10 @@ class NoteEdit() : Fragment() {
 
 
     private fun initViews() {
+
         titleEditText = binding.titleEdittext
         descriptionEditText = binding.descriptionEdittext
-        datePicker = binding.datePickerActions
+
     }
 
     private fun initButton() {

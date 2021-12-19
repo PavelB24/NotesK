@@ -13,6 +13,7 @@ class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val titleTextView: TextView = itemView.findViewById(R.id.note_title_textview)
     val descriptionTextView: TextView = itemView.findViewById(R.id.note_description_textview)
     val checkBox: CheckBox = itemView.findViewById(R.id.notes_checkbox)
+    val creationDateTextView: TextView = itemView.findViewById(R.id.creation_date_location)
 
 
 }

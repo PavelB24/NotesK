@@ -47,4 +47,7 @@
     <string name="on_success_auth_text">Authentication success.</string>
     <string name="reg_button_text">Registration</string>
     <string name="profile_ask_text">Have not got a profile yet?</string>
+    <string name="notification_title">NoteBook</string>
+    <string name="notification_subtitle">Reminder action</string>
+    <string name="reminder_dialog_title">Pick the reminder\'s time</string>
 </resources>

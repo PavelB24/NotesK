@@ -8,15 +8,18 @@ import android.location.LocationManager
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.CheckBox
 
 import android.widget.DatePicker
 import android.widget.EditText
+import android.widget.TimePicker
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ru.barinov.notes.domain.LocationFinder
 import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -24,11 +27,10 @@ import java.util.*
 class NoteEditViewModel(
     private val title: EditText,
     private val body: EditText,
-    private val datePicker: DatePicker,
     id: String?,
     repository: NotesRepository,
     private val locationFinder: LocationFinder,
-    private val permission: Boolean
+    private val permission: Boolean,
 ) : NoteEditContract.NoteEditFragmentPresenterInterface {
     private var tempNote: NoteEntity? = repository.getById(id)
     private lateinit var uuid: UUID
@@ -67,6 +69,10 @@ class NoteEditViewModel(
     //Переписать под получение строк и интов, а не вьюшек
     override fun initSafeNote() {
         uuid = UUID.randomUUID()
+        val dateFormat = SimpleDateFormat("dd/M/yyyy")
+        val currentDate = dateFormat.format(Date())
+
+
         //Редактирование
         if (checkOnEditionMode() && (title.text.toString().isNotEmpty() && body.text.toString()
                 .isNotEmpty())
@@ -75,11 +81,9 @@ class NoteEditViewModel(
                 tempNote!!.id,
                 title.text.toString(),
                 body.text.toString(),
-                datePicker.dayOfMonth,
-                datePicker.month,
-                datePicker.year,
                 tempNote!!.latitude,
-                tempNote!!.longitude
+                tempNote!!.longitude,
+                tempNote!!.creationDate
             )
             data = Bundle()
             data?.putParcelable(NoteEntity::class.simpleName, note)
@@ -91,7 +95,8 @@ class NoteEditViewModel(
             val note = NoteEntity(
                 uuid.toString(), title.text.toString(),
                 body.text.toString(),
-                datePicker.dayOfMonth, datePicker.month, datePicker.year, latitude, longitude
+                latitude, longitude,
+                currentDate
             )
             data = Bundle()
             data?.putParcelable(NoteEntity::class.simpleName, note)
@@ -102,6 +107,8 @@ class NoteEditViewModel(
         Log.d("@@@2", "$longitude $latitude")
         locationFinder.locationManager.removeUpdates(locationListener)
     }
+
+
 
     private fun checkLatLong() {
         if (latitude == 0.0 || longitude == 0.0) {
@@ -126,9 +133,6 @@ class NoteEditViewModel(
                 arrayOf(
                     tempNote!!.title,
                     tempNote!!.detail,
-                    tempNote!!.originYear.toString(),
-                    tempNote!!.originMonth.toString(),
-                    tempNote!!.originDay.toString()
                 )
             )
         }
