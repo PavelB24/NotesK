@@ -50,4 +50,5 @@
     <string name="notification_title">NoteBook</string>
     <string name="notification_subtitle">Reminder action</string>
     <string name="reminder_dialog_title">Pick the reminder\'s time</string>
+    <string name="show_on_map_button_text">Show on maps</string>
 </resources>

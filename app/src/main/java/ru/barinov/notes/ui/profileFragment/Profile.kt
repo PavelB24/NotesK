@@ -2,6 +2,7 @@ package ru.barinov.notes.ui.profileFragment
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import ru.barinov.R
 import ru.barinov.databinding.ProfileEnterLayoutBinding
@@ -42,16 +44,14 @@ class Profile : Fragment() {
         pref= requireActivity().getSharedPreferences("ProfileData", Context.MODE_PRIVATE)
         editor= pref.edit()
         binding = ProfileEnterLayoutBinding.inflate(inflater, container, false)
+        requireActivity().window.statusBarColor= activity?.resources!!.getColor(R.color.deep_blue_2)
+        requireActivity().window.navigationBarColor= activity?.resources!!.getColor(R.color.deep_blue_3)
         return binding.root
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        (requireActivity() as Activity).bottomNavigationItemView.setBackgroundColor(
-            resources.getColor(
-                R.color.deep_blue_2
-            )
-        )
+        (requireActivity() as Activity).bottomAppBar.backgroundTint = ContextCompat.getColorStateList(requireContext(), R.color.deep_blue_3)
         enterButton = binding.profileLoginButton
         loginEditText = binding.profileLoginEdittext
         passwordEditText = binding.profilePasswordEdittext

@@ -1,13 +1,16 @@
 package ru.barinov.notes.ui.notesActivity
 
+import android.content.Context
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
+import android.view.Menu
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentResultListener
+import androidx.core.view.get
+import androidx.fragment.app.Fragment
+import com.google.android.material.bottomappbar.BottomAppBar
 
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.barinov.R
 import ru.barinov.databinding.MainLayoutBinding
 import ru.barinov.notes.domain.Authentication
@@ -16,16 +19,13 @@ import ru.barinov.notes.domain.CloudRepository
 import ru.barinov.notes.domain.Router
 import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.domain.room.DataBase
-import ru.barinov.notes.ui.Application
 import ru.barinov.notes.ui.application
-import ru.barinov.notes.ui.dataManagerFragment.DataManager
-import java.util.jar.Manifest
 
 
 class Activity : AppCompatActivity(), Callable {
     private lateinit var viewModel: ActivityViewModel
     private lateinit var binding: MainLayoutBinding
-    lateinit var bottomNavigationItemView: BottomNavigationView
+    lateinit var bottomAppBar: BottomAppBar
     private val fineLocation: String = android.Manifest.permission.ACCESS_FINE_LOCATION
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
 
@@ -37,13 +37,15 @@ class Activity : AppCompatActivity(), Callable {
         viewModel =
             ActivityViewModel(getRepository(), getLocalDB(), getAuthentication(), getCloudDB())
         setContentView(binding.root)
+        askPermission()
+        setBottomBar()
         openLocalRepositoryNotes()
         downloadNotesFromFirebase()
         cloudSynchronizationListener()
-        askPermission()
-        setNavigation()
 
     }
+
+
 
     private fun openLocalRepositoryNotes() {
         viewModel.readNotes()
@@ -71,9 +73,11 @@ class Activity : AppCompatActivity(), Callable {
 
 
 
-    private fun setNavigation() {
-        bottomNavigationItemView = binding.navigationBar
-        bottomNavigationItemView.setOnItemSelectedListener { item ->
+
+
+    private fun setBottomBar() {
+        bottomAppBar = binding.navigationBar as BottomAppBar
+        bottomAppBar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.notes_item_menu -> {
                     openNoteList()
@@ -92,7 +96,7 @@ class Activity : AppCompatActivity(), Callable {
     private fun setStartFragment() {
         viewModel.chooseStartFragment()
         viewModel.onChooseStartFragment.observe(this) {
-            bottomNavigationItemView.selectedItemId = it
+            openStartFragment(it)
         }
 
 
@@ -105,6 +109,11 @@ class Activity : AppCompatActivity(), Callable {
             getAuthentication().auth.currentUser != null
         )
     }
+
+    private fun openStartFragment(fragment: Fragment){
+        getRouter().openOnStart(supportFragmentManager, fragment)
+    }
+
 
     private fun openDataManager() {
         getRouter().openDataManagerFragment(getOrientation(), supportFragmentManager)

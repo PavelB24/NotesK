@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.switchmaterial.SwitchMaterial
 import ru.barinov.R
@@ -35,12 +36,14 @@ class DataManager: Fragment() {
     ): View {
         binding= DataManagerLayoutBinding.inflate(inflater)
         presenter= DataManagerViewModel(getRepository(), getLocalDB(), getCloudDB(), requireActivity().application().authentication.auth)
+        requireActivity().window.statusBarColor= activity?.resources!!.getColor(R.color.intense_dark_cherry)
+        requireActivity().window.navigationBarColor= activity?.resources!!.getColor(R.color.intense_dark_cherry)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (requireActivity() as Activity).bottomNavigationItemView.setBackgroundColor(resources.getColor(R.color.cherry))
+        (requireActivity() as Activity).bottomAppBar.backgroundTint = ContextCompat.getColorStateList(requireContext(), R.color.intense_dark_cherry)
         editor= getSharedPreferences().edit()
         deleteImageButton= binding.deleteStorageButton
         initDeleteButton()

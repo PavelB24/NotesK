@@ -31,7 +31,7 @@ class RegistrationFragment: Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        (requireActivity() as Activity).bottomNavigationItemView.setBackgroundColor(resources.getColor(
+        (requireActivity() as Activity).bottomAppBar.setBackgroundColor(resources.getColor(
             R.color.deep_blue_2))
         submitButton= binding.profileLoginButton
         loginEditText =binding.profileLoginEdittext

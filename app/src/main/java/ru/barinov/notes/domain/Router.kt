@@ -1,6 +1,7 @@
 package ru.barinov.notes.domain
 
 import android.content.res.Configuration
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import ru.barinov.R
 import ru.barinov.notes.ui.dataManagerFragment.DataManager
@@ -23,6 +24,11 @@ class Router {
 
     fun resetId(){
         id= null
+    }
+
+
+    fun openOnStart(fragmentManager: FragmentManager,fragment: Fragment ){
+        fragmentManager.beginTransaction().replace(R.id.container_for_fragment, fragment).commit()
     }
 
     fun openNoteViewFragment(orientation:Int, fragmentManager: FragmentManager){

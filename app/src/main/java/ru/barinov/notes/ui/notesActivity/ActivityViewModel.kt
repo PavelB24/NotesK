@@ -2,6 +2,7 @@ package ru.barinov.notes.ui.notesActivity
 
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.Fragment
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,6 +16,9 @@ import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
 import ru.barinov.notes.domain.room.DataBase
 
 import ru.barinov.notes.ui.dataManagerFragment.DataManager
+import ru.barinov.notes.ui.noteListFragment.NoteList
+import ru.barinov.notes.ui.profileFragment.LoggedFragment
+import ru.barinov.notes.ui.profileFragment.Profile
 import java.io.IOException
 
 class ActivityViewModel(
@@ -30,8 +34,8 @@ class ActivityViewModel(
     private val cloudDataBase = cloudDataBase
 
 
-    private val  _onChooseStartFragment = MutableLiveData<Int>()
-    val onChooseStartFragment: LiveData<Int> = _onChooseStartFragment
+    private val  _onChooseStartFragment = MutableLiveData<Fragment>()
+    val onChooseStartFragment: LiveData<Fragment> = _onChooseStartFragment
 
     private val  _onLocalBaseInitialised = MutableLiveData<Unit>()
     val onLocalBaseInitialised: LiveData<Unit> = _onLocalBaseInitialised
@@ -112,9 +116,9 @@ class ActivityViewModel(
 
      fun chooseStartFragment() {
         if (authentication.auth.currentUser != null) {
-            _onChooseStartFragment.postValue(R.id.notes_item_menu)
+            _onChooseStartFragment.postValue(LoggedFragment())
         } else {
-            _onChooseStartFragment.postValue(R.id.profile_item_menu)
+            _onChooseStartFragment.postValue(Profile())
         }
     }
 

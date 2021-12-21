@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import ru.barinov.R
@@ -27,7 +26,7 @@ class LoggedFragment: Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        (requireActivity() as Activity).bottomNavigationItemView.setBackgroundColor(resources.getColor(
+        (requireActivity() as Activity).bottomAppBar.setBackgroundColor(resources.getColor(
             R.color.deep_blue_2))
         binding.profileOutButton.setOnClickListener {
             singOut()

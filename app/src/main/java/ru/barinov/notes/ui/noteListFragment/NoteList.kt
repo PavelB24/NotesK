@@ -1,5 +1,6 @@
 package ru.barinov.notes.ui.noteListFragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -22,6 +23,10 @@ import ru.barinov.notes.ui.dataManagerFragment.DataManager
 import ru.barinov.notes.ui.dialogs.ReminderDialogFragment
 import ru.barinov.notes.ui.noteEditFragment.NoteEdit
 import ru.barinov.notes.ui.notesActivity.Activity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentContainerView
+
 
 class NoteList : Fragment() {
     private lateinit var recyclerView: RecyclerView
@@ -51,15 +56,15 @@ class NoteList : Fragment() {
             requireActivity().application().router,
             requireContext()
         )
+        requireActivity().window.statusBarColor= activity?.resources!!.getColor(R.color.dark_cherry)
+        requireActivity().window.navigationBarColor= activity?.resources!!.getColor(R.color.intense_dark_cherry)
         return binding.root
     }
 
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        (requireActivity() as Activity).bottomNavigationItemView.setBackgroundColor(
-            resources.getColor(
-                R.color.cherry
-            )
-        )
+        (requireActivity() as Activity).bottomAppBar.backgroundTint = ContextCompat.getColorStateList(requireContext(), R.color.intense_dark_cherry)
         initViews()
         parentFragmentManager.setFragmentResultListener(
             NoteEdit::class.simpleName!!,

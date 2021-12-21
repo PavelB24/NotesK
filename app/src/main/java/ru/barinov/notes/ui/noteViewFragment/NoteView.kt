@@ -9,13 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.button.MaterialButton
 import ru.barinov.R
 import ru.barinov.databinding.NoteViewFramentLayoutBinding
 import ru.barinov.notes.domain.ViewModelsFactories
@@ -31,6 +28,7 @@ class NoteView : Fragment(), NoteViewContract.ViewInterface {
     private lateinit var location: TextView
     private lateinit var viewModel: NoteViewViewModel
     private lateinit var backButton: Button
+    private lateinit var mapButton: MaterialButton
     var lat = 0.0
     var lng = 0.0
 
@@ -40,9 +38,9 @@ class NoteView : Fragment(), NoteViewContract.ViewInterface {
         savedInstanceState: Bundle?
     ): View {
         binding = NoteViewFramentLayoutBinding.inflate(inflater, container, false)
-        (requireActivity() as Activity).bottomNavigationItemView.setBackgroundColor(resources.getColor(
-            R.color.blue
-        ))
+        (requireActivity() as Activity).bottomAppBar.backgroundTint = ContextCompat.getColorStateList(requireContext(), R.color.deep_blue_3)
+        requireActivity().window.statusBarColor= activity?.resources!!.getColor(R.color.deep_blue_2)
+        requireActivity().window.navigationBarColor= activity?.resources!!.getColor(R.color.deep_blue_3)
         return binding.root
     }
 
@@ -66,30 +64,29 @@ class NoteView : Fragment(), NoteViewContract.ViewInterface {
     }
 
 
-
-
-
     private fun initViews() {
         title = binding.noteTitleTextView
         body = binding.noteDescriptionTextview
         date = binding.dateOfEventTextview
         location= binding.locationTextView
+        mapButton= binding.showOnMapButton
         initBackButton()
-        initLocationTextViewClicker()
+        initMapClickListener()
     }
 
-    private fun initLocationTextViewClicker() {
-
+    private fun initMapClickListener() {
         Log.d("@@@1", "тут1")
         viewModel.latLong.observe(requireActivity()){
             Log.d("@@@1", "тут2")
             lat= it[0]
             lng= it[1]
         }
-        location.setOnClickListener {
+        mapButton.setOnClickListener {
             val mapFragment = MapsFragment.getInstance(lat, lng)
             mapFragment.show(childFragmentManager, dialogKey)
         }
+
+
     }
 
 
@@ -112,12 +109,7 @@ class NoteView : Fragment(), NoteViewContract.ViewInterface {
 
 
 
-    override fun onDestroy() {
-        if(requireActivity().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
-            (requireActivity() as Activity).bottomNavigationItemView.setBackgroundColor(resources.getColor(R.color.cherry))
-        }
-        super.onDestroy()
-    }
+
 
     companion object{
         const val dialogKey = "Map"
