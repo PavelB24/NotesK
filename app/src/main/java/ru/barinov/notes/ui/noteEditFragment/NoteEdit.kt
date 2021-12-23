@@ -16,6 +16,7 @@ import ru.barinov.R
 import ru.barinov.databinding.NoteEditLayoutBinding
 import ru.barinov.notes.ui.Application
 import ru.barinov.notes.ui.application
+import ru.barinov.notes.ui.notesActivity.Activity
 
 class NoteEdit() : Fragment() {
     private lateinit var applyButton: Button
@@ -57,6 +58,7 @@ class NoteEdit() : Fragment() {
                 it!!)
             parentFragmentManager.popBackStackImmediate()
         }
+        (requireActivity() as Activity).fabButton.show()
         super.onViewCreated(view, savedInstanceState)
     }
 

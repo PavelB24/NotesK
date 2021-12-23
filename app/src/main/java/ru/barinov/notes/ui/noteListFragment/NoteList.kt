@@ -1,6 +1,7 @@
 package ru.barinov.notes.ui.noteListFragment
 
 import android.content.Context
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -58,9 +59,15 @@ class NoteList : Fragment() {
         )
         requireActivity().window.statusBarColor= activity?.resources!!.getColor(R.color.dark_cherry)
         requireActivity().window.navigationBarColor= activity?.resources!!.getColor(R.color.intense_dark_cherry)
+        (requireActivity() as Activity).fabButton.show()
+        initFabListener()
         return binding.root
     }
 
+    private fun initFabListener() {
+        if(!(requireActivity() as Activity).fabButton.hasOnClickListeners()){
+        (requireActivity() as Activity).fabButton.setOnClickListener { presenter.createNewNote() }}
+    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -123,9 +130,6 @@ class NoteList : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.add_note_item_menu -> {
-                presenter.createNewNote()
-            }
             R.id.delete_chosen_notes -> {
                 presenter.deleteChosenNotes()
             }
@@ -180,6 +184,11 @@ class NoteList : Fragment() {
 
     private fun getCloudDB(): CloudRepository {
         return requireActivity().application().cloudDataBase
+    }
+
+    override fun onDestroyView() {
+        (requireActivity() as Activity).fabButton.visibility= View.GONE
+        super.onDestroyView()
     }
 }
 

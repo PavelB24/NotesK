@@ -47,7 +47,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">@dimen/apply_button_top_margin</item>
-        <item name="android:backgroundTint">#CC626A6E</item>
+        <item name="android:backgroundTint">@color/cherry</item>
         <item name="android:textColor">@color/back_button_color</item>
         <item name="android:textStyle">bold</item>
     </style>

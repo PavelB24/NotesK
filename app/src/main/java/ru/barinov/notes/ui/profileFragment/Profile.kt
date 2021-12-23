@@ -46,6 +46,7 @@ class Profile : Fragment() {
         binding = ProfileEnterLayoutBinding.inflate(inflater, container, false)
         requireActivity().window.statusBarColor= activity?.resources!!.getColor(R.color.deep_blue_2)
         requireActivity().window.navigationBarColor= activity?.resources!!.getColor(R.color.deep_blue_3)
+
         return binding.root
 
     }
@@ -64,6 +65,7 @@ class Profile : Fragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
+
     private fun onRestoreFields() {
         loginEditText.setText(pref.getString("Login", ""))
         passwordEditText.setText(pref.getString("Password", ""))
@@ -73,6 +75,7 @@ class Profile : Fragment() {
         onRestoreFields()
         super.onStart()
     }
+
 
     private fun onButtonPressed() {
         enterButton.setOnClickListener {
