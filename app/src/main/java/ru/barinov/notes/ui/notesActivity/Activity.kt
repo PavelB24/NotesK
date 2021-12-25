@@ -91,6 +91,7 @@ class Activity : AppCompatActivity(), Callable {
 //        bottomAppBar.viewTreeObserver.addOnGlobalLayoutListener {  }
 //        Handler().postDelayed({fabButton.visibility= View.GONE}, 1000)
         setStartFragment()
+        fabButton.setOnClickListener { callEditionFragment() }
     }
 
     private fun setStartFragment() {

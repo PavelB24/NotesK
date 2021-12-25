@@ -61,15 +61,10 @@ class NoteList : Fragment() {
             activity?.resources!!.getColor(R.color.dark_cherry)
         requireActivity().window.navigationBarColor =
             activity?.resources!!.getColor(R.color.intense_dark_cherry)
-        initFabListener()
         return binding.root
     }
 
-    private fun initFabListener() {
-        if (!(requireActivity() as Activity).fabButton.hasOnClickListeners()) {
-            (requireActivity() as Activity).fabButton.setOnClickListener { presenter.createNewNote() }
-        }
-    }
+
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -82,7 +77,7 @@ class NoteList : Fragment() {
             FragmentResultListener { requestKey, result ->
                 presenter.getResultsFromNoteEditFragment(
                     result,
-                    requireActivity().application().pref.getBoolean(
+                    requireContext().application().pref.getBoolean(
                         DataManager.switchStateKey,
                         false
                     )

@@ -20,4 +20,5 @@
     <dimen name="note_view_fragment_notes_description_text_size">24sp</dimen>
     <dimen name="data_manager_title">40sp</dimen>
     <dimen name="item_note_description">24sp</dimen>
+    <dimen name="recycler_bottom_margin">48dp</dimen>
 </resources>

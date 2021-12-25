@@ -36,14 +36,14 @@ class DataManager: Fragment() {
     ): View {
         binding= DataManagerLayoutBinding.inflate(inflater)
         presenter= DataManagerViewModel(getRepository(), getLocalDB(), getCloudDB(), requireActivity().application().authentication.auth)
-        requireActivity().window.statusBarColor= activity?.resources!!.getColor(R.color.intense_dark_cherry)
-        requireActivity().window.navigationBarColor= activity?.resources!!.getColor(R.color.intense_dark_cherry)
+        requireActivity().window.statusBarColor= activity?.resources!!.getColor(R.color.deep_blue_2)
+        requireActivity().window.navigationBarColor= activity?.resources!!.getColor(R.color.deep_blue_3)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (requireActivity() as Activity).bottomAppBar.backgroundTint = ContextCompat.getColorStateList(requireContext(), R.color.intense_dark_cherry)
+        (requireActivity() as Activity).bottomAppBar.backgroundTint = ContextCompat.getColorStateList(requireContext(), R.color.deep_blue_3)
         editor= getSharedPreferences().edit()
         deleteImageButton= binding.deleteStorageButton
         initDeleteButton()
