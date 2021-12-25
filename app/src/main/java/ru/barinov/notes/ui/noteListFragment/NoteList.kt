@@ -57,21 +57,24 @@ class NoteList : Fragment() {
             requireActivity().application().router,
             requireContext()
         )
-        requireActivity().window.statusBarColor= activity?.resources!!.getColor(R.color.dark_cherry)
-        requireActivity().window.navigationBarColor= activity?.resources!!.getColor(R.color.intense_dark_cherry)
-        (requireActivity() as Activity).fabButton.show()
+        requireActivity().window.statusBarColor =
+            activity?.resources!!.getColor(R.color.dark_cherry)
+        requireActivity().window.navigationBarColor =
+            activity?.resources!!.getColor(R.color.intense_dark_cherry)
         initFabListener()
         return binding.root
     }
 
     private fun initFabListener() {
-        if(!(requireActivity() as Activity).fabButton.hasOnClickListeners()){
-        (requireActivity() as Activity).fabButton.setOnClickListener { presenter.createNewNote() }}
+        if (!(requireActivity() as Activity).fabButton.hasOnClickListeners()) {
+            (requireActivity() as Activity).fabButton.setOnClickListener { presenter.createNewNote() }
+        }
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        (requireActivity() as Activity).bottomAppBar.backgroundTint = ContextCompat.getColorStateList(requireContext(), R.color.intense_dark_cherry)
+        (requireActivity() as Activity).bottomAppBar.backgroundTint =
+            ContextCompat.getColorStateList(requireContext(), R.color.intense_dark_cherry)
         initViews()
         parentFragmentManager.setFragmentResultListener(
             NoteEdit::class.simpleName!!,
@@ -186,9 +189,5 @@ class NoteList : Fragment() {
         return requireActivity().application().cloudDataBase
     }
 
-    override fun onDestroyView() {
-        (requireActivity() as Activity).fabButton.visibility= View.GONE
-        super.onDestroyView()
-    }
 }
 

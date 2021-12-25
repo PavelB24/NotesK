@@ -90,7 +90,6 @@ class Activity : AppCompatActivity(), Callable {
         //Todo костыль, переписать
 //        bottomAppBar.viewTreeObserver.addOnGlobalLayoutListener {  }
 //        Handler().postDelayed({fabButton.visibility= View.GONE}, 1000)
-        fabButton.visibility=View.INVISIBLE
         setStartFragment()
     }
 
