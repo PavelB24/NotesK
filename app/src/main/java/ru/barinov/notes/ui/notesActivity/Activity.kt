@@ -27,7 +27,6 @@ class Activity : AppCompatActivity(), Callable {
     private lateinit var binding: MainLayoutBinding
     lateinit var fabButton: FloatingActionButton
     lateinit var bottomAppBar: BottomAppBar
-    lateinit var bottomAppBarDrawnStateListener: ViewTreeObserver.OnGlobalLayoutListener
     private val fineLocation: String = android.Manifest.permission.ACCESS_FINE_LOCATION
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
 
@@ -43,7 +42,6 @@ class Activity : AppCompatActivity(), Callable {
         setBottomBar()
         openLocalRepositoryNotes()
         downloadNotesFromFirebase()
-
     }
 
 

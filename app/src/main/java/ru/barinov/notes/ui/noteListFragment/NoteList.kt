@@ -55,7 +55,6 @@ class NoteList : Fragment() {
             getCloudDB(),
             (requireActivity() as Callable),
             requireActivity().application().router,
-            requireContext()
         )
         requireActivity().window.statusBarColor =
             activity?.resources!!.getColor(R.color.dark_cherry)
@@ -92,8 +91,17 @@ class NoteList : Fragment() {
         searchWasUnsuccessfulMessage()
         onEditionModeToastMessage()
         registeredForReminderDialogCreation()
+        registeredForNoteSelected()
         super.onViewCreated(view, savedInstanceState)
 
+    }
+
+    private fun registeredForNoteSelected() {
+        presenter.onNoteClicked.observe(requireActivity()){
+            val bundle = Bundle()
+            bundle.putString("OnNoteSelected", it)
+            parentFragmentManager.setFragmentResult("OnNoteSelected", bundle)
+        }
     }
 
     private fun registeredForReminderDialogCreation() {

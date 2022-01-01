@@ -8,6 +8,7 @@ import ru.barinov.notes.ui.dataManagerFragment.DataManager
 import ru.barinov.notes.ui.noteEditFragment.NoteEdit
 import ru.barinov.notes.ui.noteListFragment.NoteList
 import ru.barinov.notes.ui.noteViewFragment.NoteView
+import ru.barinov.notes.ui.noteViewFragment.ViewPagerContainerFragment
 import ru.barinov.notes.ui.profileFragment.Profile
 import ru.barinov.notes.ui.profileFragment.LoggedFragment
 
@@ -35,11 +36,11 @@ class Router {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             fragmentManager.popBackStackImmediate()
             fragmentManager.beginTransaction()
-                .replace(R.id.container_for_fragment_land_2, NoteView()).addToBackStack(null)
+                .replace(R.id.container_for_fragment_land_2, ViewPagerContainerFragment()).addToBackStack(null)
                 .commit()
         } else {
             fragmentManager.beginTransaction()
-                .replace(R.id.container_for_fragment, NoteView()).addToBackStack(null)
+                .replace(R.id.container_for_fragment, ViewPagerContainerFragment()).addToBackStack(null)
                 .commit()
         }
     }

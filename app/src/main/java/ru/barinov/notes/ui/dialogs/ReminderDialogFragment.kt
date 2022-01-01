@@ -14,10 +14,12 @@ import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
+import ru.barinov.R
 
 import ru.barinov.databinding.ReminderDialogFragmentLayoutBinding
 import ru.barinov.notes.domain.ReminderWorker
 import ru.barinov.notes.domain.ReminderWorker.Companion.NOTIFICATION_WORK
+import ru.barinov.notes.ui.application
 import ru.ifr0z.timepickercompact.TimePickerCompact
 import java.lang.System.currentTimeMillis
 import java.util.*
@@ -57,7 +59,10 @@ class ReminderDialogFragment(): DialogFragment() {
                 val data = Data.Builder().putInt(ReminderWorker.NOTIFICATION_ID, 0).build()
                 val delay = customTime - currentTime
                 scheduleNotification(delay, data)}
-            Toast.makeText(requireContext(), "Reminder activated", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), getString(R.string.on_reminder_activate_text), Toast.LENGTH_LONG).show()
+
+            requireContext().application().router.resetId()
+
             dismiss()
         }
         negativeButton.setOnClickListener { dismiss() }

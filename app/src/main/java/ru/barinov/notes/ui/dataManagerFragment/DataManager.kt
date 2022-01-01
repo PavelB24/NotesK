@@ -24,7 +24,7 @@ class DataManager: Fragment() {
     private lateinit var binding: DataManagerLayoutBinding
     private lateinit var deleteImageButton: ImageButton
     private lateinit var switchMaterial: SwitchMaterial
-    private lateinit var presenter: DataManagerViewModel
+    private lateinit var viewModel: DataManagerViewModel
     private lateinit var  editor: SharedPreferences.Editor
     private val DELETE = "OK"
 
@@ -35,7 +35,7 @@ class DataManager: Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding= DataManagerLayoutBinding.inflate(inflater)
-        presenter= DataManagerViewModel(getRepository(), getLocalDB(), getCloudDB(), requireActivity().application().authentication.auth)
+        viewModel= DataManagerViewModel(getRepository(), getLocalDB(), getCloudDB(), requireActivity().application().authentication.auth)
         requireActivity().window.statusBarColor= activity?.resources!!.getColor(R.color.deep_blue_2)
         requireActivity().window.navigationBarColor= activity?.resources!!.getColor(R.color.deep_blue_3)
         return binding.root
@@ -53,15 +53,15 @@ class DataManager: Fragment() {
         }
 
     private fun getDialogResults() {
-        presenter.onRepositoryDeletion.observe(requireActivity()) { it ->
+        viewModel.onRepositoryDeletion.observe(requireActivity()) { it ->
             it.show(parentFragmentManager, DELETE)
             parentFragmentManager.setFragmentResultListener(
                 AgreementDialogFragment::class.simpleName!!,
                 requireActivity(), { requestKey, result ->
-                    presenter.onRepoDeletion(result, DELETE)
+                    viewModel.onRepoDeletion(result, DELETE)
                 })
         }
-        presenter.repositoryIsCleanedMessage.observe(requireActivity()){
+        viewModel.repositoryIsCleanedMessage.observe(requireActivity()){
             onDeletedMessage()
         }
     }
@@ -81,7 +81,7 @@ class DataManager: Fragment() {
 
     private fun initDeleteButton() {
         deleteImageButton.setOnClickListener {
-           presenter.deleteAllNotes()
+           viewModel.deleteAllNotes()
         }
     }
 

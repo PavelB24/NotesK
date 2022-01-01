@@ -17,13 +17,10 @@ import ru.barinov.notes.ui.notesActivity.Activity
 
 
 class NoteViewViewModel(
-    repository: NotesRepository,
-    router: Router,
-    locationFinder: LocationFinder
+    val repository: NotesRepository,
+    val router: Router,
+    private val locationFinder: LocationFinder
 ) : NoteViewContract.NoteViewFragmentPresenterInterface, ViewModel() {
-    val repository: NotesRepository = repository
-    val router: Router = router
-    val locationFinder = locationFinder
     lateinit var tempNote: NoteEntity
 
     private val _openedNote = MutableLiveData<Array<String>>()
@@ -51,7 +48,6 @@ class NoteViewViewModel(
             _latLong.postValue(arrayOf(note.latitude, note.longitude))
             resetIdInRouter()
         }.start()
-
     }
 
 

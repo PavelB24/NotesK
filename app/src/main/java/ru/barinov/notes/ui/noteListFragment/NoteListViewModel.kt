@@ -29,8 +29,7 @@ class NoteListViewModel(
     private val authentication: Authentication,
     private val cloudDataBase: CloudRepository,
     private val activity: Callable,
-    private val router: Router,
-    private val context: Context
+    private val router: Router
 ) :
     NoteListContract.NoteListFragmentPresenterInterface, OnNoteClickListener {
 
@@ -48,6 +47,9 @@ class NoteListViewModel(
 
     private val  _createReminderDialog = MutableLiveData<String>()
     val createReminderDialog: LiveData<String> = _createReminderDialog
+
+    private val  _onNoteClicked = MutableLiveData<String>()
+    val onNoteClicked: LiveData<String> = _onNoteClicked
 
 
     override fun onSearchStarted(search: android.widget.SearchView) {
@@ -210,6 +212,7 @@ class NoteListViewModel(
 
     override fun onNoteClick(note: NoteEntity) {
         router.setId(note.id)
+        _onNoteClicked.postValue(note.id)
         activity.callNoteViewFragment()
 
     }
