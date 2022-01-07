@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import ru.barinov.R
 import ru.barinov.databinding.ProfileRegistrationLayoutBinding
@@ -31,8 +32,6 @@ class RegistrationFragment: Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        (requireActivity() as Activity).bottomAppBar.setBackgroundColor(resources.getColor(
-            R.color.deep_blue_2))
         submitButton= binding.profileLoginButton
         loginEditText =binding.profileLoginEdittext
         passwordEditText = binding.profilePasswordEdittext

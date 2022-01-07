@@ -8,9 +8,15 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="cherry">#680202</color>
+    <color name="soft_cherry">#B4680202</color>
     <color name="dark_cherry">#630101</color>
+    <color name="soft_dark_cherry">#D94D0101</color>
     <color name="intense_dark_cherry">#4D0101</color>
+    <color name="intense_dark_cherry_2">#FA410101</color>
+    <color name="intense_dark_cherry_3">#FA480101</color>
     <color name="card_view_grey">#B2546E7A</color>
+    <color name="card_view_grey_2">#B0465B65</color>
+    <color name="card_view_grey_3">#E8285465</color>
     <color name="apply_button_color">#659C27B0</color>
     <color name="back_button_color">#9C000000</color>
     <color name="dark_grey">#252525</color>
@@ -23,8 +29,16 @@
     <color name="deep_blue">#141B68</color>
     <color name="deep_blue_2">#0D1137</color>
     <color name="deep_blue_3">#080B29</color>
+    <color name="deep_blue_3_2">#F7000225</color>
+    <color name="deep_blue_3_3">#FA090A30</color>
+    <color name="light_blue">#1a5891</color>
+    <color name="light_blue_2">#921A5891</color>
+    <color name="soft_deep_blue">#ED080B29</color>
     <color name="shadow_grey">#424242</color>
     830202
     680202
+    #FA080A25
+    FA090B2B
+    #E8285465
 
 </resources>

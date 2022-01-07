@@ -3,7 +3,7 @@
     android:height="36dp"
     android:viewportWidth="24"
     android:viewportHeight="24"
-    android:tint="@color/black"
+    android:tint="@color/nav_bar_color_selector"
     android:autoMirrored="true">
   <path
       android:fillColor="@android:color/white"

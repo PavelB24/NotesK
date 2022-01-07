@@ -2,6 +2,7 @@ package ru.barinov.notes.ui.noteEditFragment
 
 
 import android.annotation.SuppressLint
+import android.location.Location
 
 import android.location.LocationListener
 import android.location.LocationManager
@@ -13,10 +14,13 @@ import android.widget.CheckBox
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.TimePicker
+import androidx.core.location.LocationListenerCompat
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import ru.barinov.notes.domain.LocationFinder
+import ru.barinov.notes.domain.Router
 import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
 import java.text.SimpleDateFormat
@@ -27,12 +31,12 @@ import java.util.*
 class NoteEditViewModel(
     private val title: EditText,
     private val body: EditText,
-    id: String?,
+    val router: Router,
     repository: NotesRepository,
     private val locationFinder: LocationFinder,
     private val permission: Boolean,
-) : NoteEditContract.NoteEditFragmentPresenterInterface {
-    private var tempNote: NoteEntity? = repository.getById(id)
+) : ViewModel(), NoteEditContract.NoteEditFragmentPresenterInterface {
+    private var tempNote: NoteEntity? = repository.getById(router.getId())
     private lateinit var uuid: UUID
     private var data: Bundle? = null
     private var latitude: Double = 0.0
@@ -48,10 +52,25 @@ class NoteEditViewModel(
     private val _dataForFragmentResult = MutableLiveData<Bundle>()
     val dataForFragmentResult: LiveData<Bundle> = _dataForFragmentResult
 
-    val locationListener = LocationListener { location ->
-        latitude = location.latitude
-        longitude = location.longitude
+
+
+    private val locationListener = object: LocationListenerCompat{
+        override fun onLocationChanged(location: Location) {
+            latitude = location.latitude
+            longitude = location.longitude
+        }
+
+        override fun onProviderEnabled(provider: String) {
+            super.onProviderEnabled(provider)
+        }
+
+        override fun onProviderDisabled(provider: String) {
+            super.onProviderDisabled(provider)
+        }
+
+
     }
+
 
 
     fun startListenLocation() {
@@ -59,7 +78,7 @@ class NoteEditViewModel(
             locationFinder.locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
                 1000L,
-                1000f,
+                1000F,
                 locationListener
             )
         }
@@ -83,7 +102,8 @@ class NoteEditViewModel(
                 body.text.toString(),
                 tempNote!!.latitude,
                 tempNote!!.longitude,
-                tempNote!!.creationDate
+                tempNote!!.creationDate,
+                tempNote!!.isFavorite
             )
             data = Bundle()
             data?.putParcelable(NoteEntity::class.simpleName, note)
@@ -96,7 +116,7 @@ class NoteEditViewModel(
                 uuid.toString(), title.text.toString(),
                 body.text.toString(),
                 latitude, longitude,
-                currentDate
+                currentDate, false
             )
             data = Bundle()
             data?.putParcelable(NoteEntity::class.simpleName, note)
@@ -105,7 +125,7 @@ class NoteEditViewModel(
             _fieldsIsNotFilledMassageLiveData.postValue(Unit)
         }
         Log.d("@@@2", "$longitude $latitude")
-        locationFinder.locationManager.removeUpdates(locationListener)
+        removeLocationListener()
     }
 
 
@@ -136,6 +156,14 @@ class NoteEditViewModel(
                 )
             )
         }
+    }
+
+    fun removeLocationListener() {
+        locationFinder.locationManager.removeUpdates(locationListener)
+    }
+
+    fun clearRouterId() {
+        router.resetId()
     }
 
 

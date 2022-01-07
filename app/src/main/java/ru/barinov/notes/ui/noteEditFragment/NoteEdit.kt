@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
@@ -33,14 +34,19 @@ class NoteEdit() : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = NoteEditLayoutBinding.inflate(inflater)
+        requireActivity().window.navigationBarColor =
+            activity?.resources!!.getColor(R.color.card_view_grey_2)
+        requireActivity().window.statusBarColor= activity?.resources!!.getColor(R.color.deep_blue_2)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        (requireActivity() as Activity).bottomAppBar.backgroundTint =
+            ContextCompat.getColorStateList(requireContext(), R.color.card_view_grey)
         initViews()
         val permission = ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PERMISSION_GRANTED
         presenter = NoteEditViewModel( titleEditText, descriptionEditText,
-            getIdFromRouter(),  requireActivity().application().repository, requireActivity().application().locationFinder, permission)
+            requireContext().application().router,  requireActivity().application().repository, requireActivity().application().locationFinder, permission)
         presenter.startListenLocation()
         presenter.fillTheViews()
 
@@ -85,6 +91,12 @@ class NoteEdit() : Fragment() {
 
     private fun getIdFromRouter(): String? {
         return (requireActivity().application as Application).router.getId()
+    }
+
+    override fun onDestroy() {
+        presenter.removeLocationListener()
+        presenter.clearRouterId()
+        super.onDestroy()
     }
 
 }

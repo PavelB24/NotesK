@@ -7,56 +7,58 @@ import ru.barinov.R
 import ru.barinov.notes.ui.dataManagerFragment.DataManager
 import ru.barinov.notes.ui.noteEditFragment.NoteEdit
 import ru.barinov.notes.ui.noteListFragment.NoteList
-import ru.barinov.notes.ui.noteViewFragment.NoteView
 import ru.barinov.notes.ui.noteViewFragment.ViewPagerContainerFragment
 import ru.barinov.notes.ui.profileFragment.Profile
 import ru.barinov.notes.ui.profileFragment.LoggedFragment
 
+//todo передавать айди как аргумент
 class Router {
     private var id: String? = null
 
-    fun setId(id: String){
-        this.id= id
+    fun setId(id: String) {
+        this.id = id
     }
 
-    fun getId(): String?{
+    fun getId(): String? {
         return id
     }
 
-    fun resetId(){
-        id= null
+    fun resetId() {
+        id = null
     }
 
 
-    fun openOnStart(fragmentManager: FragmentManager,fragment: Fragment ){
+    fun openOnStart(fragmentManager: FragmentManager, fragment: Fragment) {
         fragmentManager.beginTransaction().replace(R.id.container_for_fragment, fragment).commit()
     }
 
-    fun openNoteViewFragment(orientation:Int, fragmentManager: FragmentManager){
+    fun openNoteViewFragment(orientation: Int, fragmentManager: FragmentManager) {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             fragmentManager.popBackStackImmediate()
             fragmentManager.beginTransaction()
-                .replace(R.id.container_for_fragment_land_2, ViewPagerContainerFragment()).addToBackStack(null)
+                .replace(R.id.container_for_fragment_land_2, ViewPagerContainerFragment())
                 .commit()
         } else {
             fragmentManager.beginTransaction()
-                .replace(R.id.container_for_fragment, ViewPagerContainerFragment()).addToBackStack(null)
+                .replace(R.id.container_for_fragment, ViewPagerContainerFragment())
                 .commit()
         }
     }
-    fun openNoteEditFragment(orientation:Int, fragmentManager: FragmentManager) {
+
+    fun openNoteEditFragment(orientation: Int, fragmentManager: FragmentManager) {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             fragmentManager.popBackStackImmediate()
             fragmentManager.beginTransaction()
-                .replace(R.id.container_for_fragment_land_2, NoteEdit())
+                .add(R.id.container_for_fragment_land_2, NoteEdit())
                 .addToBackStack(null).commit()
         } else {
             fragmentManager.beginTransaction()
-                .replace(R.id.container_for_fragment, NoteEdit())
+                .add(R.id.container_for_fragment, NoteEdit())
                 .addToBackStack(null).commit()
         }
     }
-    fun openNoteLitFragment(orientation:Int, fragmentManager: FragmentManager) {
+
+    fun openNoteLitFragment(orientation: Int, fragmentManager: FragmentManager) {
         fragmentManager.fragments.forEach { fragmentManager.beginTransaction().remove(it).commit() }
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             fragmentManager.beginTransaction()
@@ -71,7 +73,7 @@ class Router {
         }
     }
 
-    fun openDataManagerFragment(orientation:Int, fragmentManager: FragmentManager){
+    fun openDataManagerFragment(orientation: Int, fragmentManager: FragmentManager) {
         fragmentManager.fragments.forEach { fragmentManager.beginTransaction().remove(it).commit() }
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             fragmentManager.beginTransaction()
@@ -90,28 +92,34 @@ class Router {
         }
     }
 
-    fun openProfileFragment(orientation:Int, fragmentManager: FragmentManager, isOnline: Boolean){
+    fun openProfileFragment(orientation: Int, fragmentManager: FragmentManager, isOnline: Boolean) {
         fragmentManager.fragments.forEach { fragmentManager.beginTransaction().remove(it).commit() }
-        if (orientation== Configuration.ORIENTATION_LANDSCAPE) {
-            if(isOnline){
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (isOnline) {
                 fragmentManager.beginTransaction()
-                    .replace(R.id.layout_horizontal_unit_container,
-                        LoggedFragment()).commit() }
-            else{
-            fragmentManager.beginTransaction()
-                .replace(
-                    R.id.layout_horizontal_unit_container,
-                    Profile()
-                ).commit()}
+                    .replace(
+                        R.id.layout_horizontal_unit_container,
+                        LoggedFragment()
+                    ).commit()
+            } else {
+                fragmentManager.beginTransaction()
+                    .replace(
+                        R.id.layout_horizontal_unit_container,
+                        Profile()
+                    ).commit()
+            }
         } else {
-            if(isOnline){
+            if (isOnline) {
                 fragmentManager.beginTransaction()
-                    .replace(R.id.container_for_fragment,
-                        LoggedFragment()).commit() }
-            else{
-            fragmentManager.beginTransaction()
-                .replace(R.id.container_for_fragment, Profile())
-                .commit()}
+                    .replace(
+                        R.id.container_for_fragment,
+                        LoggedFragment()
+                    ).commit()
+            } else {
+                fragmentManager.beginTransaction()
+                    .replace(R.id.container_for_fragment, Profile())
+                    .commit()
+            }
         }
     }
 

@@ -18,7 +18,7 @@
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="@dimen/data_manager_title"
-        android:textStyle="italic"
+        android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout

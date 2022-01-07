@@ -1,24 +1,19 @@
 package ru.barinov.notes.ui.noteViewFragment
 
 
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.barinov.notes.domain.LocationFinder
-import ru.barinov.notes.domain.Router
 import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
-import ru.barinov.notes.ui.dialogs.MapsFragment
-import ru.barinov.notes.ui.notesActivity.Activity
+import java.io.IOException
 
 
 class NoteViewViewModel(
     val repository: NotesRepository,
-    val router: Router,
+    var id: String,
     private val locationFinder: LocationFinder
 ) : NoteViewContract.NoteViewFragmentPresenterInterface, ViewModel() {
     lateinit var tempNote: NoteEntity
@@ -33,28 +28,36 @@ class NoteViewViewModel(
 
 
 
+
     override fun getNote() {
-        var note = repository.getById(router.getId())
-        Log.d("@@@", note.toString())
-        if(note!=null){
-            tempNote=note
-        }else {
-            note= tempNote
+        var note = repository.getById(id)
+        Log.d("@@@4", id)
+        if (note != null) {
+            tempNote = note
+        } else {
+            note = tempNote
         }
-        Thread{
-        val address = locationFinder.geocoder.getFromLocation(note.latitude, note.longitude, 1).firstOrNull()
-            val locationString= address?.countryName + ", " + address?.locality
-              _openedNote.postValue(arrayOf(note.title, note.detail, note.creationDate, locationString))
-            _latLong.postValue(arrayOf(note.latitude, note.longitude))
-            resetIdInRouter()
-        }.start()
+
+            Thread {
+                var locationString = ""
+                try{
+                val address =
+                    locationFinder.geocoder.getFromLocation(note.latitude, note.longitude, 1)
+                        .firstOrNull()
+               locationString = address?.countryName + ", " + address?.locality}
+                catch (e: IOException){
+                    //todo
+                }
+
+                _openedNote.postValue(
+                    arrayOf(
+                        note.title,
+                        note.detail,
+                        note.creationDate,
+                        locationString
+                    )
+                )
+                _latLong.postValue(arrayOf(note.latitude, note.longitude))
+            }.start()
+        }
     }
-
-
-
-    private fun resetIdInRouter(){
-        router.resetId()
-    }
-
-
-}

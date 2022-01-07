@@ -13,15 +13,15 @@ class ViewModelsFactories {
 
     class NoteViewViewModelFactory(
         val repository: NotesRepository,
-        val router: Router,
+        val id: String,
         val locationFinder: LocationFinder
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return modelClass.getConstructor(
                 NotesRepository::class.java,
-                Router::class.java,
+                String::class.java,
                 LocationFinder::class.java
-            ).newInstance(repository, router, locationFinder)
+            ).newInstance(repository, id, locationFinder)
         }
     }
 

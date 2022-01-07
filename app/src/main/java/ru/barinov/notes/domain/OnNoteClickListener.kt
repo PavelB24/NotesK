@@ -10,4 +10,5 @@ interface OnNoteClickListener {
     fun onNoteLongClick(note: NoteEntity, view: View)
     fun onNoteChecked(note: NoteEntity)
     fun onNoteUnChecked(note: NoteEntity)
+    fun onFavButtonPressed(note: NoteEntity)
 }

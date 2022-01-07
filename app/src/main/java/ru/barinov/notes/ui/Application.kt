@@ -7,7 +7,7 @@ import android.location.LocationManager
 import androidx.room.Room
 import com.google.firebase.FirebaseApp
 import ru.barinov.notes.domain.*
-import ru.barinov.notes.domain.curentDataBase.Iterator
+import ru.barinov.notes.domain.curentDataBase.NotesCache
 import ru.barinov.notes.domain.curentDataBase.NotesRepository
 import ru.barinov.notes.domain.room.DataBase
 
@@ -15,7 +15,7 @@ import ru.barinov.notes.domain.room.DataBase
 class Application : Application() {
     val repository = NotesRepository()
     val router = Router()
-    val cache = Iterator()
+    val cache = NotesCache()
     private val sharedPreferencesName = "Settings"
     lateinit var  pref: SharedPreferences
     lateinit var authentication: Authentication

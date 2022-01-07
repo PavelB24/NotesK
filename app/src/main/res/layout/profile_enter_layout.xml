@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/profile_blue_abstract"
+    android:paddingTop="32dp"
+    android:background="@drawable/grey_background_4"
     android:orientation="vertical">
 
 
@@ -38,6 +39,8 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/profile_password_layout"
             android:layout_width="match_parent"
+            app:endIconMode="password_toggle"
+            app:errorIconDrawable="@android:drawable/stat_notify_error"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/st_margin"
@@ -45,6 +48,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/profile_password_edittext"
+                android:inputType="textPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -64,6 +68,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="@dimen/st_margin"
                 android:layout_weight="1"
+                android:textColor="@color/black"
                 android:text="@string/profile_ask_text"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -74,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/st_margin"
                 android:layout_weight="1"
-                android:backgroundTint="#45000000"
+                android:backgroundTint="#51000000"
                 android:text="@string/reg_button_text"
                 android:textColor="@color/checkbox_activated_color" />
 
@@ -85,7 +90,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="28dp"
-            android:backgroundTint="@color/deep_blue"
+            android:backgroundTint="@color/light_blue_2"
             android:text="@string/profile_button_text"
             android:textColor="@color/black"
             app:layout_constraintTop_toBottomOf="@id/horizontal_container_profile_enter_layout" />

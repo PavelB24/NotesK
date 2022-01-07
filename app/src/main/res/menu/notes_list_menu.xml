@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-
     <item
         android:id="@+id/search_item_menu"
         android:title="Search"
@@ -13,7 +12,13 @@
         android:id="@+id/delete_chosen_notes"
         app:showAsAction="collapseActionView"
         android:title="Delete" />
-
+    <item
+        android:id="@+id/favorites_menu_button"
+        android:title="Favorites"
+        app:showAsAction="ifRoom"
+        android:checkable="true"
+        android:icon="@drawable/drawable_selector"
+        />
 
 
 </menu>

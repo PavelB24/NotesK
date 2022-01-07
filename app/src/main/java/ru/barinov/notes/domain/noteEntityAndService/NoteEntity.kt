@@ -15,9 +15,9 @@ data class NoteEntity(
     var latitude: Double,
     var longitude: Double,
     var creationDate: String,
+    var isFavorite: Boolean
 ) : Parcelable {
-    constructor() : this("", "", "",- 0.0, 0.0, " " )
-
+    constructor() : this("", "", "", -0.0, 0.0, " ", false)
 
 
     constructor(parcel: Parcel) : this(
@@ -26,7 +26,8 @@ data class NoteEntity(
         parcel.readString()!!,
         parcel.readDouble(),
         parcel.readDouble(),
-        parcel.readString()!!
+        parcel.readString()!!,
+        parcel.readInt() == 1,
     )
 
 
@@ -41,6 +42,12 @@ data class NoteEntity(
         parcel.writeDouble(latitude)
         parcel.writeDouble(longitude)
         parcel.writeString(creationDate)
+        val isFavoriteInt = if (isFavorite) {
+            1
+        } else {
+            0
+        }
+        parcel.writeInt(isFavoriteInt)
 
     }
 

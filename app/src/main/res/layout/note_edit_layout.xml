@@ -5,7 +5,7 @@
     android:id="@+id/scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/imgonline_flop"
+    android:background="@drawable/grey_background_4"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -14,12 +14,26 @@
         android:orientation="horizontal">
 
 
+        <ImageView
+            android:id="@+id/note_edit_img_view"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_marginStart="68dp"
+            android:layout_marginEnd="68dp"
+            android:layout_marginTop="40dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        
+<!--        <com.google.android.material.chip.Chip-->
+<!--            android:layout_width=""-->
+<!--            android:layout_height=""-->
+
         <EditText
             android:id="@+id/title_edittext"
             style="@style/title_edittext_style"
             android:hint="@string/add_title_hint"
             android:textColor="@color/black"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/note_edit_img_view"
             tools:ignore="MissingConstraints"
             android:backgroundTint="@color/black"
             android:textCursorDrawable="@color/black"/>

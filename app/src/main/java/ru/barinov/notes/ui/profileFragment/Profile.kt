@@ -45,14 +45,15 @@ class Profile : Fragment() {
         editor= pref.edit()
         binding = ProfileEnterLayoutBinding.inflate(inflater, container, false)
         requireActivity().window.statusBarColor= activity?.resources!!.getColor(R.color.deep_blue_2)
-        requireActivity().window.navigationBarColor= activity?.resources!!.getColor(R.color.deep_blue_3)
+        requireActivity().window.navigationBarColor= activity?.resources!!.getColor(R.color.card_view_grey_2)
 
         return binding.root
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        (requireActivity() as Activity).bottomAppBar.backgroundTint = ContextCompat.getColorStateList(requireContext(), R.color.deep_blue_3)
+        (requireActivity() as Activity).bottomAppBar.backgroundTint =
+            ContextCompat.getColorStateList(requireContext(), R.color.card_view_grey)
         enterButton = binding.profileLoginButton
         loginEditText = binding.profileLoginEdittext
         passwordEditText = binding.profilePasswordEdittext
@@ -144,16 +145,16 @@ class Profile : Fragment() {
             ).commit()
         }
     }
-
+//todo вынести в роутер
     private fun startRegistrationFragment() {
         if (this.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             parentFragmentManager.beginTransaction()
                 .add(R.id.layout_horizontal_unit_container, RegistrationFragment())
-                .addToBackStack(RegistrationFragment::class.simpleName).commit()
+                .addToBackStack(null).commit()
         } else {
             parentFragmentManager.beginTransaction()
                 .add(R.id.container_for_fragment, RegistrationFragment())
-                .addToBackStack(RegistrationFragment::class.simpleName).commit()
+                .addToBackStack(null).commit()
         }
     }
 

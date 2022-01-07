@@ -3,19 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/light_abstract_structure_sunlight"
+    android:background="@drawable/trees"
     android:orientation="vertical"
     tools:context=".notes.ui.notesActivity.Activity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/cherry"
+            android:layout_height="match_parent"
             android:title="@string/app_name" />
     </com.google.android.material.appbar.AppBarLayout>
 

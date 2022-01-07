@@ -7,6 +7,11 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabs_view"
+        app:tabMode="scrollable"
+        app:tabPadding="5dp"
+        android:background="@color/data_manager_toggle_button_light_grey"
+        app:tabTextColor="@color/black"
+        app:tabIconTint="@color/tab_color_selector"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_width="match_parent"
@@ -16,6 +21,7 @@
         android:id="@+id/view_pager_2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="@color/data_manager_toggle_button_light_grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tabs_view"
         app:layout_constraintVertical_bias="0.0"

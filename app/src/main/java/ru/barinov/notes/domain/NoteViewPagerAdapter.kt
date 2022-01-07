@@ -1,24 +1,22 @@
 package ru.barinov.notes.domain
 
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
-import ru.barinov.notes.ui.noteViewFragment.NoteView
-import ru.barinov.notes.ui.noteViewFragment.ViewPagerContainerFragment
+import ru.barinov.notes.ui.noteViewFragment.NoteViewFragment
 
-class NoteViewPagerAdapter( fragment: Fragment, val router: Router): FragmentStateAdapter(fragment) {
-     lateinit var noteList: List<NoteEntity>
+class NoteViewPagerAdapter( fragment: Fragment): FragmentStateAdapter(fragment) {
+     lateinit var noteList: MutableList<NoteEntity>
 
     override fun getItemCount(): Int {
         return noteList.size
     }
 
     override fun createFragment(position: Int): Fragment {
-        val note = noteList[position]
-        router.setId(note.id)
-        Log.d("@@@3", "createFragment: " + note.id)
-        return NoteView()
+        val id = noteList[position].id
+        return NoteViewFragment.getInstance(id)
 
     }
+
+
 }

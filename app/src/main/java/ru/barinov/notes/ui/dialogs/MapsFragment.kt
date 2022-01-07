@@ -1,8 +1,5 @@
 package ru.barinov.notes.ui.dialogs
 
-import android.app.AlertDialog
-import android.app.Dialog
-
 
 import android.os.Bundle
 import android.util.Log
@@ -19,7 +16,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
 import ru.barinov.R
-import ru.barinov.notes.ui.noteViewFragment.NoteView
+import ru.barinov.notes.ui.noteViewFragment.NoteViewFragment
 
 
 class MapsFragment : DialogFragment() {
@@ -32,8 +29,8 @@ class MapsFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val data: Bundle? = arguments
-        lat= data!!.getDouble(NoteView.latitude)
-        lng= data.getDouble(NoteView.longitude)
+        lat= data!!.getDouble(NoteViewFragment.latitude)
+        lng= data.getDouble(NoteViewFragment.longitude)
         Log.d("@@@2", "$lat $lng")
         return inflater.inflate(R.layout.fragment_maps, container, false)
     }
@@ -68,8 +65,8 @@ class MapsFragment : DialogFragment() {
         fun getInstance(val1: Double, val2: Double): MapsFragment {
             val mapsFragment = MapsFragment()
             val data= Bundle()
-            data.putDouble(NoteView.latitude, val1)
-            data.putDouble(NoteView.longitude, val2)
+            data.putDouble(NoteViewFragment.latitude, val1)
+            data.putDouble(NoteViewFragment.longitude, val2)
             mapsFragment.arguments=data
             return mapsFragment
 

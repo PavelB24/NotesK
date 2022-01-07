@@ -1,7 +1,6 @@
 package ru.barinov.notes.ui.noteListFragment
 
-import android.content.Context
-import android.opengl.Visibility
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -20,13 +19,10 @@ import ru.barinov.notes.domain.noteEntityAndService.NotesAdapter
 import ru.barinov.notes.domain.room.DataBase
 import ru.barinov.notes.ui.dialogs.AgreementDialogFragment
 import ru.barinov.notes.ui.application
-import ru.barinov.notes.ui.dataManagerFragment.DataManager
 import ru.barinov.notes.ui.dialogs.ReminderDialogFragment
 import ru.barinov.notes.ui.noteEditFragment.NoteEdit
 import ru.barinov.notes.ui.notesActivity.Activity
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentContainerView
 
 
 class NoteList : Fragment() {
@@ -35,7 +31,8 @@ class NoteList : Fragment() {
     private lateinit var binding: NoteListLayoutBinding
     private lateinit var toolbar: Toolbar
     private lateinit var searchItem: MenuItem
-    private lateinit var presenter: NoteListViewModel
+    private lateinit var viewModel: NoteListViewModel
+    private lateinit var editor: SharedPreferences.Editor
     private val DELETE = "OK"
 
 
@@ -46,66 +43,66 @@ class NoteList : Fragment() {
     ): View {
         setHasOptionsMenu(true)
         binding = NoteListLayoutBinding.inflate(inflater, container, false)
-        presenter = NoteListViewModel(
-            getRepository(),
-            adapter,
-            requireActivity().application().cache,
-            getLocalDB(),
-            requireActivity().application().authentication,
-            getCloudDB(),
-            (requireActivity() as Callable),
-            requireActivity().application().router,
+        viewModel = NoteListViewModel(
+            repository = getRepository(),
+            adapter = adapter,
+            cache = requireActivity().application().cache,
+            localDataBase = getLocalDB(),
+            authentication = requireActivity().application().authentication,
+            cloudDataBase = getCloudDB(),
+            activity = (requireActivity() as Callable),
+            router = requireActivity().application().router,
+            sharedPref = requireContext().application().pref
         )
         requireActivity().window.statusBarColor =
-            activity?.resources!!.getColor(R.color.dark_cherry)
+            activity?.resources!!.getColor(R.color.deep_blue_2)
         requireActivity().window.navigationBarColor =
-            activity?.resources!!.getColor(R.color.intense_dark_cherry)
+            activity?.resources!!.getColor(R.color.card_view_grey_2)
         return binding.root
     }
 
 
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        editor = getSharedPreferences().edit()
         (requireActivity() as Activity).bottomAppBar.backgroundTint =
-            ContextCompat.getColorStateList(requireContext(), R.color.intense_dark_cherry)
+            ContextCompat.getColorStateList(requireContext(), R.color.card_view_grey)
         initViews()
         parentFragmentManager.setFragmentResultListener(
             NoteEdit::class.simpleName!!,
             requireActivity(),
             FragmentResultListener { requestKey, result ->
-                presenter.getResultsFromNoteEditFragment(
-                    result,
-                    requireContext().application().pref.getBoolean(
-                        DataManager.switchStateKey,
-                        false
-                    )
+                viewModel.getResultsFromNoteEditFragment(
+                    result
                 )
             })
         parentFragmentManager.setFragmentResultListener(
             requireActivity().javaClass.simpleName,
             requireActivity(), { requestKey, result ->
-                presenter.refreshAdapter()
+                viewModel.refreshAdapter()
             })
         createDialog()
         searchWasUnsuccessfulMessage()
         onEditionModeToastMessage()
         registeredForReminderDialogCreation()
-        registeredForNoteSelected()
+//        registeredForNoteSelected()
         super.onViewCreated(view, savedInstanceState)
 
     }
 
-    private fun registeredForNoteSelected() {
-        presenter.onNoteClicked.observe(requireActivity()){
-            val bundle = Bundle()
-            bundle.putString("OnNoteSelected", it)
-            parentFragmentManager.setFragmentResult("OnNoteSelected", bundle)
-        }
+    private fun getSharedPreferences(): SharedPreferences {
+        return requireActivity().application().pref
     }
 
+//    private fun registeredForNoteSelected() {
+//        viewModel.onNoteClicked.observe(requireActivity()){
+////            val bundle = Bundle()
+////            bundle.putString("OnNoteSelected", it)
+////            parentFragmentManager.setFragmentResult("OnNoteSelected", bundle)
+//        }
+//    }
+
     private fun registeredForReminderDialogCreation() {
-        presenter.createReminderDialog.observe(requireActivity()) {
+        viewModel.createReminderDialog.observe(requireActivity()) {
             requireActivity().application().router.setId(it)
             val reminderDialog = ReminderDialogFragment()
             reminderDialog.show(childFragmentManager, "Reminder")
@@ -113,12 +110,12 @@ class NoteList : Fragment() {
     }
 
     private fun createDialog() {
-        presenter.onNoteDeletion.observe(requireActivity()) { it ->
+        viewModel.onNoteDeletion.observe(requireActivity()) { it ->
             it.show(parentFragmentManager, DELETE)
             parentFragmentManager.setFragmentResultListener(
                 AgreementDialogFragment::class.simpleName!!,
                 requireActivity(), { requestKey, result ->
-                    presenter.deleteNoteInRepos(result, DELETE)
+                    viewModel.deleteNoteInRepos(result, DELETE)
                 })
         }
     }
@@ -129,15 +126,28 @@ class NoteList : Fragment() {
             inflater.inflate(R.menu.notes_list_menu, menu)
             searchItem = menu.findItem(R.id.search_item_menu)
             val searchView = searchItem.actionView as android.widget.SearchView
-            presenter.onSearchStarted(searchView)
+            viewModel.onSearchStarted(searchView)
             super.onCreateOptionsMenu(menu, inflater)
         }
     }
 
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.delete_chosen_notes -> {
-                presenter.deleteChosenNotes()
+                viewModel.deleteChosenNotes()
+            }
+            R.id.favorites_menu_button -> {
+                item.isChecked = !item.isChecked
+                if (item.isChecked) {
+                    viewModel.showOnlyFavs()
+                    item.setIcon(R.drawable.ic_favourites_black_star_symbol_icon_icons_com_activated)
+                } else {
+                    item.setIcon(R.drawable.ic_favourites_black_star_symbol_icon_icons_com_54534)
+                    viewModel.cancelShowOnlyFavs()
+                }
+
+
             }
         }
         return super.onOptionsItemSelected(item)
@@ -156,7 +166,7 @@ class NoteList : Fragment() {
 
 
     private fun setRecyclerView() {
-        presenter.setAdapter()
+        viewModel.setAdapter()
         recyclerView = binding.recyclerview
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
@@ -164,7 +174,7 @@ class NoteList : Fragment() {
 
 
     private fun searchWasUnsuccessfulMessage() {
-        presenter.onUnsuccessfulSearch.observe(requireActivity()) {
+        viewModel.onUnsuccessfulSearch.observe(requireActivity()) {
             Toast.makeText(
                 view?.context,
                 R.string.unsuccessful_search_toast_text,
@@ -175,7 +185,7 @@ class NoteList : Fragment() {
     }
 
     private fun onEditionModeToastMessage() {
-        presenter.editionModeMessage.observe(requireActivity()) {
+        viewModel.editionModeMessage.observe(requireActivity()) {
             Toast.makeText(activity, R.string.edition_mode_toast_text, Toast.LENGTH_SHORT).show()
         }
     }
@@ -190,6 +200,11 @@ class NoteList : Fragment() {
 
     private fun getCloudDB(): CloudRepository {
         return requireActivity().application().cloudDataBase
+    }
+
+    override fun onResume() {
+        editor.putBoolean(NoteList::class.java.simpleName, viewModel.checkOnFavoritesView())
+        super.onResume()
     }
 
 }

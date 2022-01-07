@@ -4,7 +4,7 @@
     android:id="@+id/note_view_fragment_scrollview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/blue_note_view_background"
+    android:background="@drawable/grey_background"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -75,14 +75,6 @@
                 android:textIsSelectable="true"
                 android:textSize="@dimen/note_view_fragment_notes_description_text_size" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/note_view_fragment_back_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/standart_padding"
-            android:backgroundTint="@color/back_button_color"
-            android:text="@string/note_view_fragment_back_button_text"
-            app:layout_constraintTop_toBottomOf="@id/date_of_event_textview" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

@@ -33,6 +33,7 @@
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_note_fab_button"
         android:layout_width="wrap_content"
+        android:visibility="visible"
         android:layout_height="wrap_content"
         app:backgroundTint="@color/card_view_grey"
         android:src="@drawable/ic_baseline_playlist_add_check_24"

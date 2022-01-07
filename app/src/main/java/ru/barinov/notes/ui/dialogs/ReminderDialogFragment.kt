@@ -61,7 +61,6 @@ class ReminderDialogFragment(): DialogFragment() {
                 scheduleNotification(delay, data)}
             Toast.makeText(requireContext(), getString(R.string.on_reminder_activate_text), Toast.LENGTH_LONG).show()
 
-            requireContext().application().router.resetId()
 
             dismiss()
         }
