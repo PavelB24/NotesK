@@ -1,7 +1,7 @@
 package ru.barinov.notes.domain
 
 import androidx.recyclerview.widget.DiffUtil
-import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
+import ru.barinov.notes.domain.entity.NoteEntity
 
 class DiffCallback(oldList: List<NoteEntity>, newList: List<NoteEntity>) : DiffUtil.Callback() {
     private var oldList: List<NoteEntity> = oldList
@@ -23,8 +23,8 @@ class DiffCallback(oldList: List<NoteEntity>, newList: List<NoteEntity>) : DiffU
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val newNote = newList[newItemPosition]
         val oldNote = oldList[oldItemPosition]
-        return newNote.title.equals(oldNote.title) && newNote.detail
-            .equals(oldNote.detail) && newNote.creationDate
+        return newNote.title.equals(oldNote.title) && newNote.content
+            .equals(oldNote.content) && newNote.creationDate
             .equals(oldNote.creationDate) && newNote.isFavorite.equals(oldNote.isFavorite)
     }
 }

@@ -1,51 +1,35 @@
 package ru.barinov.notes.ui.notesActivity
 
-import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
-import ru.barinov.R
-import ru.barinov.notes.domain.Authentication
 import ru.barinov.notes.domain.CloudRepository
-import ru.barinov.notes.domain.curentDataBase.NotesRepository
+import ru.barinov.notes.domain.userRepository.NotesRepository
 
-import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
-import ru.barinov.notes.domain.room.DataBase
+import ru.barinov.notes.domain.entity.NoteEntity
 
-import ru.barinov.notes.ui.dataManagerFragment.DataManager
-import ru.barinov.notes.ui.noteListFragment.NoteList
 import ru.barinov.notes.ui.profileFragment.LoggedFragment
 import ru.barinov.notes.ui.profileFragment.Profile
 import java.io.IOException
 
 class ActivityViewModel(
-    repository: NotesRepository,
-    database: DataBase,
-    authentication: Authentication,
-    cloudDataBase: CloudRepository,
-) : ActivityContract.NoteActivityPresenterInterface {
-    private val repository = repository
+    private val repository: NotesRepository,
+    private val cloudDataBase: CloudRepository
+) {
+
     private val LOCAL_REPOSITORY_NAME = "repository.bin"
-    private val localDataBase = database
-    private val authentication = authentication
-    private val cloudDataBase = cloudDataBase
 
-
-    private val  _onChooseStartFragment = MutableLiveData<Fragment>()
+    private val _onChooseStartFragment = MutableLiveData<Fragment>()
     val onChooseStartFragment: LiveData<Fragment> = _onChooseStartFragment
 
-    private val  _onLocalBaseInitialised = MutableLiveData<Unit>()
-    val onLocalBaseInitialised: LiveData<Unit> = _onLocalBaseInitialised
 
-    private val  _onCloudInitCompleted = MutableLiveData<Unit>()
+    private val _onCloudInitCompleted = MutableLiveData<Unit>()
     val onCloudInitCompleted: LiveData<Unit> = _onCloudInitCompleted
 
-
     @Throws(IOException::class)
-    override fun safeNotes() {
+    fun safeNotes() {
 //        val fos = view?.openFileOutput(LOCAL_REPOSITORY_NAME, MODE_PRIVATE)
 //        val objectOutputStream = ObjectOutputStream(fos)
 //        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
@@ -59,39 +43,24 @@ class ActivityViewModel(
 //        fos?.close()
 //        Log.d("@@@", "Записан")
     }
-
-
-    override fun readNotes() {
-        if (repository.allNotes.isEmpty()) {
-            toInitNotesInRepository()
-        }
-    }
-
-    fun readNotesFromCloud(){
-        if (authentication.auth.currentUser != null) {
-            Thread {
-                cloudDataBase.cloud.collection(authentication.auth.currentUser!!.uid)
-                    .get().addOnSuccessListener { result ->
-                        for (document in result) {
-                            val note = document.toObject(NoteEntity::class.java)
-                            if (!repository.findById(note.id)) {
-                                repository.addNote(note)
+        fun readNotesFromCloud() {
+            if (cloudDataBase.auth.currentUser != null) {
+                Thread {
+                    cloudDataBase.cloud.collection(cloudDataBase.auth.currentUser!!.uid)
+                        .get()
+                        .addOnSuccessListener { result ->
+                            for (document in result) {
+                                val note = document.toObject(NoteEntity::class.java)
+                                if (!repository.findById(note.id)) {
+                                    repository.insertNote(note)
+                                }
                             }
+                            _onCloudInitCompleted.postValue(Unit)
                         }
-                        _onCloudInitCompleted.postValue(Unit)
-                    }
-            }.start()
+                }.start()
+            }
         }
-    }
 
-    override fun onChoseNavigationItem() {
-        TODO("Not yet implemented")
-    }
-
-    override fun toInitNotesInRepository() {
-        Log.d("@@@2", "toInitNotesInRepository: ")
-        repository.addAll(localDataBase.noteDao().getAllNotes())
-        _onLocalBaseInitialised.postValue(Unit)
 
 
         //Старый метод, шпаргалка по Moshi
@@ -108,14 +77,10 @@ class ActivityViewModel(
 //        repository.addAll(list)
 //        objectInputStream.close()
 //        fileInputStream!!.close()
-    }
 
 
-
-
-
-     fun chooseStartFragment() {
-        if (authentication.auth.currentUser != null) {
+    fun chooseStartFragment() {
+        if (cloudDataBase.auth.currentUser != null) {
             _onChooseStartFragment.postValue(LoggedFragment())
         } else {
             _onChooseStartFragment.postValue(Profile())
@@ -124,8 +89,7 @@ class ActivityViewModel(
 
     fun logOut() {
         Thread {
-            authentication.auth.signOut()
+            cloudDataBase.auth.signOut()
         }.start()
-        authentication.isOnline = false
     }
 }

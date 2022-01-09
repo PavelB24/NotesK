@@ -1,110 +1,76 @@
 package ru.barinov.notes.ui.noteListFragment
 
-import android.content.SharedPreferences
+import android.content.*
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentResultListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.barinov.R
 import ru.barinov.databinding.NoteListLayoutBinding
-import ru.barinov.notes.domain.Callable
+import ru.barinov.notes.domain.interfaces.Callable
 import ru.barinov.notes.domain.CloudRepository
-import ru.barinov.notes.domain.curentDataBase.NotesRepository
-import ru.barinov.notes.domain.noteEntityAndService.NotesAdapter
-import ru.barinov.notes.domain.room.DataBase
+import ru.barinov.notes.domain.userRepository.NotesRepository
+import ru.barinov.notes.domain.adapters.NotesAdapter
 import ru.barinov.notes.ui.dialogs.AgreementDialogFragment
 import ru.barinov.notes.ui.application
 import ru.barinov.notes.ui.dialogs.ReminderDialogFragment
-import ru.barinov.notes.ui.noteEditFragment.NoteEdit
-import ru.barinov.notes.ui.notesActivity.Activity
-import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import ru.barinov.notes.domain.ViewModelsFactories
+import ru.barinov.notes.ui.dataManagerFragment.DataManagerFragment
 
+class NoteListFragment : Fragment() {
 
-class NoteList : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private val adapter = NotesAdapter()
     private lateinit var binding: NoteListLayoutBinding
     private lateinit var toolbar: Toolbar
     private lateinit var searchItem: MenuItem
     private lateinit var viewModel: NoteListViewModel
-    private lateinit var editor: SharedPreferences.Editor
     private val DELETE = "OK"
 
-
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         setHasOptionsMenu(true)
         binding = NoteListLayoutBinding.inflate(inflater, container, false)
-        viewModel = NoteListViewModel(
-            repository = getRepository(),
-            adapter = adapter,
-            cache = requireActivity().application().cache,
-            localDataBase = getLocalDB(),
-            authentication = requireActivity().application().authentication,
-            cloudDataBase = getCloudDB(),
-            activity = (requireActivity() as Callable),
-            router = requireActivity().application().router,
-            sharedPref = requireContext().application().pref
-        )
-        requireActivity().window.statusBarColor =
-            activity?.resources!!.getColor(R.color.deep_blue_2)
-        requireActivity().window.navigationBarColor =
-            activity?.resources!!.getColor(R.color.card_view_grey_2)
+
+        viewModel = ViewModelProvider(
+            viewModelStore, ViewModelsFactories.NoteListViewModelFactory(
+                repository = getRepository(),
+                adapter = adapter,
+                cloudDataBase = getCloudDB(),
+                activity = (requireActivity() as Callable),
+                sharedPref = requireContext().getSharedPreferences(DataManagerFragment.sharedPreferencesName, Context.MODE_PRIVATE)
+            )
+        )[NoteListViewModel::class.java]
+
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        editor = getSharedPreferences().edit()
-        (requireActivity() as Activity).bottomAppBar.backgroundTint =
-            ContextCompat.getColorStateList(requireContext(), R.color.card_view_grey)
         initViews()
-        parentFragmentManager.setFragmentResultListener(
-            NoteEdit::class.simpleName!!,
-            requireActivity(),
-            FragmentResultListener { requestKey, result ->
-                viewModel.getResultsFromNoteEditFragment(
-                    result
-                )
-            })
-        parentFragmentManager.setFragmentResultListener(
-            requireActivity().javaClass.simpleName,
-            requireActivity(), { requestKey, result ->
-                viewModel.refreshAdapter()
-            })
+        registeredForNotesRepositoryLiveData()
         createDialog()
         searchWasUnsuccessfulMessage()
         onEditionModeToastMessage()
         registeredForReminderDialogCreation()
-//        registeredForNoteSelected()
         super.onViewCreated(view, savedInstanceState)
 
     }
 
-    private fun getSharedPreferences(): SharedPreferences {
-        return requireActivity().application().pref
+    private fun registeredForNotesRepositoryLiveData() {
+        viewModel.noteListLiveData.observe(viewLifecycleOwner) { notes ->
+            adapter.data = notes
+        }
     }
 
-//    private fun registeredForNoteSelected() {
-//        viewModel.onNoteClicked.observe(requireActivity()){
-////            val bundle = Bundle()
-////            bundle.putString("OnNoteSelected", it)
-////            parentFragmentManager.setFragmentResult("OnNoteSelected", bundle)
-//        }
-//    }
-
     private fun registeredForReminderDialogCreation() {
-        viewModel.createReminderDialog.observe(requireActivity()) {
-            requireActivity().application().router.setId(it)
-            val reminderDialog = ReminderDialogFragment()
+        viewModel.createReminderDialog.observe(requireActivity()) { id ->
+            val reminderDialog = ReminderDialogFragment.getInstance(id)
             reminderDialog.show(childFragmentManager, "Reminder")
         }
     }
@@ -114,12 +80,12 @@ class NoteList : Fragment() {
             it.show(parentFragmentManager, DELETE)
             parentFragmentManager.setFragmentResultListener(
                 AgreementDialogFragment::class.simpleName!!,
-                requireActivity(), { requestKey, result ->
+                requireActivity(),
+                { requestKey, result ->
                     viewModel.deleteNoteInRepos(result, DELETE)
                 })
         }
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (!menu.hasVisibleItems()) {
@@ -131,7 +97,6 @@ class NoteList : Fragment() {
         }
     }
 
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.delete_chosen_notes -> {
@@ -139,20 +104,17 @@ class NoteList : Fragment() {
             }
             R.id.favorites_menu_button -> {
                 item.isChecked = !item.isChecked
-                if (item.isChecked) {
-                    viewModel.showOnlyFavs()
-                    item.setIcon(R.drawable.ic_favourites_black_star_symbol_icon_icons_com_activated)
+                val isChecked = item.isChecked
+                viewModel.onFavoriteClicked(isChecked)
+                if (isChecked) {
+                    item.setIcon(R.drawable.ic_favourites_selected_star)
                 } else {
-                    item.setIcon(R.drawable.ic_favourites_black_star_symbol_icon_icons_com_54534)
-                    viewModel.cancelShowOnlyFavs()
+                    item.setIcon(R.drawable.ic_favourites_black_star)
                 }
-
-
             }
         }
         return super.onOptionsItemSelected(item)
     }
-
 
     private fun initViews() {
         setRecyclerView()
@@ -164,7 +126,6 @@ class NoteList : Fragment() {
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
     }
 
-
     private fun setRecyclerView() {
         viewModel.setAdapter()
         recyclerView = binding.recyclerview
@@ -172,15 +133,11 @@ class NoteList : Fragment() {
         recyclerView.adapter = adapter
     }
 
-
     private fun searchWasUnsuccessfulMessage() {
         viewModel.onUnsuccessfulSearch.observe(requireActivity()) {
             Toast.makeText(
-                view?.context,
-                R.string.unsuccessful_search_toast_text,
-                Toast.LENGTH_SHORT
-            )
-                .show()
+                view?.context, R.string.unsuccessful_search_toast_text, Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -194,17 +151,8 @@ class NoteList : Fragment() {
         return requireActivity().application().repository
     }
 
-    private fun getLocalDB(): DataBase {
-        return requireActivity().application().localDataBase
-    }
-
     private fun getCloudDB(): CloudRepository {
         return requireActivity().application().cloudDataBase
-    }
-
-    override fun onResume() {
-        editor.putBoolean(NoteList::class.java.simpleName, viewModel.checkOnFavoritesView())
-        super.onResume()
     }
 
 }

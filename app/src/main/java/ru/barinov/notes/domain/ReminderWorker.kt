@@ -32,13 +32,14 @@ import ru.barinov.notes.ui.application
 import ru.barinov.notes.ui.notesActivity.ActivityViewModel
 
 class ReminderWorker( val context: Context, params: WorkerParameters) : Worker(context, params)  {
-    private val notesId = applicationContext.application().router.getId()!!
+    private lateinit var notesId: String
     override fun doWork(): Result {
         if (id==null){
             return Result.failure()
         }
-        val notifId= inputData.getLong(notesId, 0).toInt()
-        sendNotification(notifId)
+        notesId= inputData.getString(NOTES_ID)!!
+        val noteId= inputData.getLong(notesId, 0).toInt()
+        sendNotification(noteId)
         return Result.success()
     }
 
@@ -51,7 +52,7 @@ class ReminderWorker( val context: Context, params: WorkerParameters) : Worker(c
         val notificationManager = NotificationManagerCompat.from(context)
         val bitMap= makeBitmap()
         val titleNotification = applicationContext.getString(R.string.notification_title)
-        val subtitleNotification = context.application().repository.getById(notesId)!!.title
+        val subtitleNotification = context.application().repository.getById(notesId).title
         val pendingIntent = getActivity(applicationContext, 0, intent, 0)
 
 
@@ -88,5 +89,6 @@ class ReminderWorker( val context: Context, params: WorkerParameters) : Worker(c
         const val NOTIFICATION_CHANNEL = "NoteBook_channel_01"
         const val NOTIFICATION_NAME = "NoteBook"
         const val NOTIFICATION_WORK = "NoteBook_notification_work"
+        const val NOTES_ID = "Notes_id"
 }
 }

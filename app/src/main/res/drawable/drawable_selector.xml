@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:drawable="@drawable/ic_favourites_black_star_symbol_icon_icons_com_activated"  android:state_checked="true"
+        android:drawable="@drawable/ic_favourites_selected_star"  android:state_checked="true"
         />
-    <item android:drawable="@drawable/ic_favourites_black_star_symbol_icon_icons_com_54534"
+    <item android:drawable="@drawable/ic_favourites_black_star"
        />
 
 

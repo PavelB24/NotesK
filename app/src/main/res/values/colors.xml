@@ -15,6 +15,7 @@
     <color name="intense_dark_cherry_2">#FA410101</color>
     <color name="intense_dark_cherry_3">#FA480101</color>
     <color name="card_view_grey">#B2546E7A</color>
+    <color name="grey">#546E7A</color>
     <color name="card_view_grey_2">#B0465B65</color>
     <color name="card_view_grey_3">#E8285465</color>
     <color name="apply_button_color">#659C27B0</color>

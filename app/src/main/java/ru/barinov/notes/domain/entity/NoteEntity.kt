@@ -1,4 +1,4 @@
-package ru.barinov.notes.domain.noteEntityAndService
+package ru.barinov.notes.domain.entity
 
 import android.os.Parcelable
 import android.os.Parcel
@@ -6,19 +6,19 @@ import android.os.Parcelable.Creator
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "notes_database")
+@Entity(tableName = "note_table")
 data class NoteEntity(
     @PrimaryKey
     var id: String,
     var title: String,
-    var detail: String,
+    var content: String,
     var latitude: Double,
     var longitude: Double,
     var creationDate: String,
     var isFavorite: Boolean
 ) : Parcelable {
-    constructor() : this("", "", "", -0.0, 0.0, " ", false)
 
+    constructor() : this("", "", "", -0.0, 0.0, " ", false)
 
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
@@ -30,7 +30,6 @@ data class NoteEntity(
         parcel.readInt() == 1,
     )
 
-
     override fun describeContents(): Int {
         return 0
     }
@@ -38,7 +37,7 @@ data class NoteEntity(
     override fun writeToParcel(parcel: Parcel, i: Int) {
         parcel.writeString(id)
         parcel.writeString(title)
-        parcel.writeString(detail)
+        parcel.writeString(content)
         parcel.writeDouble(latitude)
         parcel.writeDouble(longitude)
         parcel.writeString(creationDate)
@@ -52,6 +51,7 @@ data class NoteEntity(
     }
 
     companion object CREATOR : Creator<NoteEntity> {
+
         override fun createFromParcel(parcel: Parcel): NoteEntity {
             return NoteEntity(parcel)
         }
@@ -60,6 +60,5 @@ data class NoteEntity(
             return arrayOfNulls(size)
         }
     }
-
 
 }

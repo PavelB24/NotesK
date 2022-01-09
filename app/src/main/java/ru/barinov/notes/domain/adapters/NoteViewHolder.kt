@@ -1,4 +1,4 @@
-package ru.barinov.notes.domain.noteEntityAndService
+package ru.barinov.notes.domain.adapters
 
 
 import android.view.View

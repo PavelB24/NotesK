@@ -1,4 +1,4 @@
-package ru.barinov.notes.domain.noteEntityAndService
+package ru.barinov.notes.domain.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,11 +8,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.barinov.R
 import ru.barinov.notes.domain.DiffCallback
-import ru.barinov.notes.domain.OnNoteClickListener
+import ru.barinov.notes.domain.interfaces.OnNoteClickListener
+import ru.barinov.notes.domain.entity.NoteEntity
 import java.util.ArrayList
 
 class NotesAdapter : RecyclerView.Adapter<NoteViewHolder>() {
-    var data: MutableList<NoteEntity> = ArrayList()
+    var data: List<NoteEntity> = ArrayList()
         set(newData) {
             val result = DiffUtil.calculateDiff(DiffCallback(data, newData), true)
             field = newData
@@ -54,9 +55,9 @@ class NotesAdapter : RecyclerView.Adapter<NoteViewHolder>() {
 
     private fun refreshIcon(isFavorite: Boolean, favButton: ImageButton) {
         if (isFavorite) {
-            favButton.setImageResource(R.drawable.ic_favourites_black_star_symbol_icon_icons_com_activated)
+            favButton.setImageResource(R.drawable.ic_favourites_selected_star)
         } else {
-            favButton.setImageResource(R.drawable.ic_favourites_black_star_symbol_icon_icons_com_54534)
+            favButton.setImageResource(R.drawable.ic_favourites_black_star)
         }
     }
 
@@ -64,9 +65,9 @@ class NotesAdapter : RecyclerView.Adapter<NoteViewHolder>() {
         holder.titleTextView.text = note.title
         holder.creationDateTextView.text = note.creationDate
         if (note.isFavorite) {
-            holder.favImgButton.setImageResource(R.drawable.ic_favourites_black_star_symbol_icon_icons_com_activated)
+            holder.favImgButton.setImageResource(R.drawable.ic_favourites_selected_star)
         } else {
-            holder.favImgButton.setImageResource(R.drawable.ic_favourites_black_star_symbol_icon_icons_com_54534)
+            holder.favImgButton.setImageResource(R.drawable.ic_favourites_black_star)
         }
     }
 

@@ -1,8 +1,8 @@
 package ru.barinov.notes.domain.room
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
-import ru.barinov.notes.domain.noteEntityAndService.NoteEntity
-
+import ru.barinov.notes.domain.entity.NoteEntity
 
 @Dao
 interface NoteDao {
@@ -10,19 +10,27 @@ interface NoteDao {
     @Insert
     fun addAll(notes: MutableList<NoteEntity>)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addNote(note: NoteEntity)
 
     @Delete
     fun delete(note: NoteEntity)
 
-    @Query("SELECT * FROM notes_database")
+    //todo delete
+    @Query("SELECT * FROM note_table")
     fun getAllNotes(): MutableList<NoteEntity>
 
-    @Query("SELECT * FROM notes_database WHERE id == :id")
+    //todo delete LD in name
+    @Query("SELECT * FROM note_table")
+    fun getAllNotesLiveData(): LiveData<List<NoteEntity>>
+
+    @Query("SELECT * FROM note_table WHERE id == :id")
     fun getNoteById(id: String): NoteEntity
 
-    @Query("DELETE FROM notes_database")
+    @Query("SELECT * FROM note_table WHERE id == :id")
+    fun findNoteById(id: String): Boolean
+
+    @Query("DELETE FROM note_table")
     fun clearDataBase()
 
     @Update
