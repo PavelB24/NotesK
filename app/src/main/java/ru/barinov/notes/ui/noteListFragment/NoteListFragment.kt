@@ -1,6 +1,5 @@
 package ru.barinov.notes.ui.noteListFragment
 
-import android.content.*
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -11,16 +10,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.barinov.R
 import ru.barinov.databinding.NoteListLayoutBinding
-import ru.barinov.notes.domain.interfaces.Callable
-import ru.barinov.notes.domain.CloudRepository
-import ru.barinov.notes.domain.userRepository.NotesRepository
 import ru.barinov.notes.domain.adapters.NotesAdapter
 import ru.barinov.notes.ui.dialogs.AgreementDialogFragment
-import ru.barinov.notes.ui.application
 import ru.barinov.notes.ui.dialogs.ReminderDialogFragment
-import androidx.lifecycle.ViewModelProvider
-import ru.barinov.notes.domain.ViewModelsFactories
-import ru.barinov.notes.ui.dataManagerFragment.DataManagerFragment
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
+import ru.barinov.notes.domain.interfaces.ActivityCallableInterface
+
+private const val DELETE = "OK"
+
 
 class NoteListFragment : Fragment() {
 
@@ -29,25 +27,16 @@ class NoteListFragment : Fragment() {
     private lateinit var binding: NoteListLayoutBinding
     private lateinit var toolbar: Toolbar
     private lateinit var searchItem: MenuItem
-    private lateinit var viewModel: NoteListViewModel
-    private val DELETE = "OK"
+    private  val viewModel by viewModel<NoteListViewModel>{ parametersOf(adapter, (requireActivity() as ActivityCallableInterface))}
 
     override fun onCreateView(
+
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+
     ): View {
+
         setHasOptionsMenu(true)
         binding = NoteListLayoutBinding.inflate(inflater, container, false)
-
-        viewModel = ViewModelProvider(
-            viewModelStore, ViewModelsFactories.NoteListViewModelFactory(
-                repository = getRepository(),
-                adapter = adapter,
-                cloudDataBase = getCloudDB(),
-                activity = (requireActivity() as Callable),
-                sharedPref = requireContext().getSharedPreferences(DataManagerFragment.sharedPreferencesName, Context.MODE_PRIVATE)
-            )
-        )[NoteListViewModel::class.java]
-
         return binding.root
     }
 
@@ -147,13 +136,7 @@ class NoteListFragment : Fragment() {
         }
     }
 
-    private fun getRepository(): NotesRepository {
-        return requireActivity().application().repository
-    }
 
-    private fun getCloudDB(): CloudRepository {
-        return requireActivity().application().cloudDataBase
-    }
 
 }
 

@@ -52,4 +52,9 @@
     <string name="reminder_dialog_title">Pick the reminder\'s time</string>
     <string name="show_on_map_button_text">Show on maps</string>
     <string name="on_reminder_activate_text">Reminder activated</string>
+    <string name="login_or_password_are_empty_string">Please. make sure, what you filled both login and password fields</string>
+    <string name="on_unsuccessful_registration_string">Authentication failed, make sure, what your password is bigger than 8 symbols.</string>
+    <string name="on_successful_registration_string">Profile created.</string>
+    <string name="on_log_out_string">Logged out</string>
+    <string name="registration_fields_are_empty">One ore more fields are empty</string>
 </resources>

@@ -1,52 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/container_for_fragment"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/navigation_bar"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
-        <androidx.percentlayout.widget.PercentFrameLayout
-            android:id="@+id/container_for_fragment_land_1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            app:layout_constraintStart_toStartOf="@+id/layout_horizontal_unit_container"
-            app:layout_constraintWidth_percent=".50" />
-
-        <androidx.percentlayout.widget.PercentFrameLayout
-            android:id="@+id/container_for_fragment_land_2"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0"
-            android:background="@drawable/red_srteams_black_background"
-            app:layout_constraintStart_toEndOf="@+id/container_for_fragment_land_1"
-            app:layout_constraintVertical_weight="1"
-            app:layout_constraintWidth_percent=".50" />
-
-        <FrameLayout
-            android:id="@+id/layout_horizontal_unit_container"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintEnd_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
+    <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/navigation_bar"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/cherry"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:buttonGravity="bottom"
+        android:backgroundTint="@color/grey"
+        app:fabAlignmentMode="end"
+        app:fabCradleMargin="@dimen/fab_margin"
+        app:layout_anchorGravity="start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_navigation_menu" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_note_fab_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_playlist_add_check_24"
+        android:visibility="visible"
+        app:backgroundTint="@color/card_view_grey"
+        app:layout_anchor="@id/navigation_bar"
+        app:layout_anchorGravity="end" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

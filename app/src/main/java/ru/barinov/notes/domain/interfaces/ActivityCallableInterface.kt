@@ -2,7 +2,7 @@ package ru.barinov.notes.domain.interfaces
 
 import android.os.Bundle
 
-interface Callable {
+interface ActivityCallableInterface {
     fun callEditionFragment(noteId: String?)
     fun callNoteViewFragment(noteId: String)
 }

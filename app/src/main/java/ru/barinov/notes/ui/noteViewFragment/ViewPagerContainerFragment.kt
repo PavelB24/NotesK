@@ -9,41 +9,37 @@ import androidx.lifecycle.LiveData
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.barinov.R
 import ru.barinov.databinding.NoteviewViewPagerLayoutBinding
 import ru.barinov.notes.domain.adapters.NoteViewPagerAdapter
 import ru.barinov.notes.domain.adapters.ViewPagerTransformer
-import ru.barinov.notes.domain.entity.NoteEntity
+import ru.barinov.notes.domain.models.NoteEntity
 import ru.barinov.notes.ui.application
 import ru.barinov.notes.ui.noteEditFragment.argsBundleKey
 
 class ViewPagerContainerFragment : Fragment() {
 
+    private val viewModel by viewModel<ViewPagerContainerFragmentViewModel>()
+
     private lateinit var binding: NoteviewViewPagerLayoutBinding
     private lateinit var viewPager: ViewPager2
     private lateinit var adapter: NoteViewPagerAdapter
     private lateinit var tabLayout: TabLayout
-    private lateinit var observer: LiveData<List<NoteEntity>>
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        observer = requireContext().application().repository.getNotesLiveData()
         binding = NoteviewViewPagerLayoutBinding.inflate(inflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewPager = binding.viewPager2
-        adapter = NoteViewPagerAdapter(this)
-        //todo не получает данные
-        registeredForGetNotesLiveData()
-        viewPager.adapter = adapter
-        viewPager.setPageTransformer(ViewPagerTransformer())
 
-
+        initViews()
 
         tabLayout = binding.tabsView
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
@@ -53,27 +49,24 @@ class ViewPagerContainerFragment : Fragment() {
                 tab.setIcon(R.drawable.ic_favourites_selected_star)
             }
         }.attach()
-//        viewPager.post {
-//            viewPager.currentItem =
-//                    //todo data iz args
-//                findSelectedItemPosition( )
-//            requireContext().application().router.resetId()
 
-//
-//Todo Почем не работает?
-//        parentFragmentManager.setFragmentResultListener("OnNoteSelected", requireActivity(), { requestKey, result ->
-//            val selectedPosition =findSelectedItemPosition(result.getString("OnNoteSelected")!!)
-//            Log.d("@@@6", selectedPosition.toString() )
-//            viewPager.currentItem=selectedPosition
-//            Log.d("@@@7", viewPager.currentItem.toString() )
-//        })
+
 
         super.onViewCreated(view, savedInstanceState)
     }
 
+    private fun initViews() {
+        viewPager = binding.viewPager2
+        adapter = NoteViewPagerAdapter(this)
+
+        registeredForGetNotesLiveData()
+        viewPager.adapter = adapter
+        viewPager.setPageTransformer(ViewPagerTransformer())
+    }
+
     private fun registeredForGetNotesLiveData() {
-        observer.observe(viewLifecycleOwner) { notes ->
-            adapter.noteList = notes.toMutableList()
+        viewModel.noteListLiveData.observe(viewLifecycleOwner) { list ->
+            adapter.noteList = list
             adapter.notifyDataSetChanged()
         }
     }

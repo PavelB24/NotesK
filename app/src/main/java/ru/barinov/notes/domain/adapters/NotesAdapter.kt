@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.barinov.R
 import ru.barinov.notes.domain.DiffCallback
 import ru.barinov.notes.domain.interfaces.OnNoteClickListener
-import ru.barinov.notes.domain.entity.NoteEntity
+import ru.barinov.notes.domain.models.NoteEntity
 import java.util.ArrayList
 
 class NotesAdapter : RecyclerView.Adapter<NoteViewHolder>() {

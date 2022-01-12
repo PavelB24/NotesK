@@ -9,14 +9,13 @@ import ru.barinov.notes.domain.userRepository.NotesRepository
 import java.io.IOException
 
 class NotePageViewModel(
-    private val repository: NotesRepository, private val id: String, private val locationFinder: LocationFinder
+    private val id: String,
+    private val repository: NotesRepository,
+    private val locationFinder: LocationFinder
 ) : ViewModel() {
-
 
     private val _openedNotesDraft = MutableLiveData<NoteDraftExtended>()
     val openedNoteDraft: LiveData<NoteDraftExtended> = _openedNotesDraft
-
-
 
     fun getNote() {
         val note = repository.getById(id)
@@ -30,7 +29,16 @@ class NotePageViewModel(
             } catch (e: IOException) {
                 //todo
             }
-            _openedNotesDraft.postValue(NoteDraftExtended(note.title, note.content, note.creationDate, locationString, note.latitude, note.longitude))
+            _openedNotesDraft.postValue(
+                NoteDraftExtended(
+                    note.title,
+                    note.content,
+                    note.creationDate,
+                    locationString,
+                    note.latitude,
+                    note.longitude
+                )
+            )
         }.start()
     }
 }

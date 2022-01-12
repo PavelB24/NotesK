@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import ru.barinov.notes.domain.adapters.NotesAdapter
 import ru.barinov.notes.domain.userRepository.NotesRepository
-import ru.barinov.notes.domain.interfaces.Callable
+import ru.barinov.notes.domain.interfaces.ActivityCallableInterface
 
 class ViewModelsFactories {
 
@@ -26,7 +26,7 @@ class ViewModelsFactories {
         val repository: NotesRepository,
         val adapter: NotesAdapter,
         val cloudDataBase: CloudRepository,
-        val activity: Callable,
+        val activity: ActivityCallableInterface,
         val sharedPref: SharedPreferences,
     ) : ViewModelProvider.Factory {
 
@@ -34,7 +34,7 @@ class ViewModelsFactories {
             return modelClass.getConstructor(NotesRepository::class.java,
                 NotesAdapter::class.java,
                 CloudRepository::class.java,
-                Callable::class.java,
+                ActivityCallableInterface::class.java,
                 SharedPreferences::class.java)
                 .newInstance(repository, adapter, cloudDataBase, activity, sharedPref)
         }
@@ -44,7 +44,6 @@ class ViewModelsFactories {
         val id: String?,
         val repository: NotesRepository,
         val locationFinder: LocationFinder,
-        val permission: Boolean,
         val cloudRepository: CloudRepository,
         val sharedPreferences: SharedPreferences
     ) : ViewModelProvider.Factory {
@@ -53,10 +52,9 @@ class ViewModelsFactories {
             return modelClass.getConstructor(String::class.java,
                 NotesRepository::class.java,
                 LocationFinder::class.java,
-                Boolean::class.java,
                 CloudRepository::class.java,
                 SharedPreferences::class.java
-            ).newInstance(id, repository, locationFinder, permission, cloudRepository, sharedPreferences)
+            ).newInstance(id, repository, locationFinder, cloudRepository, sharedPreferences)
         }
 
     }

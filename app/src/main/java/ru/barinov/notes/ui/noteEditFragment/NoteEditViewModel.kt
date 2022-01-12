@@ -10,7 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.barinov.notes.domain.*
 import ru.barinov.notes.domain.userRepository.NotesRepository
-import ru.barinov.notes.domain.entity.*
+import ru.barinov.notes.domain.models.*
 import ru.barinov.notes.ui.dataManagerFragment.DataManagerFragment
 import java.text.SimpleDateFormat
 import java.util.*
@@ -20,7 +20,6 @@ class NoteEditViewModel(
     private val tempNoteId: String?,
     private val repository: NotesRepository,
     private val locationFinder: LocationFinder,
-    private val permission: Boolean,
     private val cloudRepository: CloudRepository,
     private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
@@ -55,11 +54,10 @@ class NoteEditViewModel(
     }
 
     fun startListenLocation() {
-        if (permission) {
             locationFinder.locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER, 1000L, 1000F, locationListener
             )
-        }
+
     }
 
     //Переписать под получение строк и интов, а не вьюшек
@@ -71,12 +69,13 @@ class NoteEditViewModel(
         } else {
             val note = createNote(title, content)
             repository.insertNote(note)
-            removeLocationListener()
+
             if (sharedPreferences.getBoolean(DataManagerFragment.switchStateKey, false)) {
                 Thread {
-                    cloudRepository.rewriteInCloud(note)
+                    cloudRepository.writeInCloud(note)
                 }.start()
             }
+            removeLocationListener()
             _closeScreen.postValue(Unit)
         }
     }

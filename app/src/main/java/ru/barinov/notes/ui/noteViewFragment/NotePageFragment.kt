@@ -2,18 +2,16 @@ package ru.barinov.notes.ui.noteViewFragment
 
 import android.os.Bundle
 import android.text.util.Linkify
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.button.MaterialButton
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import ru.barinov.R
 import ru.barinov.databinding.NoteViewFramentLayoutBinding
-import ru.barinov.notes.domain.ViewModelsFactories
-import ru.barinov.notes.ui.application
 import ru.barinov.notes.ui.dialogs.MapsFragment
 import java.lang.IllegalStateException
 
@@ -29,12 +27,13 @@ class NotePageFragment : Fragment() {
         return@lazy id
     }
 
+
+    private val viewModel by viewModel<NotePageViewModel>{parametersOf(noteId)}
     private lateinit var binding: NoteViewFramentLayoutBinding
     private lateinit var titleTextView: TextView
     private lateinit var contentTextview: TextView
     private lateinit var dateTextView: TextView
     private lateinit var locationTextView: TextView
-    private lateinit var viewModel: NotePageViewModel
     private lateinit var mapButton: MaterialButton
     private lateinit var noteDraft: NoteDraftExtended
 
@@ -48,24 +47,18 @@ class NotePageFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-        viewModel = ViewModelProvider(
-            requireActivity(), ViewModelsFactories.NoteViewViewModelFactory(
-                repository = requireContext().application().repository,
-                id = noteId,
-                locationFinder = requireActivity().application().locationFinder
-            )
-        )[noteId, NotePageViewModel::class.java]
+        initViews()
+        setListeners()
 
         viewModel.getNote()
-        initViews()
-        dataObservers()
+
+
 
 
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun dataObservers() {
+    private fun setListeners() {
         viewModel.openedNoteDraft.observe(viewLifecycleOwner) { draft ->
             titleTextView.text = draft.title
             contentTextview.text = draft.content

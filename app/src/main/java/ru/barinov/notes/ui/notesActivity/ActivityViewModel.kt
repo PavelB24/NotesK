@@ -1,23 +1,21 @@
 package ru.barinov.notes.ui.notesActivity
 
 import androidx.fragment.app.Fragment
-
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
 
 import ru.barinov.notes.domain.CloudRepository
 import ru.barinov.notes.domain.userRepository.NotesRepository
 
-import ru.barinov.notes.domain.entity.NoteEntity
+import ru.barinov.notes.domain.models.NoteEntity
 
-import ru.barinov.notes.ui.profileFragment.LoggedFragment
-import ru.barinov.notes.ui.profileFragment.Profile
+import ru.barinov.notes.ui.ProfileAndRegistration.Logged.LoggedFragment
+import ru.barinov.notes.ui.ProfileAndRegistration.ProfileEntering.ProfileEnteringFragment
 import java.io.IOException
 
-class ActivityViewModel(
-    private val repository: NotesRepository,
-    private val cloudDataBase: CloudRepository
-) {
+class ActivityViewModel(private val repository: NotesRepository,
+                        private val cloudDataBase: CloudRepository): ViewModel()
+
+{
 
     private val LOCAL_REPOSITORY_NAME = "repository.bin"
 
@@ -27,6 +25,11 @@ class ActivityViewModel(
 
     private val _onCloudInitCompleted = MutableLiveData<Unit>()
     val onCloudInitCompleted: LiveData<Unit> = _onCloudInitCompleted
+
+    private val _hasLoggedUser = MutableLiveData<Boolean>()
+    val hasLoggedUser: LiveData<Boolean> = _hasLoggedUser
+
+
 
     @Throws(IOException::class)
     fun safeNotes() {
@@ -83,7 +86,7 @@ class ActivityViewModel(
         if (cloudDataBase.auth.currentUser != null) {
             _onChooseStartFragment.postValue(LoggedFragment())
         } else {
-            _onChooseStartFragment.postValue(Profile())
+            _onChooseStartFragment.postValue(ProfileEnteringFragment())
         }
     }
 
@@ -91,5 +94,9 @@ class ActivityViewModel(
         Thread {
             cloudDataBase.auth.signOut()
         }.start()
+    }
+
+    fun checkOnUserOnline() {
+            _hasLoggedUser.postValue(cloudDataBase.auth.currentUser!= null)
     }
 }

@@ -27,7 +27,11 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import org.koin.android.ext.android.inject
+import org.koin.java.KoinJavaComponent.inject
+import org.koin.java.KoinJavaComponent.injectOrNull
 import ru.barinov.R
+import ru.barinov.notes.domain.userRepository.NotesRepository
 import ru.barinov.notes.ui.application
 import ru.barinov.notes.ui.notesActivity.ActivityViewModel
 
@@ -52,7 +56,8 @@ class ReminderWorker( val context: Context, params: WorkerParameters) : Worker(c
         val notificationManager = NotificationManagerCompat.from(context)
         val bitMap= makeBitmap()
         val titleNotification = applicationContext.getString(R.string.notification_title)
-        val subtitleNotification = context.application().repository.getById(notesId).title
+        val repo= inject<NotesRepository>(NotesRepository::class.java)
+        val subtitleNotification =  repo.value.getById(notesId).title
         val pendingIntent = getActivity(applicationContext, 0, intent, 0)
 
 

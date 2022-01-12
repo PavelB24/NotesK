@@ -2,7 +2,7 @@ package ru.barinov.notes.domain.room
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import ru.barinov.notes.domain.entity.NoteEntity
+import ru.barinov.notes.domain.models.NoteEntity
 
 @Dao
 interface NoteDao {

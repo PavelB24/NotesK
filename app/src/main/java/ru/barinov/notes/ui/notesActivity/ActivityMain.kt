@@ -6,28 +6,25 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.barinov.R
 import ru.barinov.databinding.MainLayoutBinding
-import ru.barinov.notes.domain.interfaces.Callable
-import ru.barinov.notes.domain.CloudRepository
+import ru.barinov.notes.domain.interfaces.ActivityCallableInterface
 import ru.barinov.notes.domain.Router
-import ru.barinov.notes.domain.userRepository.NotesRepository
-import ru.barinov.notes.ui.application
 
-class ActivityMain : AppCompatActivity(), Callable {
+class ActivityMain : AppCompatActivity(), ActivityCallableInterface {
 
-    private lateinit var viewModel: ActivityViewModel
+    private val viewModel by viewModel<ActivityViewModel>()
     private lateinit var binding: MainLayoutBinding
     lateinit var fabButton: FloatingActionButton
     lateinit var bottomAppBar: BottomAppBar
     private val fineLocation: String = android.Manifest.permission.ACCESS_FINE_LOCATION
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
+    private val router = Router()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = MainLayoutBinding.inflate(layoutInflater)
-        viewModel = ActivityViewModel(getRepository(), getCloudDB())
         setContentView(binding.root)
         askPermission()
         setBottomBar()
@@ -44,7 +41,7 @@ class ActivityMain : AppCompatActivity(), Callable {
     }
 
     private fun setBottomBar() {
-        fabButton = binding.addNoteFabButton!!
+        fabButton = binding.addNoteFabButton
         bottomAppBar = binding.navigationBar as BottomAppBar
         bottomAppBar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
@@ -72,21 +69,24 @@ class ActivityMain : AppCompatActivity(), Callable {
     }
 
     private fun openProfile() {
-        getRouter().openProfileFragment(
-            getOrientation(), supportFragmentManager, getCloudDB().auth.currentUser != null
-        )
+        viewModel.checkOnUserOnline()
+        viewModel.hasLoggedUser.observe(this){ hasCurrentUser->
+            router.openProfileFragment(supportFragmentManager, hasCurrentUser)
+        }
+
+
     }
 
     private fun openStartFragment(fragment: Fragment) {
-        getRouter().openOnStart(supportFragmentManager, fragment)
+        router.openOnStart(supportFragmentManager, fragment)
     }
 
     private fun openDataManager() {
-        getRouter().openDataManagerFragment(getOrientation(), supportFragmentManager)
+        router.openDataManagerFragment(getOrientation(), supportFragmentManager)
     }
 
     private fun openNoteList() {
-        getRouter().openNoteLitFragment(getOrientation(), supportFragmentManager)
+        router.openNoteLitFragment( supportFragmentManager)
     }
 
     private fun getOrientation(): Int {
@@ -94,24 +94,13 @@ class ActivityMain : AppCompatActivity(), Callable {
     }
 
     override fun callEditionFragment(noteId: String?) {
-        getRouter().openNoteEditFragment(noteId, supportFragmentManager)
+        router.openNoteEditFragment(noteId, supportFragmentManager)
     }
 
     override fun callNoteViewFragment(noteId: String) {
-        getRouter().openNoteViewFragment(noteId, supportFragmentManager)
+        router.openNoteViewFragment(noteId, supportFragmentManager)
     }
 
-    private fun getRepository(): NotesRepository {
-        return application().repository
-    }
-
-    private fun getCloudDB(): CloudRepository {
-        return application().cloudDataBase
-    }
-
-    private fun getRouter(): Router {
-        return application().router
-    }
 
 }
 

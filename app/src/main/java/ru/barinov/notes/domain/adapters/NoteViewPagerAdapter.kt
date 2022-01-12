@@ -2,7 +2,7 @@ package ru.barinov.notes.domain.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import ru.barinov.notes.domain.entity.NoteEntity
+import ru.barinov.notes.domain.models.NoteEntity
 import ru.barinov.notes.ui.noteViewFragment.NotePageFragment
 
 class NoteViewPagerAdapter( fragment: Fragment): FragmentStateAdapter(fragment) {

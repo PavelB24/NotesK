@@ -13,9 +13,9 @@ import ru.barinov.R
 import ru.barinov.notes.core.liveData.combine
 import ru.barinov.notes.domain.*
 import ru.barinov.notes.domain.userRepository.NotesRepository
-import ru.barinov.notes.domain.interfaces.Callable
+import ru.barinov.notes.domain.interfaces.ActivityCallableInterface
 import ru.barinov.notes.domain.interfaces.OnNoteClickListener
-import ru.barinov.notes.domain.entity.NoteEntity
+import ru.barinov.notes.domain.models.NoteEntity
 import ru.barinov.notes.domain.adapters.NotesAdapter
 import ru.barinov.notes.domain.telegramm.TelegrammBot
 import ru.barinov.notes.ui.dataManagerFragment.DataManagerFragment
@@ -25,7 +25,7 @@ class NoteListViewModel(
     private val notesRepository: NotesRepository,
     private val adapter: NotesAdapter,
     private val cloudDataBase: CloudRepository,
-    private val activity: Callable,
+    private val activity: ActivityCallableInterface,
     private val sharedPreferences: SharedPreferences
 ) : OnNoteClickListener, ViewModel() {
 
@@ -139,7 +139,8 @@ class NoteListViewModel(
             checkedLst.forEach { note ->
                 notesRepository.removeNote(note)
                 Thread {
-                    cloudDataBase.deleteNoteInCloud(note)
+                    if (checkDataManagerSwitch()){
+                    cloudDataBase.deleteNoteInCloud(note)}
                 }.start()
             }
         }
@@ -198,7 +199,7 @@ class NoteListViewModel(
         Log.d("@@@", "2-1")
         if (checkDataManagerSwitch()) {
             Thread {
-                cloudDataBase.rewriteInCloud(note)
+                cloudDataBase.writeInCloud(note)
             }.start()
         }
     }
@@ -209,7 +210,7 @@ class NoteListViewModel(
             notesRepository.removeNote(tempNote)
         }
         Thread {
-            cloudDataBase.rewriteInCloud(tempNote)
+            cloudDataBase.deleteNoteInCloud(tempNote)
         }.start()
     }
 }

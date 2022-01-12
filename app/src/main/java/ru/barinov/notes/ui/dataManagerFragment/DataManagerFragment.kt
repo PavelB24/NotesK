@@ -9,6 +9,7 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.material.switchmaterial.SwitchMaterial
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.barinov.R
 import ru.barinov.databinding.DataManagerLayoutBinding
 import ru.barinov.notes.domain.CloudRepository
@@ -17,14 +18,12 @@ import ru.barinov.notes.domain.room.DataBase
 import ru.barinov.notes.ui.dialogs.AgreementDialogFragment
 import ru.barinov.notes.ui.application
 
-
-
 class DataManagerFragment : Fragment() {
 
+    private val viewModel by viewModel<DataManagerViewModel>()
     private lateinit var binding: DataManagerLayoutBinding
     private lateinit var deleteImageButton: ImageButton
     private lateinit var switchMaterial: SwitchMaterial
-    private lateinit var viewModel: DataManagerViewModel
     private lateinit var editor: SharedPreferences.Editor
     private lateinit var sharedPreferences: SharedPreferences
     private val DELETE = "OK"
@@ -35,11 +34,6 @@ class DataManagerFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         binding = DataManagerLayoutBinding.inflate(inflater)
-        viewModel = DataManagerViewModel(
-            repository = getRepository(),
-            cloudDataBase = getCloudDB(),
-            auth = requireActivity().application().cloudDataBase.auth
-        )
         sharedPreferences = requireContext().getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE)
         return binding.root
     }
@@ -48,8 +42,8 @@ class DataManagerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         editor = sharedPreferences.edit()
         deleteImageButton = binding.deleteStorageButton
-        initDeleteButton()
         switchMaterial = binding.dataManagerSwitch
+        initDeleteButton()
         setOnSwitchListener()
         getDialogResults()
     }
@@ -57,8 +51,7 @@ class DataManagerFragment : Fragment() {
     private fun getDialogResults() {
         viewModel.onRepositoryDeletion.observe(viewLifecycleOwner) { it ->
             it.show(parentFragmentManager, DELETE)
-            parentFragmentManager.setFragmentResultListener(
-                AgreementDialogFragment::class.simpleName!!,
+            parentFragmentManager.setFragmentResultListener(AgreementDialogFragment::class.simpleName!!,
                 requireActivity(),
                 { requestKey, result ->
                     viewModel.onRepoDeletion(result, DELETE)
@@ -67,18 +60,6 @@ class DataManagerFragment : Fragment() {
         viewModel.repositoryIsCleanedMessage.observe(viewLifecycleOwner) {
             onDeletedMessage()
         }
-    }
-
-    private fun getRepository(): NotesRepository {
-        return requireActivity().application().repository
-    }
-
-    private fun getLocalDB(): DataBase {
-        return requireActivity().application().localDataBase
-    }
-
-    private fun getCloudDB(): CloudRepository {
-        return requireActivity().application().cloudDataBase
     }
 
     private fun initDeleteButton() {
@@ -106,30 +87,34 @@ class DataManagerFragment : Fragment() {
     }
 
     private fun setOnSwitchListener() {
-        switchMaterial.isChecked = sharedPreferences.getBoolean(
-            DataManagerFragment.switchStateKey, false
-        )
-        if (sharedPreferences.getBoolean(DataManagerFragment.switchStateKey, false)) {
-            binding.dataManagerSwitchTextView.setText(R.string.way_of_storage_cloud)
-        }
-        if (requireActivity().application().cloudDataBase.auth.currentUser == null) {
-            switchMaterial.isChecked = false
-        }
-        switchMaterial.setOnClickListener {
-            if (switchMaterial.isChecked) {
-                if (requireActivity().application().cloudDataBase.auth.currentUser != null) {
-                    cloudStorageText()
-                    savePref()
-                } else {
-                    switchMaterial.isChecked = false
-                    savePref()
-                    showCloudIsNotAvailableMassage()
-                }
-            } else {
-                localStorageText()
-                savePref()
-            }
 
+        viewModel.checkOnCurrentUser()
+        viewModel.hasCurrentUser.observe(viewLifecycleOwner) { isAuthenticated ->
+            val checkedPreferences = sharedPreferences.getBoolean(
+                switchStateKey, false
+            )
+            switchMaterial.isChecked = !(!isAuthenticated || !checkedPreferences)
+
+        }
+
+
+        switchMaterial.setOnClickListener {
+            viewModel.checkOnCurrentUser()
+            viewModel.hasCurrentUser.observe(viewLifecycleOwner) { isAuthenticated ->
+                if (switchMaterial.isChecked) {
+                    if (isAuthenticated) {
+                        cloudStorageText()
+                        savePref()
+                    } else {
+                        switchMaterial.isChecked = false
+                        showCloudIsNotAvailableMassage()
+                        savePref()
+                    }
+                } else {
+                    localStorageText()
+                    savePref()
+                }
+            }
         }
     }
 
@@ -137,9 +122,9 @@ class DataManagerFragment : Fragment() {
         editor.putBoolean(switchStateKey, switchMaterial.isChecked).apply()
     }
 
-
     companion object {
-        const val sharedPreferencesName = "Settings"
+
+        const val sharedPreferencesName = "AppSettings"
         const val switchStateKey = "SwitchState"
     }
 

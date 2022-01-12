@@ -2,39 +2,25 @@ package ru.barinov.notes.ui;
 
 import android.app.Application
 import android.content.Context
-import android.location.LocationManager
-import androidx.room.Room
 import com.google.firebase.FirebaseApp
+import org.koin.android.ext.koin.*
+import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
+import org.koin.dsl.module
+import ru.barinov.notes.di.appModule
 import ru.barinov.notes.domain.*
-import ru.barinov.notes.domain.userRepository.NotesRepository
-import ru.barinov.notes.domain.room.DataBase
+
 
 
 class Application : Application() {
 
-    lateinit var repository: NotesRepository
-    val router = Router()
-    lateinit var localDataBase: DataBase
-    lateinit var cloudDataBase: CloudRepository
-    lateinit var locationFinder: LocationFinder
-
     override fun onCreate() {
         FirebaseApp.initializeApp(this)
-
-        localDataBase = Room.databaseBuilder(
-            this, DataBase::class.java, "notes_database"
-        ).allowMainThreadQueries().build()
-
-        cloudDataBase = CloudRepository()
-
-
-        locationFinder = LocationFinder(
-            getSystemService(LOCATION_SERVICE) as LocationManager, applicationContext
-        )
-
-
-        repository = NotesRepository(localDataBase.noteDao())
-
+        startKoin {
+            androidLogger(Level.ERROR)
+            androidContext(this@Application)
+            modules(listOf(appModule))
+        }
         super.onCreate()
     }
 }

@@ -1,7 +1,7 @@
 package ru.barinov.notes.domain
 
 import androidx.recyclerview.widget.DiffUtil
-import ru.barinov.notes.domain.entity.NoteEntity
+import ru.barinov.notes.domain.models.NoteEntity
 
 class DiffCallback(oldList: List<NoteEntity>, newList: List<NoteEntity>) : DiffUtil.Callback() {
     private var oldList: List<NoteEntity> = oldList

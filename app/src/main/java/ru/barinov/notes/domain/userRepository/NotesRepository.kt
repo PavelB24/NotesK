@@ -1,7 +1,7 @@
 package ru.barinov.notes.domain.userRepository
 
 import androidx.lifecycle.LiveData
-import ru.barinov.notes.domain.entity.NoteEntity
+import ru.barinov.notes.domain.models.NoteEntity
 import ru.barinov.notes.domain.room.NoteDao
 
 class NotesRepository(private val noteDao: NoteDao) {
