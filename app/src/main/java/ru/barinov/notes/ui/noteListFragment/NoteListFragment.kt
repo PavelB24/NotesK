@@ -55,12 +55,6 @@ class NoteListFragment : Fragment() {
     private fun registeredForNotesRepositoryLiveData() {
         viewModel.noteListLiveData.observe(viewLifecycleOwner) { notes ->
             adapter.data = notes
-
-            //  todo Перенести в активити вью модель
-            val navigationView =  (requireActivity() as ActivityMain).bottomNavigationView
-            navigationView.getOrCreateBadge(R.id.notes_item_menu)
-            val badge = navigationView.getBadge(R.id.notes_item_menu)
-            badge!!.number = adapter.data.size
         }
     }
 

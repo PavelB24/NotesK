@@ -13,16 +13,14 @@ import ru.barinov.notes.ui.ProfileAndRegistration.Logged.LoggedFragment
 import ru.barinov.notes.ui.ProfileAndRegistration.ProfileEntering.ProfileEnteringFragment
 import java.io.IOException
 
-class ActivityViewModel(private val repository: NotesRepository,
-                        private val cloudDataBase: CloudRepository): ViewModel()
-
-{
+class ActivityViewModel(
+    private val repository: NotesRepository, private val cloudDataBase: CloudRepository
+) : ViewModel() {
 
     private val LOCAL_REPOSITORY_NAME = "repository.bin"
 
     private val _onChooseStartFragment = MutableLiveData<Int>()
     val onChooseStartFragment: LiveData<Int> = _onChooseStartFragment
-
 
     private val _onCloudInitCompleted = MutableLiveData<Unit>()
     val onCloudInitCompleted: LiveData<Unit> = _onCloudInitCompleted
@@ -30,7 +28,7 @@ class ActivityViewModel(private val repository: NotesRepository,
     private val _hasLoggedUser = MutableLiveData<Boolean>()
     val hasLoggedUser: LiveData<Boolean> = _hasLoggedUser
 
-
+    val noesListSize = repository.getNotesLiveData()
 
     @Throws(IOException::class)
     fun safeNotes() {
@@ -47,27 +45,25 @@ class ActivityViewModel(private val repository: NotesRepository,
 //        fos?.close()
 //        Log.d("@@@", "Записан")
     }
-        fun readNotesFromCloud() {
-            if (cloudDataBase.auth.currentUser != null) {
-                Thread {
-                    cloudDataBase.cloud.collection(cloudDataBase.auth.currentUser!!.uid)
-                        .get()
-                        .addOnSuccessListener { result ->
-                            for (document in result) {
-                                val note = document.toObject(NoteEntity::class.java)
-                                if (!repository.findById(note.id)) {
-                                    repository.insertNote(note)
-                                }
+
+    fun readNotesFromCloud() {
+        if (cloudDataBase.auth.currentUser != null) {
+            Thread {
+                cloudDataBase.cloud.collection(cloudDataBase.auth.currentUser!!.uid).get()
+                    .addOnSuccessListener { result ->
+                        for (document in result) {
+                            val note = document.toObject(NoteEntity::class.java)
+                            if (!repository.findById(note.id)) {
+                                repository.insertNote(note)
                             }
-                            _onCloudInitCompleted.postValue(Unit)
                         }
-                }.start()
-            }
+                        _onCloudInitCompleted.postValue(Unit)
+                    }
+            }.start()
         }
+    }
 
-
-
-        //Старый метод, шпаргалка по Moshi
+    //Старый метод, шпаргалка по Moshi
 //        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 //        val jsonAdapter = moshi.adapter(NoteEntity::class.java)
 //        val fileInputStream = view?.openFileInput(LOCAL_REPOSITORY_NAME)
@@ -82,12 +78,11 @@ class ActivityViewModel(private val repository: NotesRepository,
 //        objectInputStream.close()
 //        fileInputStream!!.close()
 
-
     fun chooseStartFragment() {
         if (cloudDataBase.auth.currentUser != null) {
-            _onChooseStartFragment.postValue( R.id.notes_item_menu)
+            _onChooseStartFragment.postValue(R.id.notes_item_menu)
         } else {
-            _onChooseStartFragment.postValue( R.id.profile_item_menu)
+            _onChooseStartFragment.postValue(R.id.profile_item_menu)
         }
     }
 
@@ -98,6 +93,7 @@ class ActivityViewModel(private val repository: NotesRepository,
     }
 
     fun checkOnUserOnline() {
-            _hasLoggedUser.postValue(cloudDataBase.auth.currentUser!= null)
+        _hasLoggedUser.postValue(cloudDataBase.auth.currentUser != null)
     }
+
 }

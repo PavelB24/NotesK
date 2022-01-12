@@ -56,6 +56,12 @@ class ActivityMain : AppCompatActivity(), ActivityCallableInterface {
                 }
             }; true
         }
+        bottomNavigationView.getOrCreateBadge(R.id.notes_item_menu)
+        val badge = bottomNavigationView.getBadge(R.id.notes_item_menu)
+        viewModel.noesListSize.observe(this){noteList->
+            badge!!.number = noteList.size
+        }
+
         setStartFragment()
         fabButton.setOnClickListener { callEditionFragment(null) }
     }
