@@ -4,7 +4,7 @@ import android.os.Bundle
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.google.android.material.bottomappbar.BottomAppBar
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.barinov.R
@@ -17,7 +17,7 @@ class ActivityMain : AppCompatActivity(), ActivityCallableInterface {
     private val viewModel by viewModel<ActivityViewModel>()
     private lateinit var binding: MainLayoutBinding
     lateinit var fabButton: FloatingActionButton
-    lateinit var bottomAppBar: BottomAppBar
+    lateinit var bottomNavigationView: BottomNavigationView
     private val fineLocation: String = android.Manifest.permission.ACCESS_FINE_LOCATION
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
     private val router = Router()
@@ -42,8 +42,8 @@ class ActivityMain : AppCompatActivity(), ActivityCallableInterface {
 
     private fun setBottomBar() {
         fabButton = binding.addNoteFabButton
-        bottomAppBar = binding.navigationBar as BottomAppBar
-        bottomAppBar.setOnMenuItemClickListener { item ->
+        bottomNavigationView = binding.navigationBar as BottomNavigationView
+        bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.notes_item_menu -> {
                     openNoteList()
@@ -62,8 +62,8 @@ class ActivityMain : AppCompatActivity(), ActivityCallableInterface {
 
     private fun setStartFragment() {
         viewModel.chooseStartFragment()
-        viewModel.onChooseStartFragment.observe(this) {
-            openStartFragment(it)
+        viewModel.onChooseStartFragment.observe(this) {id->
+            bottomNavigationView.selectedItemId=id
         }
 
     }

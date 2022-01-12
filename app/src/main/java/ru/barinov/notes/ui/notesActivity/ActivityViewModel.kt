@@ -2,6 +2,7 @@ package ru.barinov.notes.ui.notesActivity
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
+import ru.barinov.R
 
 import ru.barinov.notes.domain.CloudRepository
 import ru.barinov.notes.domain.userRepository.NotesRepository
@@ -19,8 +20,8 @@ class ActivityViewModel(private val repository: NotesRepository,
 
     private val LOCAL_REPOSITORY_NAME = "repository.bin"
 
-    private val _onChooseStartFragment = MutableLiveData<Fragment>()
-    val onChooseStartFragment: LiveData<Fragment> = _onChooseStartFragment
+    private val _onChooseStartFragment = MutableLiveData<Int>()
+    val onChooseStartFragment: LiveData<Int> = _onChooseStartFragment
 
 
     private val _onCloudInitCompleted = MutableLiveData<Unit>()
@@ -84,9 +85,9 @@ class ActivityViewModel(private val repository: NotesRepository,
 
     fun chooseStartFragment() {
         if (cloudDataBase.auth.currentUser != null) {
-            _onChooseStartFragment.postValue(LoggedFragment())
+            _onChooseStartFragment.postValue( R.id.notes_item_menu)
         } else {
-            _onChooseStartFragment.postValue(ProfileEnteringFragment())
+            _onChooseStartFragment.postValue( R.id.profile_item_menu)
         }
     }
 
