@@ -1,6 +1,8 @@
 package ru.barinov.notes.ui.noteViewFragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,8 +20,19 @@ import ru.barinov.notes.domain.adapters.ViewPagerTransformer
 import ru.barinov.notes.domain.models.NoteEntity
 import ru.barinov.notes.ui.application
 import ru.barinov.notes.ui.noteEditFragment.argsBundleKey
+import java.lang.IllegalStateException
+
+private const val argumentsKey = "viewPagerArgsKey"
 
 class ViewPagerContainerFragment : Fragment() {
+
+    private val noteId: String by lazy {
+        val id = requireArguments().getString(argumentsKey)
+        if (id == null) {
+            throw IllegalStateException("ID should be provided")
+        }
+        return@lazy id
+    }
 
     private val viewModel by viewModel<ViewPagerContainerFragmentViewModel>()
 
@@ -34,13 +47,15 @@ class ViewPagerContainerFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         binding = NoteviewViewPagerLayoutBinding.inflate(inflater)
+
         return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         initViews()
-
+        viewPager.adapter = adapter
         tabLayout = binding.tabsView
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             val note = adapter.noteList[position]
@@ -49,20 +64,21 @@ class ViewPagerContainerFragment : Fragment() {
                 tab.setIcon(R.drawable.ic_favourites_selected_star)
             }
         }.attach()
-
+        viewPager.currentItem = findSelectedItemPosition(noteId)
 
 
         super.onViewCreated(view, savedInstanceState)
     }
 
     private fun initViews() {
-        viewPager = binding.viewPager2
         adapter = NoteViewPagerAdapter(this)
-
+        viewPager = binding.viewPager2
         registeredForGetNotesLiveData()
-        viewPager.adapter = adapter
         viewPager.setPageTransformer(ViewPagerTransformer())
+        viewPager.post {  viewPager.currentItem = findSelectedItemPosition(noteId) }
+
     }
+
 
     private fun registeredForGetNotesLiveData() {
         viewModel.noteListLiveData.observe(viewLifecycleOwner) { list ->
@@ -85,7 +101,7 @@ class ViewPagerContainerFragment : Fragment() {
         fun getInstance(id: String?): ViewPagerContainerFragment {
             val fragment = ViewPagerContainerFragment()
             val data = Bundle()
-            data.putString(argsBundleKey, id)
+            data.putString(argumentsKey, id)
             fragment.arguments = data
             return fragment
         }

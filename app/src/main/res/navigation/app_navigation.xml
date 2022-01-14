@@ -1,6 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/app_navigation">
+    android:id="@+id/app_navigation"
+    app:startDestination="@id/noteListFragment">
 
+    <fragment
+        android:id="@+id/noteListFragment"
+        android:name="ru.barinov.notes.ui.noteListFragment.NoteListFragment"
+        android:label="NoteListFragment" >
+        <action
+            android:id="@+id/action_noteListFragment_to_dataManagerFragment"
+            app:destination="@id/dataManagerFragment" />
+        <action
+            android:id="@+id/action_noteListFragment_to_profileEnteringFragment"
+            app:destination="@id/profileEnteringFragment" />
+        <action
+            android:id="@+id/action_noteListFragment_to_loggedFragment"
+            app:destination="@id/loggedFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/dataManagerFragment"
+        android:name="ru.barinov.notes.ui.dataManagerFragment.DataManagerFragment"
+        android:label="DataManagerFragment" >
+        <action
+            android:id="@+id/action_dataManagerFragment_to_noteListFragment"
+            app:destination="@id/noteListFragment" />
+        <action
+            android:id="@+id/action_dataManagerFragment_to_profileEnteringFragment"
+            app:destination="@id/profileEnteringFragment" />
+        <action
+            android:id="@+id/action_dataManagerFragment_to_loggedFragment"
+            app:destination="@id/loggedFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileEnteringFragment"
+        android:name="ru.barinov.notes.ui.ProfileAndRegistration.ProfileEntering.ProfileEnteringFragment"
+        android:label="ProfileEnteringFragment" >
+        <action
+            android:id="@+id/action_profileEnteringFragment_to_dataManagerFragment"
+            app:destination="@id/dataManagerFragment" />
+        <action
+            android:id="@+id/action_profileEnteringFragment_to_noteListFragment"
+            app:destination="@id/noteListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loggedFragment"
+        android:name="ru.barinov.notes.ui.ProfileAndRegistration.Logged.LoggedFragment"
+        android:label="LoggedFragment" >
+        <action
+            android:id="@+id/action_loggedFragment_to_dataManagerFragment"
+            app:destination="@id/dataManagerFragment" />
+        <action
+            android:id="@+id/action_loggedFragment_to_noteListFragment"
+            app:destination="@id/noteListFragment" />
+    </fragment>
 </navigation>

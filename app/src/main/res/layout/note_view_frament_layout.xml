@@ -20,7 +20,7 @@
             android:padding="@dimen/standart_padding"
             android:textColor="@color/black"
             android:textSize="@dimen/title_text_size"
-            android:textStyle="italic"
+            android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView

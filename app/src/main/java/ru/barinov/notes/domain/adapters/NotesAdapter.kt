@@ -13,6 +13,7 @@ import ru.barinov.notes.domain.models.NoteEntity
 import java.util.ArrayList
 
 class NotesAdapter : RecyclerView.Adapter<NoteViewHolder>() {
+
     var data: List<NoteEntity> = ArrayList()
         set(newData) {
             val result = DiffUtil.calculateDiff(DiffCallback(data, newData), true)
@@ -21,10 +22,8 @@ class NotesAdapter : RecyclerView.Adapter<NoteViewHolder>() {
         }
     private lateinit var listener: OnNoteClickListener
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
-        val view: View =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_note, parent, false)
+        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_note, parent, false)
         return NoteViewHolder(view)
     }
 
@@ -35,7 +34,6 @@ class NotesAdapter : RecyclerView.Adapter<NoteViewHolder>() {
         holder.checkBox.isChecked = false
 
     }
-
 
     private fun setHolderItemsListeners(holder: NoteViewHolder, note: NoteEntity) {
         holder.itemView.setOnClickListener { listener.onNoteClick(note) }
@@ -82,8 +80,6 @@ class NotesAdapter : RecyclerView.Adapter<NoteViewHolder>() {
     fun setListener(listener: OnNoteClickListener) {
         this.listener = listener
 
-
     }
-
 
 }

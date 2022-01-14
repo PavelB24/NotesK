@@ -164,16 +164,19 @@ class NoteListViewModel(
     }
 
     override fun onNoteLongClick(note: NoteEntity, view: View) {
-        //todo Remaster to When func
         val popupMenu = PopupMenu(view.context, view)
         popupMenu.inflate(R.menu.note_menu)
         popupMenu.setOnMenuItemClickListener { menuItem ->
-            if (menuItem.itemId == R.id.delete_note_item) {
-                onClickDelete(note)
-            } else if (menuItem.itemId == R.id.edit_note_item) {
-                onClickEdit(note)
-            } else if (menuItem.itemId == R.id.reminder_item) {
-                buildNotesReminder(note.id)
+            when (menuItem.itemId) {
+                R.id.delete_note_item -> {
+                    onClickDelete(note)
+                }
+                R.id.edit_note_item -> {
+                    onClickEdit(note)
+                }
+                R.id.reminder_item -> {
+                    buildNotesReminder(note.id)
+                }
             }
             false
         }

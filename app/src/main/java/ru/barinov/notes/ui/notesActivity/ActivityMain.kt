@@ -83,9 +83,7 @@ class ActivityMain : AppCompatActivity(), ActivityCallableInterface {
 
     }
 
-    private fun openStartFragment(fragment: Fragment) {
-        router.openOnStart(supportFragmentManager, fragment)
-    }
+
 
     private fun openDataManager() {
         router.openDataManagerFragment(getOrientation(), supportFragmentManager)
