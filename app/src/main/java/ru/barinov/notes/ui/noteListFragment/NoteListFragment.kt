@@ -17,6 +17,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import ru.barinov.notes.domain.interfaces.ActivityCallableInterface
 import ru.barinov.notes.ui.notesActivity.ActivityMain
+import java.util.*
 
 private const val DELETE = "OK"
 
@@ -46,7 +47,6 @@ class NoteListFragment : Fragment() {
         registeredForNotesRepositoryLiveData()
         createDialog()
         searchWasUnsuccessfulMessage()
-        onEditionModeToastMessage()
         registeredForReminderDialogCreation()
         super.onViewCreated(view, savedInstanceState)
 
@@ -54,6 +54,7 @@ class NoteListFragment : Fragment() {
 
     private fun registeredForNotesRepositoryLiveData() {
         viewModel.noteListLiveData.observe(viewLifecycleOwner) { notes ->
+            notes.toMutableList().sortBy { noteEntity -> noteEntity.creationTime  }
             adapter.data = notes
         }
     }
@@ -131,11 +132,7 @@ class NoteListFragment : Fragment() {
         }
     }
 
-    private fun onEditionModeToastMessage() {
-        viewModel.editionModeMessage.observe(requireActivity()) {
-            Toast.makeText(activity, R.string.edition_mode_toast_text, Toast.LENGTH_SHORT).show()
-        }
-    }
+
 
 
 

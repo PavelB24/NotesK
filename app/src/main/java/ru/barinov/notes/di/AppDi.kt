@@ -12,7 +12,6 @@ import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.*
 import ru.barinov.notes.domain.*
-import ru.barinov.notes.domain.interfaces.ActivityCallableInterface
 import ru.barinov.notes.domain.room.*
 import ru.barinov.notes.domain.userRepository.NotesRepository
 import ru.barinov.notes.ui.ProfileAndRegistration.Logged.LoggedFragmentViewModel

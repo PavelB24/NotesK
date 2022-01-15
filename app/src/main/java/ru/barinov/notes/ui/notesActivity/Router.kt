@@ -1,4 +1,4 @@
-package ru.barinov.notes.domain
+package ru.barinov.notes.ui.notesActivity
 
 import android.content.res.Configuration
 import androidx.fragment.app.Fragment
@@ -20,7 +20,7 @@ class Router {
 
     fun openNoteViewFragment(id: String, fragmentManager: FragmentManager) {
         fragmentManager.beginTransaction()
-            .replace(R.id.container_for_fragment, ViewPagerContainerFragment.getInstance(id)).commit()
+            .replace(R.id.container_for_fragment, ViewPagerContainerFragment.getInstance(id)).addToBackStack(null).commit()
     }
 
     fun openNoteEditFragment(id: String?, fragmentManager: FragmentManager) {

@@ -1,4 +1,4 @@
-package ru.barinov.notes.domain
+package ru.barinov.notes.domain.adapters
 
 import androidx.recyclerview.widget.DiffUtil
 import ru.barinov.notes.domain.models.NoteEntity
@@ -24,8 +24,8 @@ class DiffCallback(oldList: List<NoteEntity>, newList: List<NoteEntity>) : DiffU
         val newNote = newList[newItemPosition]
         val oldNote = oldList[oldItemPosition]
         return newNote.title.equals(oldNote.title) && newNote.content
-            .equals(oldNote.content) && newNote.creationDate
-            .equals(oldNote.creationDate) && newNote.isFavorite.equals(oldNote.isFavorite)
+            .equals(oldNote.content) && newNote.creationTime
+            .equals(oldNote.creationTime) && newNote.isFavorite.equals(oldNote.isFavorite)
     }
 }
 

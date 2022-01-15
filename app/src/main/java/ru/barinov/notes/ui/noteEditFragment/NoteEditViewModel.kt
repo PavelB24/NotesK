@@ -29,6 +29,10 @@ class NoteEditViewModel(
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
 
+    private val _editionModeMessage = MutableLiveData<Unit>()
+    val editionModeMessage: LiveData<Unit> = _editionModeMessage
+
+
     private val _fieldsIsNotFilledMassageLiveData = MutableLiveData<Unit>()
     val fieldsIsNotFilledMassageLiveData: LiveData<Unit> = _fieldsIsNotFilledMassageLiveData
 
@@ -62,12 +66,16 @@ class NoteEditViewModel(
 
     //Переписать под получение строк и интов, а не вьюшек
     fun saveNote(draft: NoteDraft) {
+
         val title = draft.title
         val content = draft.content
+        val type = draft.type
+        val image = draft.image
+
         if (title.isEmpty() || content.isEmpty()) {
             _fieldsIsNotFilledMassageLiveData.postValue(Unit)
         } else {
-            val note = createNote(title, content)
+            val note = createNote(title, content, type, image)
             repository.insertNote(note)
 
             if (sharedPreferences.getBoolean(DataManagerFragment.switchStateKey, false)) {
@@ -80,32 +88,37 @@ class NoteEditViewModel(
         }
     }
 
-    private fun createNote(title: String, content: String): NoteEntity {
+    private fun createNote(title: String, content: String, type: NoteTypes, image: ByteArray): NoteEntity {
         return if (checkOnEditionMode()) {
-            NoteEntity(
-                id = tempNote!!.id,
-                title = title,
-                content = content,
-                latitude = tempNote!!.latitude,
-                longitude = tempNote!!.longitude,
-                creationDate = tempNote!!.creationDate,
-                isFavorite = tempNote!!.isFavorite
-            )
+           NoteEntity(
+               id =tempNote!!.id,
+               title = title,
+               content = content,
+               latitude = tempNote!!.latitude,
+               longitude = tempNote!!.longitude,
+               creationTime = tempNote!!.creationTime,
+               isFavorite = tempNote!!.isFavorite,
+               type= tempNote!!.type,
+               image = tempNote!!.image
+           )
 
         }//Создаём новую заметку
         else {
             uuid = UUID.randomUUID()
-            val dateFormat = SimpleDateFormat("dd/M/yyyy")
-            val currentDate = dateFormat.format(Date())
+//            val dateFormat = SimpleDateFormat("dd/M/yyyy")
+//            val currentTime = dateFormat.format(Date())
+            val  currentTime = Date().time
             checkLatLong()
             NoteEntity(
-                id = uuid.toString(),
+                uuid.toString(),
                 title = title,
                 content = content,
                 latitude = latitude,
                 longitude = longitude,
-                creationDate = currentDate,
-                isFavorite = false
+                creationTime =currentTime ,
+                isFavorite = false,
+                type= type,
+                image = image
             )
         }
     }
@@ -124,6 +137,7 @@ class NoteEditViewModel(
             tempNote = repository.getById(tempNoteId)
         }
         if (tempNote != null) {
+            _editionModeMessage.postValue(Unit)
             return true
         }
         return false
@@ -131,7 +145,7 @@ class NoteEditViewModel(
 
     fun fillTheViews() {
         if (checkOnEditionMode()) {
-            _viewContentLiveData.postValue(NoteDraft(tempNote!!.title, tempNote!!.content))
+            _viewContentLiveData.postValue(NoteDraft(tempNote!!.title, tempNote!!.content, tempNote!!.type, tempNote!!.image))
         }
     }
 

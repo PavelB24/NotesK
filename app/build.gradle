@@ -74,6 +74,8 @@ dependencies {
 
     // https://mvnrepository.com/artifact/androidx.room/room-runtime
     implementation 'androidx.room:room-runtime:2.4.0'
+    implementation 'androidx.room:room-ktx:2.4.0'
+
 
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
 

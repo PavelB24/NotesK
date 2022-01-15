@@ -3,8 +3,8 @@ package ru.barinov.notes.domain.models
 import android.os.Parcelable
 import android.os.Parcel
 import android.os.Parcelable.Creator
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
+import ru.barinov.notes.domain.room.NoteTypeConverter
 
 @Entity(tableName = "note_table")
 data class NoteEntity(
@@ -14,51 +14,14 @@ data class NoteEntity(
     var content: String,
     var latitude: Double,
     var longitude: Double,
-    var creationDate: String,
-    var isFavorite: Boolean
-) : Parcelable {
-
-    constructor() : this("", "", "", -0.0, 0.0, " ", false)
-
-    constructor(parcel: Parcel) : this(
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readDouble(),
-        parcel.readDouble(),
-        parcel.readString()!!,
-        parcel.readInt() == 1,
-    )
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(parcel: Parcel, i: Int) {
-        parcel.writeString(id)
-        parcel.writeString(title)
-        parcel.writeString(content)
-        parcel.writeDouble(latitude)
-        parcel.writeDouble(longitude)
-        parcel.writeString(creationDate)
-        val isFavoriteInt = if (isFavorite) {
-            1
-        } else {
-            0
-        }
-        parcel.writeInt(isFavoriteInt)
-
-    }
-
-    companion object CREATOR : Creator<NoteEntity> {
-
-        override fun createFromParcel(parcel: Parcel): NoteEntity {
-            return NoteEntity(parcel)
-        }
-
-        override fun newArray(size: Int): Array<NoteEntity?> {
-            return arrayOfNulls(size)
-        }
-    }
+    var creationTime: Long,
+    var isFavorite: Boolean,
+    @ColumnInfo(name = "type_of_note")
+    @TypeConverters(NoteTypeConverter::class)
+    var type: NoteTypes,
+    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
+    var image: ByteArray
+) {
+    constructor() : this("", "", "", -0.0, 0.0, 0L, false, NoteTypes.Idle, byteArrayOf())
 
 }

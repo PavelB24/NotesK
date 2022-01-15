@@ -35,8 +35,6 @@ class NoteListViewModel(
     private val _onNoteDeletion = MutableLiveData<DialogFragment>()
     val onNoteDeletion: LiveData<DialogFragment> = _onNoteDeletion
 
-    private val _editionModeMessage = MutableLiveData<Unit>()
-    val editionModeMessage: LiveData<Unit> = _editionModeMessage
 
     private val _onUnsuccessfulSearch = MutableLiveData<Unit>()
     val onUnsuccessfulSearch: LiveData<Unit> = _onUnsuccessfulSearch
@@ -147,8 +145,6 @@ class NoteListViewModel(
     }
 
     override fun onClickEdit(note: NoteEntity?) {
-        //todo передать заметку в аргументсы
-        _editionModeMessage.postValue(Unit)
         activity.callEditionFragment(note!!.id)
     }
 

@@ -7,10 +7,10 @@ import android.widget.ImageButton
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.barinov.R
-import ru.barinov.notes.domain.DiffCallback
 import ru.barinov.notes.domain.interfaces.OnNoteClickListener
 import ru.barinov.notes.domain.models.NoteEntity
-import java.util.ArrayList
+import java.text.SimpleDateFormat
+import java.util.*
 
 class NotesAdapter : RecyclerView.Adapter<NoteViewHolder>() {
 
@@ -37,7 +37,7 @@ class NotesAdapter : RecyclerView.Adapter<NoteViewHolder>() {
 
     private fun setHolderItemsListeners(holder: NoteViewHolder, note: NoteEntity) {
         holder.itemView.setOnClickListener { listener.onNoteClick(note) }
-        holder.itemView.setOnLongClickListener { listener.onNoteLongClick(note, it);true }
+        holder.itemView.setOnLongClickListener {view-> listener.onNoteLongClick(note, view);true }
         holder.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 listener.onNoteChecked(note)
@@ -61,12 +61,20 @@ class NotesAdapter : RecyclerView.Adapter<NoteViewHolder>() {
 
     private fun setIdleStateInHolderItems(holder: NoteViewHolder, note: NoteEntity) {
         holder.titleTextView.text = note.title
-        holder.creationDateTextView.text = note.creationDate
+        holder.creationDateTextView.text = convertTimeInFormattedString(note)
         if (note.isFavorite) {
             holder.favImgButton.setImageResource(R.drawable.ic_favourites_selected_star)
         } else {
             holder.favImgButton.setImageResource(R.drawable.ic_favourites_black_star)
         }
+    }
+
+    private fun convertTimeInFormattedString(note: NoteEntity): String {
+        val dateFormat = SimpleDateFormat("dd/M/yyyy")
+        val date = Date()
+        date.time = note.creationTime
+        return dateFormat.format(date)
+
     }
 
     override fun getItemCount(): Int {

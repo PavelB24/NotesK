@@ -57,4 +57,5 @@
     <string name="on_successful_registration_string">Profile created.</string>
     <string name="on_log_out_string">Logged out</string>
     <string name="registration_fields_are_empty">One ore more fields are empty</string>
+    <string name="image_loading_error_string">Something went wrong</string>
 </resources>

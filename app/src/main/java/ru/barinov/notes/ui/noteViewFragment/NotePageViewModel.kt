@@ -5,8 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.barinov.notes.domain.LocationFinder
+import ru.barinov.notes.domain.models.NoteEntity
 import ru.barinov.notes.domain.userRepository.NotesRepository
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 class NotePageViewModel(
     private val id: String,
@@ -29,16 +32,25 @@ class NotePageViewModel(
             } catch (e: IOException) {
                 //todo
             }
+
             _openedNotesDraft.postValue(
                 NoteDraftExtended(
                     note.title,
                     note.content,
-                    note.creationDate,
+                    convertTimeInFormattedString(note),
                     locationString,
                     note.latitude,
                     note.longitude
                 )
             )
         }.start()
+    }
+
+    private fun convertTimeInFormattedString(note: NoteEntity): String {
+        val dateFormat = SimpleDateFormat("dd/M/yyyy")
+        val date = Date()
+        date.time = note.creationTime
+        return dateFormat.format(date)
+
     }
 }

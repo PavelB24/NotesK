@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/trees"
     android:orientation="vertical"
     tools:context=".notes.ui.notesActivity.ActivityMain">
@@ -10,7 +11,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/Widget.MaterialComponents.BottomAppBar"
+        android:theme="@style/CustomAppbar"
         android:background="?selectableItemBackgroundBorderless">
 
         <androidx.appcompat.widget.Toolbar

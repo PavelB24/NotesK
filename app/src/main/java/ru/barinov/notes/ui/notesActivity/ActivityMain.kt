@@ -3,14 +3,12 @@ package ru.barinov.notes.ui.notesActivity
 import android.os.Bundle
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.barinov.R
 import ru.barinov.databinding.MainLayoutBinding
 import ru.barinov.notes.domain.interfaces.ActivityCallableInterface
-import ru.barinov.notes.domain.Router
 
 class ActivityMain : AppCompatActivity(), ActivityCallableInterface {
 
