@@ -40,7 +40,8 @@ class NotePageViewModel(
                     convertTimeInFormattedString(note),
                     locationString,
                     note.latitude,
-                    note.longitude
+                    note.longitude,
+                    note.image
                 )
             )
         }.start()

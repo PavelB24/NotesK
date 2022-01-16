@@ -1,25 +1,20 @@
 package ru.barinov.notes.ui.noteViewFragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.*
 import ru.barinov.R
 import ru.barinov.databinding.NoteviewViewPagerLayoutBinding
 import ru.barinov.notes.domain.adapters.NoteViewPagerAdapter
 import ru.barinov.notes.domain.adapters.ViewPagerTransformer
-import ru.barinov.notes.domain.models.NoteEntity
-import ru.barinov.notes.ui.application
-import ru.barinov.notes.ui.noteEditFragment.argsBundleKey
+
+import ru.barinov.notes.ui.noteListFragment.NoteListViewModel
 import java.lang.IllegalStateException
 
 private const val argumentsKey = "viewPagerArgsKey"
@@ -34,12 +29,11 @@ class ViewPagerContainerFragment : Fragment() {
         return@lazy id
     }
 
-    private val viewModel by viewModel<ViewPagerContainerFragmentViewModel>()
+    private val viewModel by sharedViewModel<NoteListViewModel>()
 
     private lateinit var binding: NoteviewViewPagerLayoutBinding
     private lateinit var viewPager: ViewPager2
     private lateinit var adapter: NoteViewPagerAdapter
-    private lateinit var tabLayout: TabLayout
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,14 +50,7 @@ class ViewPagerContainerFragment : Fragment() {
 
         initViews()
         viewPager.adapter = adapter
-        tabLayout = binding.tabsView
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            val note = adapter.noteList[position]
-            tab.text = note.title
-            if (note.isFavorite) {
-                tab.setIcon(R.drawable.ic_favourites_selected_star)
-            }
-        }.attach()
+
         viewPager.currentItem = findSelectedItemPosition(noteId)
 
 
@@ -82,7 +69,8 @@ class ViewPagerContainerFragment : Fragment() {
 
     private fun registeredForGetNotesLiveData() {
         viewModel.noteListLiveData.observe(viewLifecycleOwner) { list ->
-            adapter.noteList = list
+            val sortedList =list.toMutableList().sortedBy { note -> note.creationTime }
+            adapter.noteList = sortedList
             adapter.notifyDataSetChanged()
         }
     }

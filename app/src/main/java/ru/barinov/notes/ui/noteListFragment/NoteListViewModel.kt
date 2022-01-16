@@ -10,10 +10,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.barinov.R
+import ru.barinov.notes.core.Event
 import ru.barinov.notes.core.liveData.combine
 import ru.barinov.notes.domain.*
 import ru.barinov.notes.domain.userRepository.NotesRepository
-import ru.barinov.notes.domain.interfaces.ActivityCallableInterface
 import ru.barinov.notes.domain.interfaces.OnNoteClickListener
 import ru.barinov.notes.domain.models.NoteEntity
 import ru.barinov.notes.domain.adapters.NotesAdapter
@@ -23,18 +23,22 @@ import ru.barinov.notes.ui.dialogs.AgreementDialogFragment
 
 class NoteListViewModel(
     private val notesRepository: NotesRepository,
-    private val adapter: NotesAdapter,
     private val cloudDataBase: CloudRepository,
-    private val activity: ActivityCallableInterface,
     private val sharedPreferences: SharedPreferences
 ) : OnNoteClickListener, ViewModel() {
+
 
     private val telegram = TelegrammBot()
     private lateinit var tempNote: NoteEntity
 
+    private val _onEditClicked = MutableLiveData<Event<String>>()
+    val onEditClicked: LiveData<Event<String>> = _onEditClicked
+
+    private val _onNoteOpen = MutableLiveData<Event<String>>()
+    val onNoteOpen: LiveData<Event<String>> = _onNoteOpen
+
     private val _onNoteDeletion = MutableLiveData<DialogFragment>()
     val onNoteDeletion: LiveData<DialogFragment> = _onNoteDeletion
-
 
     private val _onUnsuccessfulSearch = MutableLiveData<Unit>()
     val onUnsuccessfulSearch: LiveData<Unit> = _onUnsuccessfulSearch
@@ -46,7 +50,7 @@ class NoteListViewModel(
     private val isFavoriteSelected: LiveData<Boolean> = _isFavoriteSelected
 
     private val _searchedNotes = MutableLiveData<String>("")
-    val searchedNotes: LiveData<String> = _searchedNotes
+    private val searchedNotes: LiveData<String> = _searchedNotes
 
     private val _checkedNotes = MutableLiveData<MutableList<NoteEntity>>(mutableListOf())
     private val checkedNotes: LiveData<MutableList<NoteEntity>> = _checkedNotes
@@ -68,6 +72,7 @@ class NoteListViewModel(
                 allNotes
             }
         }
+
     }
 
     fun onSearchStarted(search: android.widget.SearchView) {
@@ -93,10 +98,10 @@ class NoteListViewModel(
         _isFavoriteSelected.value = selected
     }
 
-    fun setAdapter() {
+    fun setAdapter(adapter: NotesAdapter) {
         adapter.setListener(object : OnNoteClickListener {
-            override fun onClickEdit(note: NoteEntity?) {
-                this@NoteListViewModel.onNoteClick(note!!)
+            override fun onClickEdit(note: NoteEntity) {
+                this@NoteListViewModel.onNoteClick(note)
             }
 
             override fun onClickDelete(note: NoteEntity) {
@@ -126,6 +131,7 @@ class NoteListViewModel(
         })
     }
 
+
     private fun checkDataManagerSwitch(): Boolean {
         return sharedPreferences.getBoolean(
             DataManagerFragment.switchStateKey, false
@@ -144,8 +150,8 @@ class NoteListViewModel(
         }
     }
 
-    override fun onClickEdit(note: NoteEntity?) {
-        activity.callEditionFragment(note!!.id)
+    override fun onClickEdit(note: NoteEntity) {
+        _onEditClicked.value= Event(note.id)
     }
 
     override fun onClickDelete(note: NoteEntity) {
@@ -155,7 +161,7 @@ class NoteListViewModel(
     }
 
     override fun onNoteClick(note: NoteEntity) {
-        activity.callNoteViewFragment(note.id)
+        _onNoteOpen.value= Event(note.id)
 
     }
 

@@ -1,4 +1,4 @@
-package ru.barinov.notes.ui.ProfileAndRegistration.ProfileEntering
+package ru.barinov.notes.ui.ProfileAndRegistration.ProfileEnteringFragment
 
 import android.content.SharedPreferences
 import android.util.Log

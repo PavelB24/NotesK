@@ -1,25 +1,28 @@
 package ru.barinov.notes.ui.noteListFragment
 
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import org.koin.androidx.viewmodel.ext.android.*
 import ru.barinov.R
 import ru.barinov.databinding.NoteListLayoutBinding
 import ru.barinov.notes.domain.adapters.NotesAdapter
 import ru.barinov.notes.ui.dialogs.AgreementDialogFragment
 import ru.barinov.notes.ui.dialogs.ReminderDialogFragment
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 import ru.barinov.notes.domain.interfaces.ActivityCallableInterface
-import ru.barinov.notes.ui.notesActivity.ActivityMain
-import java.util.*
+import org.koin.java.KoinJavaComponent.inject
 
-private const val DELETE = "OK"
+private const val delete = "OK"
+private const val favButtonKey = "favButton"
+private const val reminderDialogKey = "reminder"
 
 
 class NoteListFragment : Fragment() {
@@ -29,14 +32,17 @@ class NoteListFragment : Fragment() {
     private lateinit var binding: NoteListLayoutBinding
     private lateinit var toolbar: Toolbar
     private lateinit var searchItem: MenuItem
-    private  val viewModel by viewModel<NoteListViewModel>{ parametersOf(adapter, (requireActivity() as ActivityCallableInterface))}
+    private val sharedPreferences = inject<SharedPreferences>(SharedPreferences::class.java)
+    private lateinit var editor: SharedPreferences.Editor
+    private  val viewModel by sharedViewModel<NoteListViewModel>()
+
 
     override fun onCreateView(
 
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
 
     ): View {
-
+        editor = sharedPreferences.value.edit()
         setHasOptionsMenu(true)
         binding = NoteListLayoutBinding.inflate(inflater, container, false)
         return binding.root
@@ -44,7 +50,7 @@ class NoteListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initViews()
-        registeredForNotesRepositoryLiveData()
+        registeredForListeners()
         createDialog()
         searchWasUnsuccessfulMessage()
         registeredForReminderDialogCreation()
@@ -52,28 +58,45 @@ class NoteListFragment : Fragment() {
 
     }
 
-    private fun registeredForNotesRepositoryLiveData() {
+
+
+    private fun registeredForListeners() {
         viewModel.noteListLiveData.observe(viewLifecycleOwner) { notes ->
-            notes.toMutableList().sortBy { noteEntity -> noteEntity.creationTime  }
-            adapter.data = notes
+            val sortedList =notes.toMutableList().sortedBy { note -> note.creationTime }
+            adapter.data = sortedList
+        }
+
+
+        viewModel.onNoteOpen.observe(viewLifecycleOwner, Observer {event->
+            event.getContentIfNotHandled()?.let{
+                (requireActivity() as ActivityCallableInterface).callNoteViewFragment(it)
+            }
+        })
+
+
+
+        viewModel.onEditClicked.observe(viewLifecycleOwner) {event->
+            event.getContentIfNotHandled()?.let{
+                (requireActivity() as ActivityCallableInterface).callEditionFragment(it)
+            }
         }
     }
 
     private fun registeredForReminderDialogCreation() {
-        viewModel.createReminderDialog.observe(requireActivity()) { id ->
+        viewModel.createReminderDialog.observe(viewLifecycleOwner) { id ->
             val reminderDialog = ReminderDialogFragment.getInstance(id)
-            reminderDialog.show(childFragmentManager, "Reminder")
+            reminderDialog.show(childFragmentManager, reminderDialogKey)
         }
     }
 
     private fun createDialog() {
-        viewModel.onNoteDeletion.observe(requireActivity()) { it ->
-            it.show(parentFragmentManager, DELETE)
+        viewModel.onNoteDeletion.observe(viewLifecycleOwner) { dialog ->
+            dialog.show(parentFragmentManager, delete)
             parentFragmentManager.setFragmentResultListener(
                 AgreementDialogFragment::class.simpleName!!,
                 requireActivity(),
                 { requestKey, result ->
-                    viewModel.deleteNoteInRepos(result, DELETE)
+                    viewModel.deleteNoteInRepos(result, delete)
                 })
         }
     }
@@ -84,8 +107,20 @@ class NoteListFragment : Fragment() {
             searchItem = menu.findItem(R.id.search_item_menu)
             val searchView = searchItem.actionView as android.widget.SearchView
             viewModel.onSearchStarted(searchView)
+
+            val favButton =menu.findItem( R.id.favorites_menu_button)
+            favButton.isChecked= sharedPreferences.value.getBoolean(favButtonKey, false)
+            viewModel.onFavoriteClicked(favButton.isChecked)
+            if(favButton.isChecked){
+                favButton.setIcon(R.drawable.ic_favourites_selected_star)
+            }
+            else{
+                favButton.setIcon(R.drawable.ic_favourites_black_star)
+            }
+
             super.onCreateOptionsMenu(menu, inflater)
         }
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -96,6 +131,7 @@ class NoteListFragment : Fragment() {
             R.id.favorites_menu_button -> {
                 item.isChecked = !item.isChecked
                 val isChecked = item.isChecked
+                saveFavButtonState(item.isChecked)
                 viewModel.onFavoriteClicked(isChecked)
                 if (isChecked) {
                     item.setIcon(R.drawable.ic_favourites_selected_star)
@@ -105,6 +141,10 @@ class NoteListFragment : Fragment() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun saveFavButtonState(state: Boolean) {
+        editor.putBoolean(favButtonKey, state).apply()
     }
 
     private fun initViews() {
@@ -118,7 +158,7 @@ class NoteListFragment : Fragment() {
     }
 
     private fun setRecyclerView() {
-        viewModel.setAdapter()
+        viewModel.setAdapter(adapter)
         recyclerView = binding.recyclerview
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter

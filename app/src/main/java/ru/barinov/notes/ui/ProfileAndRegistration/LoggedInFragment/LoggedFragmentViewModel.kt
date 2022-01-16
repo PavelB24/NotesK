@@ -1,4 +1,4 @@
-package ru.barinov.notes.ui.ProfileAndRegistration.Logged
+package ru.barinov.notes.ui.ProfileAndRegistration.LoggedInFragment
 
 import androidx.lifecycle.*
 import ru.barinov.notes.domain.CloudRepository

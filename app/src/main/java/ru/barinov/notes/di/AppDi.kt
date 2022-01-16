@@ -14,8 +14,8 @@ import org.koin.dsl.*
 import ru.barinov.notes.domain.*
 import ru.barinov.notes.domain.room.*
 import ru.barinov.notes.domain.userRepository.NotesRepository
-import ru.barinov.notes.ui.ProfileAndRegistration.Logged.LoggedFragmentViewModel
-import ru.barinov.notes.ui.ProfileAndRegistration.ProfileEntering.*
+import ru.barinov.notes.ui.ProfileAndRegistration.LoggedInFragment.LoggedFragmentViewModel
+import ru.barinov.notes.ui.ProfileAndRegistration.ProfileEnteringFragment.*
 import ru.barinov.notes.ui.ProfileAndRegistration.RegistrationFragment.RegistrationFragmentViewModel
 import ru.barinov.notes.ui.dataManagerFragment.*
 import ru.barinov.notes.ui.noteEditFragment.NoteEditViewModel
@@ -60,19 +60,12 @@ val appModule = module {
         Geocoder(get())
     }
 
-    single<Router> {
-        Router()
-    }
 
 
 
     single  <SharedPreferences> {
         androidApplication().getSharedPreferences(DataManagerFragment.sharedPreferencesName, Context.MODE_PRIVATE)
     }
-
-
-
-
 
 
 
@@ -91,8 +84,8 @@ val appModule = module {
         NoteEditViewModel(noteId.get(), get(), get(), get(), get() )
     }
 
-    viewModel<NoteListViewModel>{parameters->
-        NoteListViewModel(get(), parameters[0], get(), parameters[1], get())
+    viewModel<NoteListViewModel>{
+        NoteListViewModel(get(), get(), get())
     }
 
     viewModel<LoggedFragmentViewModel> {
@@ -111,8 +104,5 @@ val appModule = module {
         NotePageViewModel(parameterId.get(), get(), get())
     }
 
-    viewModel<ViewPagerContainerFragmentViewModel>{
-        ViewPagerContainerFragmentViewModel(get())
-    }
 
 }

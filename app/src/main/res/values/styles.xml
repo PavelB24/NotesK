@@ -11,12 +11,17 @@
 
     </style>
 
-    <style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
+    <style name="CustomPopupMenu" parent="@android:style/Widget.PopupMenu">
         <item name="android:popupBackground">@color/card_view_grey_3</item>
     </style>
 
-    <style name="CustomAppbar" parent="Base.Widget.MaterialComponents.Chip">
+    <style name="CustomAppbar" >
         <item name="android:backgroundTint">@color/card_view_grey_3</item>
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
+    </style>
+
+    <style name="CircularImgStyle" >
+    <item name="cornerSize">50%</item>
     </style>
 
     <style name="CustomChipTheme" parent="Widget.AppCompat.ActionBar">

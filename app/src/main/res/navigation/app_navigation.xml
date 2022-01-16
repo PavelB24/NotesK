@@ -34,7 +34,7 @@
     </fragment>
     <fragment
         android:id="@+id/profileEnteringFragment"
-        android:name="ru.barinov.notes.ui.ProfileAndRegistration.ProfileEntering.ProfileEnteringFragment"
+        android:name="ru.barinov.notes.ui.ProfileAndRegistration.ProfileEnteringFragment.ProfileEnteringFragment"
         android:label="ProfileEnteringFragment" >
         <action
             android:id="@+id/action_profileEnteringFragment_to_dataManagerFragment"
@@ -45,7 +45,7 @@
     </fragment>
     <fragment
         android:id="@+id/loggedFragment"
-        android:name="ru.barinov.notes.ui.ProfileAndRegistration.Logged.LoggedFragment"
+        android:name="ru.barinov.notes.ui.ProfileAndRegistration.LoggedInFragment.LoggedFragment"
         android:label="LoggedFragment" >
         <action
             android:id="@+id/action_loggedFragment_to_dataManagerFragment"

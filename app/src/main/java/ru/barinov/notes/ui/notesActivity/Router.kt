@@ -1,6 +1,5 @@
 package ru.barinov.notes.ui.notesActivity
 
-import android.content.res.Configuration
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import ru.barinov.R
@@ -8,8 +7,8 @@ import ru.barinov.notes.ui.dataManagerFragment.DataManagerFragment
 import ru.barinov.notes.ui.noteEditFragment.NoteEditFragment
 import ru.barinov.notes.ui.noteListFragment.NoteListFragment
 import ru.barinov.notes.ui.noteViewFragment.ViewPagerContainerFragment
-import ru.barinov.notes.ui.ProfileAndRegistration.ProfileEntering.ProfileEnteringFragment
-import ru.barinov.notes.ui.ProfileAndRegistration.Logged.LoggedFragment
+import ru.barinov.notes.ui.ProfileAndRegistration.ProfileEnteringFragment.ProfileEnteringFragment
+import ru.barinov.notes.ui.ProfileAndRegistration.LoggedInFragment.LoggedFragment
 
 class Router {
 

@@ -7,5 +7,6 @@ data class NoteDraftExtended(
     val date: String,
     val location: String,
     val latitude: Double,
-    val longitude: Double
+    val longitude: Double,
+    val image: ByteArray
 )

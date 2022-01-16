@@ -4,7 +4,7 @@ import android.view.View
 import ru.barinov.notes.domain.models.NoteEntity
 
 interface OnNoteClickListener {
-    fun onClickEdit(note: NoteEntity?)
+    fun onClickEdit(note: NoteEntity)
     fun onClickDelete(note: NoteEntity)
     fun onNoteClick(note: NoteEntity)
     fun onNoteLongClick(note: NoteEntity, view: View)

@@ -1,4 +1,4 @@
-package ru.barinov.notes.ui.ProfileAndRegistration.ProfileEntering
+package ru.barinov.notes.ui.ProfileAndRegistration.ProfileEnteringFragment
 
 
 import android.os.Bundle
@@ -14,7 +14,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.barinov.R
 import ru.barinov.databinding.ProfileEnterLayoutBinding
 import ru.barinov.notes.ui.ProfileAndRegistration.AuthenticationDataDraft
-import ru.barinov.notes.ui.ProfileAndRegistration.Logged.LoggedFragment
+import ru.barinov.notes.ui.ProfileAndRegistration.LoggedInFragment.LoggedFragment
 import ru.barinov.notes.ui.ProfileAndRegistration.RegistrationFragment.RegistrationFragment
 
 

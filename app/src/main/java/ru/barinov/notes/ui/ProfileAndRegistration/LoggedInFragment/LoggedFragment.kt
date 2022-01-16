@@ -1,4 +1,4 @@
-package ru.barinov.notes.ui.ProfileAndRegistration.Logged
+package ru.barinov.notes.ui.ProfileAndRegistration.LoggedInFragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +10,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.barinov.R
 
 import ru.barinov.databinding.ProfileSingedLayoutBinding
-import ru.barinov.notes.ui.ProfileAndRegistration.ProfileEntering.ProfileEnteringFragment
+import ru.barinov.notes.ui.ProfileAndRegistration.ProfileEnteringFragment.ProfileEnteringFragment
 
 class LoggedFragment : Fragment() {
 

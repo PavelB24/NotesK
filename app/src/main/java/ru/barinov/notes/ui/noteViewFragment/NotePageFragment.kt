@@ -1,13 +1,16 @@
 package ru.barinov.notes.ui.noteViewFragment
 
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.text.util.Linkify
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.imageview.ShapeableImageView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import ru.barinov.R
@@ -27,8 +30,7 @@ class NotePageFragment : Fragment() {
         return@lazy id
     }
 
-
-    private val viewModel by viewModel<NotePageViewModel>{parametersOf(noteId)}
+    private val viewModel by viewModel<NotePageViewModel> { parametersOf(noteId) }
     private lateinit var binding: NoteViewFramentLayoutBinding
     private lateinit var titleTextView: TextView
     private lateinit var contentTextview: TextView
@@ -36,6 +38,7 @@ class NotePageFragment : Fragment() {
     private lateinit var locationTextView: TextView
     private lateinit var mapButton: MaterialButton
     private lateinit var noteDraft: NoteDraftExtended
+    private lateinit var image: ShapeableImageView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,15 +50,26 @@ class NotePageFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         initViews()
         setListeners()
-
         viewModel.getNote()
-
-
-
+        initMapClickListener()
 
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun loadImage() {
+        if (noteDraft.image.isNotEmpty()) {
+            image.visibility = View.VISIBLE
+            Thread {
+                val bitmap =BitmapFactory.decodeByteArray(noteDraft.image, 0, noteDraft.image.size)
+                requireActivity().runOnUiThread{
+                    image.setImageBitmap(bitmap)
+                }
+
+            }.start()
+        }
     }
 
     private fun setListeners() {
@@ -67,17 +81,18 @@ class NotePageFragment : Fragment() {
             Linkify.addLinks(contentTextview, Linkify.ALL)
             contentTextview.setLinkTextColor(resources.getColor(R.color.blue))
             noteDraft = draft
+            loadImage()
         }
     }
 
     private fun initViews() {
+        image = binding.notePageImgView
         titleTextView = binding.noteTitleTextView
         contentTextview = binding.noteDescriptionTextview
         dateTextView = binding.dateOfEventTextview
         locationTextView = binding.locationTextView
         mapButton = binding.showOnMapButton
 
-        initMapClickListener()
     }
 
     private fun initMapClickListener() {

@@ -69,13 +69,11 @@ class NoteEditViewModel(
 
         val title = draft.title
         val content = draft.content
-        val type = draft.type
-        val image = draft.image
 
         if (title.isEmpty() || content.isEmpty()) {
             _fieldsIsNotFilledMassageLiveData.postValue(Unit)
         } else {
-            val note = createNote(title, content, type, image)
+            val note = createNote(draft)
             repository.insertNote(note)
 
             if (sharedPreferences.getBoolean(DataManagerFragment.switchStateKey, false)) {
@@ -88,37 +86,35 @@ class NoteEditViewModel(
         }
     }
 
-    private fun createNote(title: String, content: String, type: NoteTypes, image: ByteArray): NoteEntity {
+    private fun createNote(draft: NoteDraft): NoteEntity {
         return if (checkOnEditionMode()) {
            NoteEntity(
                id =tempNote!!.id,
-               title = title,
-               content = content,
+               title = draft.title,
+               content = draft.content,
                latitude = tempNote!!.latitude,
                longitude = tempNote!!.longitude,
                creationTime = tempNote!!.creationTime,
                isFavorite = tempNote!!.isFavorite,
-               type= tempNote!!.type,
-               image = tempNote!!.image
+               type= draft.type,
+               image = draft.image
            )
 
         }//Создаём новую заметку
         else {
             uuid = UUID.randomUUID()
-//            val dateFormat = SimpleDateFormat("dd/M/yyyy")
-//            val currentTime = dateFormat.format(Date())
             val  currentTime = Date().time
             checkLatLong()
             NoteEntity(
                 uuid.toString(),
-                title = title,
-                content = content,
+                title = draft.title,
+                content = draft.content,
                 latitude = latitude,
                 longitude = longitude,
                 creationTime =currentTime ,
                 isFavorite = false,
-                type= type,
-                image = image
+                type= draft.type,
+                image = draft.image
             )
         }
     }

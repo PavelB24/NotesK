@@ -2,11 +2,9 @@ package ru.barinov.notes.domain
 
 import android.app.Notification.DEFAULT_ALL
 import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_HIGH
 import android.app.PendingIntent.getActivity
 import android.content.Context
-import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
@@ -20,19 +18,15 @@ import android.media.RingtoneManager.getDefaultUri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.O
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.PRIORITY_MAX
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import org.koin.android.ext.android.inject
 import org.koin.java.KoinJavaComponent.inject
-import org.koin.java.KoinJavaComponent.injectOrNull
 import ru.barinov.R
 import ru.barinov.notes.domain.userRepository.NotesRepository
-import ru.barinov.notes.ui.application
 import ru.barinov.notes.ui.notesActivity.ActivityViewModel
 
 class ReminderWorker( val context: Context, params: WorkerParameters) : Worker(context, params)  {

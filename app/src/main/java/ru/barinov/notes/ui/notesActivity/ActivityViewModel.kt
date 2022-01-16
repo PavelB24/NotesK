@@ -1,6 +1,5 @@
 package ru.barinov.notes.ui.notesActivity
 
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import ru.barinov.R
 
@@ -9,8 +8,6 @@ import ru.barinov.notes.domain.userRepository.NotesRepository
 
 import ru.barinov.notes.domain.models.NoteEntity
 
-import ru.barinov.notes.ui.ProfileAndRegistration.Logged.LoggedFragment
-import ru.barinov.notes.ui.ProfileAndRegistration.ProfileEntering.ProfileEnteringFragment
 import java.io.IOException
 
 class ActivityViewModel(
