@@ -81,6 +81,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="#51000000"
                 android:text="@string/reg_button_text"
+                app:cornerRadius="16dp"
                 android:textColor="@color/checkbox_activated_color" />
 
         </LinearLayout>
@@ -90,6 +91,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="28dp"
+            app:cornerRadius="16dp"
             android:backgroundTint="@color/light_blue_2"
             android:text="@string/profile_button_text"
             android:textColor="@color/black"

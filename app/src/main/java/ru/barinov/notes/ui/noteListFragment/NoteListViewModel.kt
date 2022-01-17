@@ -43,8 +43,8 @@ class NoteListViewModel(
     private val _onUnsuccessfulSearch = MutableLiveData<Unit>()
     val onUnsuccessfulSearch: LiveData<Unit> = _onUnsuccessfulSearch
 
-    private val _createReminderDialog = MutableLiveData<String>()
-    val createReminderDialog: LiveData<String> = _createReminderDialog
+    private val _createReminderDialog = MutableLiveData<Event<String>>()
+    val createReminderDialog: LiveData<Event<String>> = _createReminderDialog
 
     private val _isFavoriteSelected = MutableLiveData(false)
     private val isFavoriteSelected: LiveData<Boolean> = _isFavoriteSelected
@@ -187,7 +187,7 @@ class NoteListViewModel(
     }
 
     private fun buildNotesReminder(id: String) {
-        _createReminderDialog.postValue(id)
+        _createReminderDialog.value =Event(id)
     }
 
     override fun onNoteChecked(note: NoteEntity) {

@@ -17,14 +17,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import ru.barinov.R
 import ru.barinov.databinding.NoteEditLayoutBinding
-
-import ru.barinov.notes.ui.notesActivity.ActivityMain
 import android.provider.MediaStore
-
 import android.app.Activity.RESULT_OK
 import android.graphics.*
 import android.net.Uri
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.drawToBitmap
 import com.google.android.material.chip.Chip
 import ru.barinov.notes.domain.models.NoteTypes
@@ -85,24 +81,28 @@ class NoteEditFragment : Fragment() {
         registeredForListeners()
 
         initOnClickActions()
-        viewModel.fieldsIsNotFilledMassageLiveData.observe(requireActivity()) {
-            Toast.makeText(activity, R.string.warning_toast, Toast.LENGTH_SHORT).show()
+        viewModel.fieldsIsNotFilledMassageLiveData.observe(viewLifecycleOwner) { event ->
+            event.getContentIfNotHandled()?.let {
+                Toast.makeText(activity, R.string.warning_toast, Toast.LENGTH_SHORT).show()
+            }
         }
 
         viewModel.closeScreenViewModel.observe(requireActivity()) {
             parentFragmentManager.popBackStackImmediate()
         }
-        (requireActivity() as ActivityMain).fabButton.show()
         super.onViewCreated(view, savedInstanceState)
     }
 
     private fun registeredForListeners() {
-        viewModel.viewContentLiveData.observe(viewLifecycleOwner) { draft ->
+        viewModel.fillViewWithData.observe(viewLifecycleOwner) { draft ->
             titleEditText.setText(draft.title)
             contentEditText.setText(draft.content)
             if (draft.image.isNotEmpty()) {
                 bitmapArray = draft.image
-                image.setImageBitmap(BitmapFactory.decodeByteArray(draft.image, 0, draft.image.size))
+                Thread {
+                    val bitmapArray = BitmapFactory.decodeByteArray(draft.image, 0, draft.image.size)
+                    requireActivity().runOnUiThread { image.setImageBitmap(bitmapArray) }
+                }.start()
             }
             when (draft.type) {
                 NoteTypes.Note -> noteTypeChip.isChecked = true
@@ -111,9 +111,13 @@ class NoteEditFragment : Fragment() {
                 NoteTypes.Idle -> noteTypeChip.isChecked = true
             }
         }
-        viewModel.editionModeMessage.observe(viewLifecycleOwner) {
-            Toast.makeText(activity, R.string.edition_mode_toast_text, Toast.LENGTH_SHORT).show()
-            binding.imageRotationButtonsContainer!!.visibility = View.VISIBLE
+        viewModel.editionModeMessage.observe(viewLifecycleOwner) { event ->
+            event.getContentIfNotHandled()?.let {
+                Toast.makeText(activity, R.string.edition_mode_toast_text, Toast.LENGTH_SHORT).show()
+                if (bitmapArray.isNotEmpty()) {
+                    binding.imageRotationButtonsContainer!!.visibility = View.VISIBLE
+                }
+            }
         }
     }
 

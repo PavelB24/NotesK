@@ -1,5 +1,7 @@
 package ru.barinov.notes.domain.adapters
 
+import android.graphics.BitmapFactory
+import android.os.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +13,15 @@ import ru.barinov.notes.domain.interfaces.OnNoteClickListener
 import ru.barinov.notes.domain.models.NoteEntity
 import java.text.SimpleDateFormat
 import java.util.*
+import android.os.Looper
+
+
+
 
 class NotesAdapter : RecyclerView.Adapter<NoteViewHolder>() {
+
+    private val handler = Handler(Looper.getMainLooper())
+
 
     var data: List<NoteEntity> = ArrayList()
         set(newData) {
@@ -32,6 +41,14 @@ class NotesAdapter : RecyclerView.Adapter<NoteViewHolder>() {
         setIdleStateInHolderItems(holder, note)
         setHolderItemsListeners(holder, note)
         holder.checkBox.isChecked = false
+        if(note.image.isNotEmpty()){
+            holder.noteImage.visibility= View.VISIBLE
+            Thread {
+                val bitmapArray = BitmapFactory.decodeByteArray(note.image, 0, note.image.size)
+                handler.post { holder.noteImage.setImageBitmap(bitmapArray) }
+            }.start()
+        }
+        else{holder.noteImage.visibility= View.GONE}
 
     }
 

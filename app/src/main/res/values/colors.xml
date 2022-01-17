@@ -37,6 +37,8 @@
     <color name="soft_deep_blue">#ED080B29</color>
     <color name="shadow_grey">#424242</color>
     <color name="chip_cherry">#EEC30909</color>
+    <color name="prime_color">#919191</color>
+    <color name="item_card_view_color">#805C5353</color>
     830202
     680202
     #FA080A25

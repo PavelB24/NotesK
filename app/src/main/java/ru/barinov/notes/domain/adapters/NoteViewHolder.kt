@@ -7,6 +7,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.imageview.ShapeableImageView
 import ru.barinov.R
 
 class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -15,6 +16,7 @@ class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val checkBox: CheckBox = itemView.findViewById(R.id.notes_checkbox)
     val creationDateTextView: TextView = itemView.findViewById(R.id.creation_date_location)
     val favImgButton: ImageButton = itemView.findViewById(R.id.favorite_img_button)
+    val noteImage: ShapeableImageView = itemView.findViewById(R.id.item_note_img_view)
 
 
 }

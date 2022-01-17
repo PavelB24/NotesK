@@ -24,7 +24,6 @@ private const val delete = "OK"
 private const val favButtonKey = "favButton"
 private const val reminderDialogKey = "reminder"
 
-
 class NoteListFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
@@ -34,8 +33,7 @@ class NoteListFragment : Fragment() {
     private lateinit var searchItem: MenuItem
     private val sharedPreferences = inject<SharedPreferences>(SharedPreferences::class.java)
     private lateinit var editor: SharedPreferences.Editor
-    private  val viewModel by sharedViewModel<NoteListViewModel>()
-
+    private val viewModel by sharedViewModel<NoteListViewModel>()
 
     override fun onCreateView(
 
@@ -58,42 +56,41 @@ class NoteListFragment : Fragment() {
 
     }
 
-
-
     private fun registeredForListeners() {
         viewModel.noteListLiveData.observe(viewLifecycleOwner) { notes ->
-            val sortedList =notes.toMutableList().sortedBy { note -> note.creationTime }
+            val sortedList = notes.toMutableList().sortedBy { note -> note.creationTime }
             adapter.data = sortedList
         }
 
 
-        viewModel.onNoteOpen.observe(viewLifecycleOwner, Observer {event->
-            event.getContentIfNotHandled()?.let{
+        viewModel.onNoteOpen.observe(viewLifecycleOwner, Observer { event ->
+            event.getContentIfNotHandled()?.let {
                 (requireActivity() as ActivityCallableInterface).callNoteViewFragment(it)
             }
         })
 
 
 
-        viewModel.onEditClicked.observe(viewLifecycleOwner) {event->
-            event.getContentIfNotHandled()?.let{
+        viewModel.onEditClicked.observe(viewLifecycleOwner) { event ->
+            event.getContentIfNotHandled()?.let {
                 (requireActivity() as ActivityCallableInterface).callEditionFragment(it)
             }
         }
     }
 
     private fun registeredForReminderDialogCreation() {
-        viewModel.createReminderDialog.observe(viewLifecycleOwner) { id ->
-            val reminderDialog = ReminderDialogFragment.getInstance(id)
-            reminderDialog.show(childFragmentManager, reminderDialogKey)
+        viewModel.createReminderDialog.observe(viewLifecycleOwner) { event ->
+            event.getContentIfNotHandled()?.let { id ->
+                val reminderDialog = ReminderDialogFragment.getInstance(id)
+                reminderDialog.show(childFragmentManager, reminderDialogKey)
+            }
         }
     }
 
     private fun createDialog() {
         viewModel.onNoteDeletion.observe(viewLifecycleOwner) { dialog ->
             dialog.show(parentFragmentManager, delete)
-            parentFragmentManager.setFragmentResultListener(
-                AgreementDialogFragment::class.simpleName!!,
+            parentFragmentManager.setFragmentResultListener(AgreementDialogFragment::class.simpleName!!,
                 requireActivity(),
                 { requestKey, result ->
                     viewModel.deleteNoteInRepos(result, delete)
@@ -108,13 +105,12 @@ class NoteListFragment : Fragment() {
             val searchView = searchItem.actionView as android.widget.SearchView
             viewModel.onSearchStarted(searchView)
 
-            val favButton =menu.findItem( R.id.favorites_menu_button)
-            favButton.isChecked= sharedPreferences.value.getBoolean(favButtonKey, false)
+            val favButton = menu.findItem(R.id.favorites_menu_button)
+            favButton.isChecked = sharedPreferences.value.getBoolean(favButtonKey, false)
             viewModel.onFavoriteClicked(favButton.isChecked)
-            if(favButton.isChecked){
+            if (favButton.isChecked) {
                 favButton.setIcon(R.drawable.ic_favourites_selected_star)
-            }
-            else{
+            } else {
                 favButton.setIcon(R.drawable.ic_favourites_black_star)
             }
 
@@ -171,10 +167,6 @@ class NoteListFragment : Fragment() {
             ).show()
         }
     }
-
-
-
-
 
 }
 

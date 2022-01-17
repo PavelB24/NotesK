@@ -4,7 +4,7 @@
     android:id="@+id/note_view_fragment_scrollview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/grey_background"
+    android:background="@drawable/grey_background_4"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,6 +20,7 @@
             android:layout_marginStart="68dp"
             android:layout_marginEnd="68dp"
             android:layout_marginTop="40dp"
+            android:padding="5dp"
             android:src="@drawable/ic_baseline_add_a_photo_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -68,11 +69,11 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/show_on_map_button"
-            app:layout_constraintTop_toBottomOf="@+id/location_text_view"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:text="@string/show_on_map_button_text"
             android:layout_marginEnd="35dp"
-            android:backgroundTint="@color/deep_blue"
+            android:backgroundTint="@color/light_blue_2"
             android:layout_width="wrap_content"
             android:layout_marginTop="5dp"
             app:cornerRadius="16dp"

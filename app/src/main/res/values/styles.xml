@@ -12,17 +12,18 @@
     </style>
 
     <style name="CustomPopupMenu" parent="@android:style/Widget.PopupMenu">
-        <item name="android:popupBackground">@color/card_view_grey_3</item>
+        <item name="android:popupBackground">@color/prime_color</item>
     </style>
 
-    <style name="CustomAppbar" >
+    <style name="CustomAppbar">
         <item name="android:backgroundTint">@color/card_view_grey_3</item>
         <item name="android:background">?selectableItemBackgroundBorderless</item>
     </style>
 
-    <style name="CircularImgStyle" >
-    <item name="cornerSize">50%</item>
+    <style name="CircularImgStyle">
+        <item name="cornerSize">50%</item>
     </style>
+
 
     <style name="CustomChipTheme" parent="Widget.AppCompat.ActionBar">
         <item name="android:backgroundTint">@color/chip_color_selector</item>
@@ -31,7 +32,7 @@
         <item name="android:textSize">16sp</item>
         <item name="android:checkable">true</item>
 
-</style>
+    </style>
 
     <style name="title_edittext_style">
         <item name="android:layout_width">match_parent</item>
@@ -94,7 +95,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:maxLines">1</item>
         <item name="android:singleLine">true</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">#C3C3C3</item>
         <item name="android:textSize">28sp</item>
         <item name="android:textStyle">bold</item>
     </style>

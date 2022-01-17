@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/grey"
+        android:background="@color/prime_color"
         app:fabAlignmentMode="end"
         app:fabCradleMargin="@dimen/fab_margin"
         app:itemIconTint="@color/nav_bar_color_selector"
@@ -39,7 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_baseline_playlist_add_check_24"
-        app:backgroundTint="@color/card_view_grey" />
+        app:backgroundTint="#B2777777" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

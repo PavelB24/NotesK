@@ -8,8 +8,9 @@
     <TextView
 
         android:id="@+id/profile_title_text_view"
-        android:textColor="@color/black"
+        android:textColor="#201D1D"
         android:paddingTop="20dp"
+        android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,10 +40,11 @@
         android:id="@+id/profile_login_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:cornerRadius="16dp"
         android:layout_margin="28dp"
         android:text="@string/profile_button_text"
         android:textColor="@color/black"
-        android:backgroundTint="@color/deep_blue"
+        android:backgroundTint="@color/light_blue_2"
         />
 
 

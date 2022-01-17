@@ -8,6 +8,7 @@ import androidx.core.location.LocationListenerCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import ru.barinov.notes.core.Event
 import ru.barinov.notes.domain.*
 import ru.barinov.notes.domain.userRepository.NotesRepository
 import ru.barinov.notes.domain.models.*
@@ -29,15 +30,14 @@ class NoteEditViewModel(
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
 
-    private val _editionModeMessage = MutableLiveData<Unit>()
-    val editionModeMessage: LiveData<Unit> = _editionModeMessage
+    private val _editionModeMessage = MutableLiveData<Event<Unit>>()
+    val editionModeMessage: LiveData<Event<Unit>> = _editionModeMessage
 
-
-    private val _fieldsIsNotFilledMassageLiveData = MutableLiveData<Unit>()
-    val fieldsIsNotFilledMassageLiveData: LiveData<Unit> = _fieldsIsNotFilledMassageLiveData
+    private val _fieldsIsNotFilledMassageLiveData = MutableLiveData<Event<Unit>>()
+    val fieldsIsNotFilledMassageLiveData: LiveData<Event<Unit>> = _fieldsIsNotFilledMassageLiveData
 
     private val _viewContentLiveData = MutableLiveData<NoteDraft>()
-    val viewContentLiveData: LiveData<NoteDraft> = _viewContentLiveData
+    val fillViewWithData: LiveData<NoteDraft> = _viewContentLiveData
 
     private val _closeScreen = MutableLiveData<Unit>()
     val closeScreenViewModel: LiveData<Unit> = _closeScreen
@@ -58,9 +58,9 @@ class NoteEditViewModel(
     }
 
     fun startListenLocation() {
-            locationFinder.locationManager.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER, 1000L, 1000F, locationListener
-            )
+        locationFinder.locationManager.requestLocationUpdates(
+            LocationManager.GPS_PROVIDER, 1000L, 1000F, locationListener
+        )
 
     }
 
@@ -69,41 +69,67 @@ class NoteEditViewModel(
 
         val title = draft.title
         val content = draft.content
+        val type = draft.type
+        val image = draft.image
 
-        if (title.isEmpty() || content.isEmpty()) {
-            _fieldsIsNotFilledMassageLiveData.postValue(Unit)
-        } else {
-            val note = createNote(draft)
-            repository.insertNote(note)
 
-            if (sharedPreferences.getBoolean(DataManagerFragment.switchStateKey, false)) {
-                Thread {
-                    cloudRepository.writeInCloud(note)
-                }.start()
+        when (type) {
+
+            NoteTypes.Note -> {
+                if (title.isEmpty() || content.isEmpty()) {
+                    _fieldsIsNotFilledMassageLiveData.value=Event(Unit)
+                } else {
+                    saveInRepositoriesAndExit(draft)
+                }
             }
-            removeLocationListener()
-            _closeScreen.postValue(Unit)
+            NoteTypes.Photo -> {
+                if (title.isEmpty() || image.isEmpty()) {
+                    _fieldsIsNotFilledMassageLiveData.value=Event(Unit)
+                } else {
+                    saveInRepositoriesAndExit(draft)
+                }
+            }
+            else -> {
+                if (title.isEmpty() || content.isEmpty()) {
+                    _fieldsIsNotFilledMassageLiveData.value=Event(Unit)
+                } else {
+                    saveInRepositoriesAndExit(draft)
+                }
+            }
         }
+    }
+
+    private fun saveInRepositoriesAndExit(draft: NoteDraft) {
+        val note = createNote(draft)
+        repository.insertNote(note)
+
+        if (sharedPreferences.getBoolean(DataManagerFragment.switchStateKey, false)) {
+            Thread {
+                cloudRepository.writeInCloud(note)
+            }.start()
+        }
+        removeLocationListener()
+        _closeScreen.postValue(Unit)
     }
 
     private fun createNote(draft: NoteDraft): NoteEntity {
         return if (checkOnEditionMode()) {
-           NoteEntity(
-               id =tempNote!!.id,
-               title = draft.title,
-               content = draft.content,
-               latitude = tempNote!!.latitude,
-               longitude = tempNote!!.longitude,
-               creationTime = tempNote!!.creationTime,
-               isFavorite = tempNote!!.isFavorite,
-               type= draft.type,
-               image = draft.image
-           )
+            NoteEntity(
+                id = tempNote!!.id,
+                title = draft.title,
+                content = draft.content,
+                latitude = tempNote!!.latitude,
+                longitude = tempNote!!.longitude,
+                creationTime = tempNote!!.creationTime,
+                isFavorite = tempNote!!.isFavorite,
+                type = draft.type,
+                image = draft.image
+            )
 
         }//Создаём новую заметку
         else {
             uuid = UUID.randomUUID()
-            val  currentTime = Date().time
+            val currentTime = Date().time
             checkLatLong()
             NoteEntity(
                 uuid.toString(),
@@ -111,9 +137,9 @@ class NoteEditViewModel(
                 content = draft.content,
                 latitude = latitude,
                 longitude = longitude,
-                creationTime =currentTime ,
+                creationTime = currentTime,
                 isFavorite = false,
-                type= draft.type,
+                type = draft.type,
                 image = draft.image
             )
         }
@@ -133,7 +159,7 @@ class NoteEditViewModel(
             tempNote = repository.getById(tempNoteId)
         }
         if (tempNote != null) {
-            _editionModeMessage.postValue(Unit)
+            _editionModeMessage.value=Event(Unit)
             return true
         }
         return false
@@ -141,7 +167,11 @@ class NoteEditViewModel(
 
     fun fillTheViews() {
         if (checkOnEditionMode()) {
-            _viewContentLiveData.postValue(NoteDraft(tempNote!!.title, tempNote!!.content, tempNote!!.type, tempNote!!.image))
+            _viewContentLiveData.postValue(
+                NoteDraft(
+                    tempNote!!.title, tempNote!!.content, tempNote!!.type, tempNote!!.image
+                )
+            )
         }
     }
 

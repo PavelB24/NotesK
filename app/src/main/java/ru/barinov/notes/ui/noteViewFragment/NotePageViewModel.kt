@@ -41,6 +41,7 @@ class NotePageViewModel(
                     locationString,
                     note.latitude,
                     note.longitude,
+                    note.type,
                     note.image
                 )
             )

@@ -7,15 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.imageview.ShapeableImageView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import ru.barinov.R
-import ru.barinov.databinding.NoteViewFramentLayoutBinding
-import ru.barinov.notes.ui.dialogs.MapsFragment
+import ru.barinov.databinding.*
+import ru.barinov.notes.domain.models.NoteTypes
+import ru.barinov.notes.ui.dialogs.*
 import java.lang.IllegalStateException
 
 private const val argumentsKey = "argumentsKey"
@@ -37,7 +37,6 @@ class NotePageFragment : Fragment() {
     private lateinit var dateTextView: TextView
     private lateinit var locationTextView: TextView
     private lateinit var mapButton: MaterialButton
-    private lateinit var noteDraft: NoteDraftExtended
     private lateinit var image: ShapeableImageView
 
     override fun onCreateView(
@@ -54,12 +53,17 @@ class NotePageFragment : Fragment() {
         initViews()
         setListeners()
         viewModel.getNote()
-        initMapClickListener()
 
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun loadImage() {
+    private fun correctUI(noteDraft: NoteDraftExtended) {
+        if (noteDraft.type== NoteTypes.Photo){
+            contentTextview.visibility= View.GONE
+        }
+    }
+
+    private fun loadImage(noteDraft: NoteDraftExtended) {
         if (noteDraft.image.isNotEmpty()) {
             image.visibility = View.VISIBLE
             Thread {
@@ -80,8 +84,13 @@ class NotePageFragment : Fragment() {
             locationTextView.text = draft.location
             Linkify.addLinks(contentTextview, Linkify.ALL)
             contentTextview.setLinkTextColor(resources.getColor(R.color.blue))
-            noteDraft = draft
-            loadImage()
+            loadImage(draft)
+            correctUI(draft)
+            initMapClickListener(draft)
+            image.setOnClickListener {
+                val imageFragment = ImageFragment.getInstance(draft.image)
+                imageFragment.show(childFragmentManager, imageDialogKey)
+            }
         }
     }
 
@@ -95,17 +104,18 @@ class NotePageFragment : Fragment() {
 
     }
 
-    private fun initMapClickListener() {
+    private fun initMapClickListener(noteDraft: NoteDraftExtended) {
         mapButton.setOnClickListener {
             val mapFragment = MapsFragment.getInstance(noteDraft.latitude, noteDraft.longitude)
-            mapFragment.show(childFragmentManager, dialogKey)
+            mapFragment.show(childFragmentManager, mapDialogKey)
         }
 
     }
 
     companion object {
 
-        const val dialogKey = "Map"
+        const val mapDialogKey = "Map"
+        const val imageDialogKey = "Image"
         const val latitude = "Latitude"
         const val longitude = "Longitude"
 

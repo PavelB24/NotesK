@@ -9,7 +9,7 @@
         <item name="colorSecondary">@color/black</item>
         <item name="colorSecondaryVariant">@color/black</item>
         <item name="colorOnSecondary">@color/black</item>
-        <item name="android:navigationBarColor">@color/grey</item>
+        <item name="android:navigationBarColor">@color/prime_color</item>
         <item name="android:popupMenuStyle">@style/CustomPopupMenu</item>
         <!-- Status bar color. -->
         <!-- Customize your theme here. -->
