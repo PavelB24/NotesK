@@ -1,7 +1,7 @@
 package ru.barinov.notes.ui.noteViewFragment
 
-import android.graphics.BitmapFactory
-import android.os.Bundle
+import android.graphics.*
+import android.os.*
 import android.text.util.Linkify
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +19,7 @@ import ru.barinov.notes.ui.dialogs.*
 import java.lang.IllegalStateException
 
 private const val argumentsKey = "argumentsKey"
+private const val imageScaleBase = 250
 
 class NotePageFragment : Fragment() {
 
@@ -32,6 +33,7 @@ class NotePageFragment : Fragment() {
 
     private val viewModel by viewModel<NotePageViewModel> { parametersOf(noteId) }
     private lateinit var binding: NoteViewFramentLayoutBinding
+    private val handler = Handler(Looper.getMainLooper())
     private lateinit var titleTextView: TextView
     private lateinit var contentTextview: TextView
     private lateinit var dateTextView: TextView
@@ -67,11 +69,13 @@ class NotePageFragment : Fragment() {
         if (noteDraft.image.isNotEmpty()) {
             image.visibility = View.VISIBLE
             Thread {
+                val scale = context!!.resources.displayMetrics.density
+                val pixels = (imageScaleBase * scale + 0.5f).toInt()
                 val bitmap =BitmapFactory.decodeByteArray(noteDraft.image, 0, noteDraft.image.size)
-                requireActivity().runOnUiThread{
-                    image.setImageBitmap(bitmap)
+                val scaledBitmap= Bitmap.createScaledBitmap(bitmap, pixels, pixels,true)
+               handler.post{
+                    image.setImageBitmap(scaledBitmap)
                 }
-
             }.start()
         }
     }

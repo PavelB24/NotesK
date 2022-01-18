@@ -33,12 +33,13 @@
     <color name="deep_blue_3_2">#F7000225</color>
     <color name="deep_blue_3_3">#FA090A30</color>
     <color name="light_blue">#1a5891</color>
-    <color name="light_blue_2">#921A5891</color>
+    <color name="light_blue_2">#1A5891</color>
     <color name="soft_deep_blue">#ED080B29</color>
     <color name="shadow_grey">#424242</color>
     <color name="chip_cherry">#EEC30909</color>
     <color name="prime_color">#919191</color>
     <color name="item_card_view_color">#805C5353</color>
+    <color name="button_text_color_white">#D1D1D1</color>
     830202
     680202
     #FA080A25

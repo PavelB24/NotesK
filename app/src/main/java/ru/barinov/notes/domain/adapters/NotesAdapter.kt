@@ -1,6 +1,6 @@
 package ru.barinov.notes.domain.adapters
 
-import android.graphics.BitmapFactory
+import android.graphics.*
 import android.os.*
 import android.view.LayoutInflater
 import android.view.View
@@ -15,10 +15,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.os.Looper
 
+private const val imageScaleBase = 70
 
-
-
-class NotesAdapter : RecyclerView.Adapter<NoteViewHolder>() {
+class NotesAdapter(private val scale: Float) : RecyclerView.Adapter<NoteViewHolder>() {
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -44,8 +43,10 @@ class NotesAdapter : RecyclerView.Adapter<NoteViewHolder>() {
         if(note.image.isNotEmpty()){
             holder.noteImage.visibility= View.VISIBLE
             Thread {
-                val bitmapArray = BitmapFactory.decodeByteArray(note.image, 0, note.image.size)
-                handler.post { holder.noteImage.setImageBitmap(bitmapArray) }
+                val pixels = (imageScaleBase * scale + 0.5f).toInt()
+                val bitmap = BitmapFactory.decodeByteArray(note.image, 0, note.image.size)
+                val scaledBitmap= Bitmap.createScaledBitmap(bitmap, pixels, pixels,true)
+                handler.post { holder.noteImage.setImageBitmap(scaledBitmap) }
             }.start()
         }
         else{holder.noteImage.visibility= View.GONE}

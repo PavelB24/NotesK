@@ -27,7 +27,7 @@ private const val reminderDialogKey = "reminder"
 class NoteListFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
-    private val adapter = NotesAdapter()
+    private lateinit var adapter: NotesAdapter
     private lateinit var binding: NoteListLayoutBinding
     private lateinit var toolbar: Toolbar
     private lateinit var searchItem: MenuItem
@@ -40,6 +40,7 @@ class NoteListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
 
     ): View {
+        adapter= NotesAdapter(context!!.resources.displayMetrics.density)
         editor = sharedPreferences.value.edit()
         setHasOptionsMenu(true)
         binding = NoteListLayoutBinding.inflate(inflater, container, false)
