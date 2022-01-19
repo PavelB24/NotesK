@@ -14,12 +14,14 @@ import ru.barinov.notes.domain.models.NoteEntity
 import java.text.SimpleDateFormat
 import java.util.*
 import android.os.Looper
+import kotlinx.coroutines.*
+import ru.barinov.notes.core.*
 
 private const val imageScaleBase = 70
 
+@DelicateCoroutinesApi
 class NotesAdapter(private val scale: Float) : RecyclerView.Adapter<NoteViewHolder>() {
 
-    private val handler = Handler(Looper.getMainLooper())
 
 
     var data: List<NoteEntity> = ArrayList()
@@ -36,18 +38,23 @@ class NotesAdapter(private val scale: Float) : RecyclerView.Adapter<NoteViewHold
     }
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
+
         val note = getNote(position)
+
         setIdleStateInHolderItems(holder, note)
         setHolderItemsListeners(holder, note)
+
         holder.checkBox.isChecked = false
+
         if(note.image.isNotEmpty()){
             holder.noteImage.visibility= View.VISIBLE
-            Thread {
-                val pixels = (imageScaleBase * scale + 0.5f).toInt()
+            GlobalScope.launch(Dispatchers.Default){
                 val bitmap = BitmapFactory.decodeByteArray(note.image, 0, note.image.size)
-                val scaledBitmap= Bitmap.createScaledBitmap(bitmap, pixels, pixels,true)
-                handler.post { holder.noteImage.setImageBitmap(scaledBitmap) }
-            }.start()
+                val scaledImgBitmap = bitmap.scaledImageFromBitmap(bitmap, imageScaleBase, scale)
+                withContext(Dispatchers.Main){
+                    holder.noteImage.setImageBitmap(scaledImgBitmap)
+                }
+            }
         }
         else{holder.noteImage.visibility= View.GONE}
 

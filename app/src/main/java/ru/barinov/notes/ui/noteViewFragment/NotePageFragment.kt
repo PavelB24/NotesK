@@ -10,10 +10,12 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.imageview.ShapeableImageView
+import kotlinx.coroutines.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import ru.barinov.R
 import ru.barinov.databinding.*
+import ru.barinov.notes.core.scaledImageFromBitmap
 import ru.barinov.notes.domain.models.NoteTypes
 import ru.barinov.notes.ui.dialogs.*
 import java.lang.IllegalStateException
@@ -21,6 +23,7 @@ import java.lang.IllegalStateException
 private const val argumentsKey = "argumentsKey"
 private const val imageScaleBase = 250
 
+@DelicateCoroutinesApi
 class NotePageFragment : Fragment() {
 
     private val noteId: String by lazy {
@@ -60,23 +63,24 @@ class NotePageFragment : Fragment() {
     }
 
     private fun correctUI(noteDraft: NoteDraftExtended) {
-        if (noteDraft.type== NoteTypes.Photo){
-            contentTextview.visibility= View.GONE
+        if (noteDraft.type == NoteTypes.Photo) {
+            contentTextview.visibility = View.GONE
         }
     }
 
     private fun loadImage(noteDraft: NoteDraftExtended) {
         if (noteDraft.image.isNotEmpty()) {
             image.visibility = View.VISIBLE
-            Thread {
-                val scale = context!!.resources.displayMetrics.density
-                val pixels = (imageScaleBase * scale + 0.5f).toInt()
-                val bitmap =BitmapFactory.decodeByteArray(noteDraft.image, 0, noteDraft.image.size)
-                val scaledBitmap= Bitmap.createScaledBitmap(bitmap, pixels, pixels,true)
-               handler.post{
-                    image.setImageBitmap(scaledBitmap)
+            val scale = context!!.resources.displayMetrics.density
+            GlobalScope.launch(Dispatchers.Default) {
+                val bitmap = BitmapFactory.decodeByteArray(noteDraft.image, 0, noteDraft.image.size)
+                val scaledImgBitmap = bitmap.scaledImageFromBitmap(
+                    bitmap, imageScaleBase, scale
+                )
+                withContext(Dispatchers.Main) {
+                    image.setImageBitmap(scaledImgBitmap)
                 }
-            }.start()
+            }
         }
     }
 

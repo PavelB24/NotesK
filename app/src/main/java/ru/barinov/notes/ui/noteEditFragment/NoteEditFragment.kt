@@ -20,9 +20,11 @@ import ru.barinov.databinding.NoteEditLayoutBinding
 import android.provider.MediaStore
 import android.app.Activity.RESULT_OK
 import android.graphics.*
+import kotlinx.coroutines.*
 import android.net.Uri
 import androidx.core.view.drawToBitmap
 import com.google.android.material.chip.Chip
+import kotlinx.coroutines.GlobalScope
 import ru.barinov.notes.domain.models.NoteTypes
 import java.io.ByteArrayOutputStream
 import java.lang.RuntimeException
@@ -69,6 +71,7 @@ class NoteEditFragment : Fragment() {
 
         initViews()
 
+
         val permission = ActivityCompat.checkSelfPermission(
             requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION
         ) == PERMISSION_GRANTED
@@ -97,12 +100,18 @@ class NoteEditFragment : Fragment() {
         viewModel.fillViewWithData.observe(viewLifecycleOwner) { draft ->
             titleEditText.setText(draft.title)
             contentEditText.setText(draft.content)
+
             if (draft.image.isNotEmpty()) {
+
                 bitmapArray = draft.image
-                Thread {
+                GlobalScope.launch(Dispatchers.Default) {
                     val bitmapArray = BitmapFactory.decodeByteArray(draft.image, 0, draft.image.size)
-                    requireActivity().runOnUiThread { image.setImageBitmap(bitmapArray) }
-                }.start()
+
+                    withContext(Dispatchers.Main) {
+                        image.setImageBitmap(bitmapArray)
+                    }
+                }
+
             }
             when (draft.type) {
                 NoteTypes.Note -> noteTypeChip.isChecked = true
