@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/prime_color">
+
+
+    <DatePicker
+        android:id="@+id/date_picker"
+        style="@style/DatePickerTheme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ru.ifr0z.timepickercompact.TimePickerCompact
+        android:id="@+id/time_picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:timePickerMode="spinner"
+        app:layout_constraintTop_toBottomOf="@id/date_picker" />
+
+    <LinearLayout
+        android:id="@+id/reminder_linear_horizontal_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/time_picker">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/reminder_dialog_negative_button"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
+            android:textColor="@color/button_text_color_white"
+            app:cornerRadius="16dp"
+            android:backgroundTint="@color/light_blue_2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxWidth="20dp"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:textSize="20sp"
+            android:layout_gravity="start"
+            android:text="X" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/reminder_dialog_positive_button"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
+            android:textColor="@color/button_text_color_white"
+            app:cornerRadius="16dp"
+            android:backgroundTint="@color/light_blue_2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxWidth="20dp"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:textSize="20sp"
+            android:layout_gravity="end"
+            android:text="Ok" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

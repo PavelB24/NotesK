@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Notes</string>
-    <string name="warning_toast">Please, write down title and main text</string>
+    <string name="app_name">NoteBook</string>
+    <string name="warning_toast">Please, text title and main text, or load photo and text title</string>
     <string name="add_title_hint">Title…</string>
     <string name="select_the_date_of_event">Select the date of event</string>
     <string name="apply_button_text">Apply</string>
@@ -16,7 +16,7 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
-    <string name="notes_item_menu_title">Your Notes</string>
+    <string name="notes_item_menu_title">Notes</string>
     <string name="manage_item_menu_title">Data Manager</string>
     <string name="profile_item_menu_title">Profile</string>
     <string name="sort_notes_item_menu_title">Sort Notes</string>
@@ -27,7 +27,8 @@
     <string name="clear_data_base_dialog_positive_text">OK</string>
     <string name="clear_data_base_dialog_message_text">Confirm deletion</string>
     <string name="clear_data_base_dialog_title_text">Are you sure?</string>
-    <string name="delete_all_notes_text">Delete all notes</string>
+    <string name="way_of_storage_local">Repository: local</string>
+    <string name="way_of_storage_cloud">Repository: cloud</string>
     <string name="application_settings_text">Application Settings</string>
     <string name="sort_by_date_text">Sort by date</string>
     <string name="notes_description_hint_text">Text…</string>
@@ -37,4 +38,28 @@
     <string name="data_manager_title">Data Manager</string>
     <string name="data_manager_data_transmitter_toggle_button_textOn">Transmission is stopped</string>
     <string name="data_manager_data_transmitter_toggle_button_textOff">Extra Actions</string>
+    <string name="delete_all_notes_text">Delete all notes</string>
+    <string name="profile_login_edittext_hint">Login</string>
+    <string name="profile_password_edittext_hint">Password</string>
+    <string name="profile_button_text">Enter</string>
+    <string name="registration_title">Create a new account</string>
+    <string name="on_fail_auth">Authentication failed.</string>
+    <string name="on_success_auth_text">Authentication success.</string>
+    <string name="reg_button_text">Registration</string>
+    <string name="profile_ask_text">Have not got a profile yet?</string>
+    <string name="notification_title">NoteBook</string>
+    <string name="notification_subtitle">Reminder action</string>
+    <string name="reminder_dialog_title">Pick the reminder\'s time</string>
+    <string name="show_on_map_button_text">Show on maps</string>
+    <string name="on_reminder_activate_text">Reminder activated</string>
+    <string name="login_or_password_are_empty_string">Please. make sure, what you filled both login and password fields</string>
+    <string name="on_unsuccessful_registration_string">Authentication failed, make sure, what your password is bigger than 8 symbols.</string>
+    <string name="on_successful_registration_string">Profile created.</string>
+    <string name="on_log_out_string">Logged out</string>
+    <string name="registration_fields_are_empty">One ore more fields are empty</string>
+    <string name="image_loading_error_string">Something went wrong</string>
+    <string name="all_notes_deleted_text">Notes Deleted</string>
+    <string name="local_and_cloud_storage_text">Local and cloud storage</string>
+    <string name="only_local_storage_text">Only local storage</string>
+    <string name="ask_for_log_in_text">Please, log in to use cloud storage</string>
 </resources>
