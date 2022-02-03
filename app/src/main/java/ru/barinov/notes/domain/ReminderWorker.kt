@@ -29,14 +29,17 @@ import ru.barinov.R
 import ru.barinov.notes.domain.userRepository.NotesRepository
 import ru.barinov.notes.ui.notesActivity.ActivityViewModel
 
-class ReminderWorker( val context: Context, params: WorkerParameters) : Worker(context, params)  {
+class ReminderWorker(
+    val context: Context, params: WorkerParameters
+) : Worker(context, params) {
+
     private lateinit var notesId: String
     override fun doWork(): Result {
-        if (id==null){
+        if (id == null) {
             return Result.failure()
         }
-        notesId= inputData.getString(NOTES_ID)!!
-        val noteId= inputData.getLong(notesId, 0).toInt()
+        notesId = inputData.getString(NOTES_ID)!!
+        val noteId = inputData.getLong(notesId, 0).toInt()
         sendNotification(noteId)
         return Result.success()
     }
@@ -46,19 +49,19 @@ class ReminderWorker( val context: Context, params: WorkerParameters) : Worker(c
         intent.flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
         intent.putExtra(NOTIFICATION_ID, id)
 
-
         val notificationManager = NotificationManagerCompat.from(context)
-        val bitMap= makeBitmap()
+        val bitMap = makeBitmap()
         val titleNotification = applicationContext.getString(R.string.notification_title)
-        val repo= inject<NotesRepository>(NotesRepository::class.java)
-        val subtitleNotification =  repo.value.getById(notesId).title
+        val repo = inject<NotesRepository>(NotesRepository::class.java)
+        val subtitleNotification = repo.value.getById(notesId).title
         val pendingIntent = getActivity(applicationContext, 0, intent, 0)
 
-
-        val notification= NotificationCompat.Builder(applicationContext, NOTIFICATION_CHANNEL)
-            .setLargeIcon(bitMap).setContentTitle(titleNotification).setSmallIcon(R.drawable.ic_baseline_note_alt_24).setContentText(subtitleNotification)
-            .setDefaults(DEFAULT_ALL).setContentIntent(pendingIntent).setAutoCancel(true)
-        notification.priority= PRIORITY_MAX
+        val notification =
+            NotificationCompat.Builder(applicationContext, NOTIFICATION_CHANNEL).setLargeIcon(bitMap)
+                .setContentTitle(titleNotification).setSmallIcon(R.drawable.ic_baseline_note_alt_24)
+                .setContentText(subtitleNotification).setDefaults(DEFAULT_ALL).setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+        notification.priority = PRIORITY_MAX
 
         if (SDK_INT >= O) {
             notification.setChannelId(NOTIFICATION_CHANNEL)
@@ -66,15 +69,15 @@ class ReminderWorker( val context: Context, params: WorkerParameters) : Worker(c
             val audioAttributes = AudioAttributes.Builder().setUsage(USAGE_NOTIFICATION_RINGTONE)
                 .setContentType(CONTENT_TYPE_SONIFICATION).build()
 
-            val channel =  NotificationChannel(NOTIFICATION_CHANNEL, NOTIFICATION_NAME, IMPORTANCE_HIGH)
+            val channel = NotificationChannel(NOTIFICATION_CHANNEL, NOTIFICATION_NAME, IMPORTANCE_HIGH)
 
             channel.lightColor = RED
             channel.enableVibration(true)
             channel.vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
-            channel .setSound(ringtoneManager, audioAttributes)
+            channel.setSound(ringtoneManager, audioAttributes)
             notificationManager.createNotificationChannel(channel)
         }
-            notificationManager.notify(id, notification.build())
+        notificationManager.notify(id, notification.build())
 
     }
 
@@ -84,10 +87,11 @@ class ReminderWorker( val context: Context, params: WorkerParameters) : Worker(c
     }
 
     companion object {
+
         const val NOTIFICATION_ID = "NoteBook_notification_id"
         const val NOTIFICATION_CHANNEL = "NoteBook_channel_01"
         const val NOTIFICATION_NAME = "NoteBook"
         const val NOTIFICATION_WORK = "NoteBook_notification_work"
         const val NOTES_ID = "Notes_id"
-}
+    }
 }

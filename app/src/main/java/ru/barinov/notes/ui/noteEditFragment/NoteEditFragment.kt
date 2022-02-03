@@ -32,6 +32,7 @@ import java.lang.RuntimeException
 const val argsBundleKey = "NotesId"
 const val REQUEST_CODE = 100
 
+@DelicateCoroutinesApi
 class NoteEditFragment : Fragment() {
 
     private lateinit var applyButton: Button
@@ -70,7 +71,6 @@ class NoteEditFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         initViews()
-
 
         val permission = ActivityCompat.checkSelfPermission(
             requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION
@@ -143,9 +143,11 @@ class NoteEditFragment : Fragment() {
             matrix.postRotate(image.rotation - 90f)
             image.rotation = (image.rotation - 90f)
             val idleBitmap = image.drawToBitmap()
-            val rotatedImgBitmap =
-                Bitmap.createBitmap(idleBitmap, 0, 0, idleBitmap.width, idleBitmap.height, matrix, true)
-            bitmapToByteArray(rotatedImgBitmap)
+            GlobalScope.launch(Dispatchers.Default) {
+                val rotatedImgBitmap =
+                    Bitmap.createBitmap(idleBitmap, 0, 0, idleBitmap.width, idleBitmap.height, matrix, true)
+                bitmapToByteArray(rotatedImgBitmap)
+            }
 
         }
         binding.rotateRightImageButton!!.setOnClickListener {
@@ -153,12 +155,14 @@ class NoteEditFragment : Fragment() {
             matrix.postRotate(image.rotation + 90f)
             image.rotation = (image.rotation + 90f)
             val idleBitmap = image.drawToBitmap()
-            val rotatedImgBitmap =
-                Bitmap.createBitmap(idleBitmap, 0, 0, idleBitmap.width, idleBitmap.height, matrix, true)
-            bitmapToByteArray(rotatedImgBitmap)
+            GlobalScope.launch(Dispatchers.Default) {
+                val rotatedImgBitmap =
+                    Bitmap.createBitmap(idleBitmap, 0, 0, idleBitmap.width, idleBitmap.height, matrix, true)
+                bitmapToByteArray(rotatedImgBitmap)
+            }
+
         }
         initChipLogic()
-
     }
 
     private fun initChipLogic() {
@@ -216,15 +220,15 @@ class NoteEditFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {
             val returnUri: Uri = data!!.data!!
+
             try {
                 val bitmap = MediaStore.Images.Media.getBitmap(activity!!.contentResolver, returnUri)
                 image.setImageBitmap(bitmap)
-                Thread {
+                GlobalScope.launch(Dispatchers.Default) {
                     bitmapToByteArray(bitmap)
-                }.start()
+                }
                 binding.imageRotationButtonsContainer!!.visibility = View.VISIBLE
             }
-            //todo передавать во ВМ для записи
             catch (exception: RuntimeException) {
                 Toast.makeText(
                     requireContext(), getString(R.string.image_loading_error_string), Toast.LENGTH_SHORT
@@ -234,7 +238,7 @@ class NoteEditFragment : Fragment() {
 
     }
 
-    private fun bitmapToByteArray(bitmap: Bitmap) {
+    private suspend fun bitmapToByteArray(bitmap: Bitmap) {
         val bos = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 80, bos)
         bitmapArray = bos.toByteArray()

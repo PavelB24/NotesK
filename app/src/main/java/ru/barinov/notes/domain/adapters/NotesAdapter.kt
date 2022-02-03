@@ -20,9 +20,9 @@ import ru.barinov.notes.core.*
 private const val imageScaleBase = 70
 
 @DelicateCoroutinesApi
-class NotesAdapter(private val scale: Float) : RecyclerView.Adapter<NoteViewHolder>() {
-
-
+class NotesAdapter(
+    private val scale: Float
+) : RecyclerView.Adapter<NoteViewHolder>() {
 
     var data: List<NoteEntity> = ArrayList()
         set(newData) {
@@ -46,23 +46,24 @@ class NotesAdapter(private val scale: Float) : RecyclerView.Adapter<NoteViewHold
 
         holder.checkBox.isChecked = false
 
-        if(note.image.isNotEmpty()){
-            holder.noteImage.visibility= View.VISIBLE
-            GlobalScope.launch(Dispatchers.Default){
+        if (note.image.isNotEmpty()) {
+            holder.noteImage.visibility = View.VISIBLE
+            GlobalScope.launch(Dispatchers.Default) {
                 val bitmap = BitmapFactory.decodeByteArray(note.image, 0, note.image.size)
                 val scaledImgBitmap = bitmap.scaledImageFromBitmap(bitmap, imageScaleBase, scale)
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     holder.noteImage.setImageBitmap(scaledImgBitmap)
                 }
             }
+        } else {
+            holder.noteImage.visibility = View.GONE
         }
-        else{holder.noteImage.visibility= View.GONE}
 
     }
 
     private fun setHolderItemsListeners(holder: NoteViewHolder, note: NoteEntity) {
         holder.itemView.setOnClickListener { listener.onNoteClick(note) }
-        holder.itemView.setOnLongClickListener {view-> listener.onNoteLongClick(note, view);true }
+        holder.itemView.setOnLongClickListener { view -> listener.onNoteLongClick(note, view);true }
         holder.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 listener.onNoteChecked(note)

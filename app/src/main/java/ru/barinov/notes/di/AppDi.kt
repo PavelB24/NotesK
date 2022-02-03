@@ -28,7 +28,9 @@ val appModule = module {
     single<DataBase> {
         Room.databaseBuilder(get(), DataBase::class.java, "notes_database").allowMainThreadQueries().build()
     }
-    single<NoteDao> { get<DataBase>().noteDao() }
+
+    single<NoteDao> {
+        get<DataBase>().noteDao() }
 
     single<NotesRepository> {
         NotesRepository(noteDao = get())
@@ -59,8 +61,6 @@ val appModule = module {
     single<Geocoder> {
         Geocoder(get())
     }
-
-
 
 
     single  <SharedPreferences> {
@@ -103,6 +103,8 @@ val appModule = module {
     viewModel<NotePageViewModel>{parameterId->
         NotePageViewModel(parameterId.get(), get(), get())
     }
+
+
 
 
 }
