@@ -23,6 +23,7 @@ import android.graphics.*
 import kotlinx.coroutines.*
 import android.net.Uri
 import androidx.core.view.drawToBitmap
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.GlobalScope
 import ru.barinov.notes.domain.models.NoteTypes
@@ -155,7 +156,7 @@ class NoteEditFragment : Fragment() {
             matrix.postRotate(image.rotation + 90f)
             image.rotation = (image.rotation + 90f)
             val idleBitmap = image.drawToBitmap()
-            GlobalScope.launch(Dispatchers.Default) {
+            lifecycleScope.launch(Dispatchers.Default) {
                 val rotatedImgBitmap =
                     Bitmap.createBitmap(idleBitmap, 0, 0, idleBitmap.width, idleBitmap.height, matrix, true)
                 bitmapToByteArray(rotatedImgBitmap)
@@ -238,7 +239,7 @@ class NoteEditFragment : Fragment() {
 
     }
 
-    private suspend fun bitmapToByteArray(bitmap: Bitmap) {
+    private  fun bitmapToByteArray(bitmap: Bitmap) {
         val bos = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 80, bos)
         bitmapArray = bos.toByteArray()
